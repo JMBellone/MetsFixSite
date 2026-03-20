@@ -29,7 +29,7 @@ const FEEDS = [
     authority: 3,
   },
   {
-    url: 'https://sny.tv/rss/articles',
+    url: 'https://sny.tv/mets-feed',
     source: 'SNY',
     team: 'mets',
     paywalled: false,
@@ -38,13 +38,6 @@ const FEEDS = [
   {
     url: 'https://nypost.com/tag/new-york-mets/feed/',
     source: 'NY Post',
-    team: 'mets',
-    paywalled: false,
-    authority: 1,
-  },
-  {
-    url: 'https://metsmerizedonline.com/feed',
-    source: 'Mets Merized',
     team: 'mets',
     paywalled: false,
     authority: 1,
