@@ -2,41 +2,57 @@
 // Fetches all Mets RSS sources, filters to last 72h, sorts by recency.
 
 const SEVENTY_TWO_HOURS_MS = 72 * 60 * 60 * 1000;
+const THIRTY_DAYS_MS = 30 * 24 * 60 * 60 * 1000;
 
 const FEEDS = [
+  // The Metropolitan Substack — 30-day window (newsletters are infrequent)
+  {
+    url: 'https://themetropolitan.substack.com/feed',
+    source: 'The Metropolitan',
+    team: 'metropolitan',
+    paywalled: false,
+    authority: 3,
+    cutoffMs: THIRTY_DAYS_MS,
+  },
   {
     url: 'https://www.mlb.com/mets/feeds/news/rss.xml',
     source: 'MLB.com',
+    team: 'mets',
     paywalled: false,
     authority: 3,
   },
   {
     url: 'https://www.nytimes.com/athletic/rss/tag/new-york-mets/',
     source: 'The Athletic',
+    team: 'mets',
     paywalled: true,
     authority: 3,
   },
   {
     url: 'https://sny.tv/rss/articles',
     source: 'SNY',
+    team: 'mets',
     paywalled: false,
     authority: 2,
   },
   {
     url: 'https://nypost.com/tag/new-york-mets/feed/',
     source: 'NY Post',
+    team: 'mets',
     paywalled: false,
     authority: 1,
   },
   {
     url: 'https://metsmerizedonline.com/feed',
     source: 'Mets Merized',
+    team: 'mets',
     paywalled: false,
     authority: 1,
   },
   {
     url: 'https://www.amazinavenue.com/rss/current',
     source: 'Amazin Avenue',
+    team: 'mets',
     paywalled: false,
     authority: 2,
   },
@@ -163,6 +179,7 @@ async function fetchFeed(feedConfig) {
     return results;
   }
 
+  const cutoff = Date.now() - (feedConfig.cutoffMs || SEVENTY_TWO_HOURS_MS);
   const items = parseRSS(xml);
 
   for (const item of items) {
@@ -171,6 +188,7 @@ async function fetchFeed(feedConfig) {
 
     results.push({
       id: `${source}-${Buffer.from(item.link).toString('base64').replace(/=/g, '')}`,
+      team: feedConfig.team || 'mets',
       source,
       paywalled,
       authority,
