@@ -156,7 +156,6 @@ function parseRSS(xml) {
 async function fetchFeed(feedConfig) {
   const { url, source, paywalled, authority } = feedConfig;
   const results = [];
-  const cutoff = Date.now() - SEVENTY_TWO_HOURS_MS;
 
   let xml;
   try {
