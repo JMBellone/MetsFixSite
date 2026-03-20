@@ -1,0 +1,34 @@
+.skeleton-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-left: 3px solid var(--mets-blue);
+  border-radius: var(--radius);
+  display: flex;
+  overflow: hidden;
+}
+
+.sk-image {
+  width: 90px;
+  height: 70px;
+  flex-shrink: 0;
+}
+
+.sk-body {
+  flex: 1;
+  padding: 10px 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.sk-title-1 { height: 16px; width: 90%; border-radius: 4px; }
+.sk-title-2 { height: 16px; width: 65%; border-radius: 4px; }
+
+.sk-meta {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.sk-badge { height: 13px; width: 60px; border-radius: 4px; }
+.sk-time  { height: 13px; width: 36px; border-radius: 4px; }
