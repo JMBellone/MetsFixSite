@@ -61,7 +61,15 @@
   display: flex;
   align-items: center;
   gap: 10px;
-  padding: 4px 0;
+  padding: 6px 0;
+  position: sticky;
+  top: 49px;
+  z-index: 5;
+  background: var(--bg);
+  margin-left: -12px;
+  margin-right: -12px;
+  padding-left: 12px;
+  padding-right: 12px;
 }
 
 .section-header-logo {
@@ -202,7 +210,6 @@
 .standings-card {
   background: var(--surface);
   border: 1px solid var(--border);
-  border-top: 3px solid var(--mets-orange);
   border-radius: var(--radius);
   overflow: hidden;
 }
@@ -216,19 +223,54 @@
   border-bottom: 1px solid var(--border);
 }
 
-.standings-title {
+.standings-header-logo {
+  width: 18px;
+  height: 18px;
+  object-fit: contain;
+  flex-shrink: 0;
+}
+
+.standings-header-title {
   font-size: 0.65rem;
   font-weight: 800;
   letter-spacing: 1px;
   text-transform: uppercase;
   color: var(--text-muted);
+  flex: 1;
+}
+
+.standings-league-tabs {
+  display: flex;
+  gap: 2px;
+}
+
+.standings-league-tab {
+  padding: 3px 8px;
+  font-size: 0.62rem;
+  font-weight: 800;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  background: none;
+  color: var(--text-muted);
+  font-family: var(--font);
+  cursor: pointer;
+  transition: color 0.15s, background 0.15s, border-color 0.15s;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.standings-league-tab--active {
+  background: rgba(74, 127, 212, 0.15);
+  border-color: rgba(74, 127, 212, 0.4);
+  color: var(--mets-blue-light);
 }
 
 .standings-col-header,
 .standings-row {
   display: grid;
-  grid-template-columns: 22px minmax(0, 1fr) 26px 26px 32px 36px;
-  column-gap: 6px;
+  grid-template-columns: 22px minmax(0, 1fr) 26px 26px 32px 28px 36px;
+  column-gap: 5px;
   align-items: center;
   padding: 5px 12px;
 }
@@ -248,6 +290,21 @@
   color: var(--text-muted);
   opacity: 0.6;
   text-align: right;
+}
+
+.standings-div-header {
+  padding: 4px 12px 3px;
+  background: var(--surface-2);
+  border-top: 1px solid var(--border);
+  border-bottom: 1px solid var(--border);
+}
+
+.standings-div-name {
+  font-size: 0.6rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: var(--text-muted);
 }
 
 .standings-list { display: flex; flex-direction: column; }
@@ -298,6 +355,16 @@
   font-size: 0.68rem;
   color: var(--text-muted);
   text-align: right;
+}
+
+.standings-gb {
+  font-size: 0.68rem;
+  color: var(--text-muted);
+  text-align: right;
+}
+
+.standings-wcgb {
+  opacity: 0.75;
 }
 
 .standings-streak {
@@ -642,5 +709,13 @@
 
   .header {
     padding: calc(16px + env(safe-area-inset-top, 0px)) 24px 16px;
+  }
+
+  .section-header {
+    top: 57px;
+    margin-left: -16px;
+    margin-right: -16px;
+    padding-left: 16px;
+    padding-right: 16px;
   }
 }

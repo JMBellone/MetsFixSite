@@ -118,6 +118,17 @@ export default function App() {
   const headlines  = newsPool.slice(3, 5)
   const moreNews   = newsPool.slice(5, 10)
 
+  // Athletic articles not already shown in the sections above
+  const shownIds = new Set(newsPool.slice(0, 10).map(a => a.id))
+  const athleticPool = articles
+    .filter(a => a.source === 'The Athletic' && !removedIds.has(a.id) && !shownIds.has(a.id))
+    .sort((a, b) => new Date(b.pubDate) - new Date(a.pubDate))
+    .slice(0, 5)
+  const athFeatured  = athleticPool[0]
+  const athSecondary = athleticPool[1]
+  const athTertiary  = athleticPool[2]
+  const athHeadlines = athleticPool.slice(3, 5)
+
   return (
     <div
       onTouchStart={onTouchStart}
@@ -339,6 +350,114 @@ export default function App() {
             )}
           </>
         )}
+
+        {/* ── The Athletic ─────────────────────────────── */}
+            {athFeatured && (
+              <>
+                <div className="section-header section-header--mets">
+                  <img
+                    src="https://www.google.com/s2/favicons?domain=theathletic.com&sz=64"
+                    alt="The Athletic"
+                    className="section-header-logo"
+                    onError={e => { e.currentTarget.style.display = 'none' }}
+                  />
+                  <span className="section-header-label">The Athletic</span>
+                  <span className="section-header-line" />
+                </div>
+
+                <div className="team-news-card">
+                  {/* Featured */}
+                  <div className="team-news-item-wrap">
+                    <a href={athFeatured.link} target="_blank" rel="noopener noreferrer"
+                      className="team-news-featured" onClick={() => markRead(athFeatured.id)}>
+                      {athFeatured.image && (
+                        <img src={athFeatured.image} alt="" className="team-news-featured-img"
+                          onError={e => { e.currentTarget.style.display = 'none' }} />
+                      )}
+                      <div className="team-news-featured-body">
+                        <span className={`team-news-featured-title${readIds.has(athFeatured.id) ? ' team-news--read' : ''}`}>
+                          {athFeatured.title}
+                        </span>
+                        <span className="team-news-meta">{timeAgo(athFeatured.pubDate)} · The Athletic</span>
+                        <SubscriberBadge paywalled={athFeatured.paywalled} />
+                      </div>
+                    </a>
+                    <button className="item-remove" onClick={() => removeArticle(athFeatured.id)} aria-label="Remove">✕</button>
+                  </div>
+
+                  {athSecondary && (
+                    <>
+                      <div className="team-news-divider" />
+                      <div className="team-news-item-wrap">
+                        <a href={athSecondary.link} target="_blank" rel="noopener noreferrer"
+                          className="team-news-secondary" onClick={() => markRead(athSecondary.id)}>
+                          {athSecondary.image && (
+                            <img src={athSecondary.image} alt="" className="team-news-secondary-img"
+                              onError={e => { e.currentTarget.style.display = 'none' }} />
+                          )}
+                          <div className="team-news-secondary-body">
+                            <span className={`team-news-secondary-title${readIds.has(athSecondary.id) ? ' team-news--read' : ''}`}>
+                              {athSecondary.title}
+                            </span>
+                            {athSecondary.description && <span className="team-news-secondary-desc">{athSecondary.description}</span>}
+                            <span className="team-news-meta">{timeAgo(athSecondary.pubDate)} · The Athletic</span>
+                            <SubscriberBadge paywalled={athSecondary.paywalled} />
+                          </div>
+                        </a>
+                        <button className="item-remove" onClick={() => removeArticle(athSecondary.id)} aria-label="Remove">✕</button>
+                      </div>
+                    </>
+                  )}
+
+                  {athTertiary && (
+                    <>
+                      <div className="team-news-divider" />
+                      <div className="team-news-item-wrap">
+                        <a href={athTertiary.link} target="_blank" rel="noopener noreferrer"
+                          className="team-news-secondary" onClick={() => markRead(athTertiary.id)}>
+                          {athTertiary.image && (
+                            <img src={athTertiary.image} alt="" className="team-news-secondary-img"
+                              onError={e => { e.currentTarget.style.display = 'none' }} />
+                          )}
+                          <div className="team-news-secondary-body">
+                            <span className={`team-news-secondary-title${readIds.has(athTertiary.id) ? ' team-news--read' : ''}`}>
+                              {athTertiary.title}
+                            </span>
+                            {athTertiary.description && <span className="team-news-secondary-desc">{athTertiary.description}</span>}
+                            <span className="team-news-meta">{timeAgo(athTertiary.pubDate)} · The Athletic</span>
+                            <SubscriberBadge paywalled={athTertiary.paywalled} />
+                          </div>
+                        </a>
+                        <button className="item-remove" onClick={() => removeArticle(athTertiary.id)} aria-label="Remove">✕</button>
+                      </div>
+                    </>
+                  )}
+
+                  {athHeadlines.length > 0 && (
+                    <>
+                      <div className="team-news-divider" />
+                      <div className="team-news-headlines team-news-headlines--row">
+                        {athHeadlines.map(a => (
+                          <a key={a.id} href={a.link} target="_blank" rel="noopener noreferrer"
+                            className={`team-news-headline${readIds.has(a.id) ? ' team-news--read' : ''}`}
+                            onClick={() => markRead(a.id)}>
+                            <span className="team-news-headline-body">
+                              <span className="team-news-headline-title">{a.title}</span>
+                              <span className="team-news-headline-source">
+                                <img src={faviconUrl(a.link)} alt="" className="team-news-source-favicon"
+                                  onError={e => { e.currentTarget.style.display = 'none' }} />
+                                The Athletic · {timeAgo(a.pubDate)}
+                                {a.paywalled && <span className="subscriber-badge subscriber-badge--inline">Subscriber</span>}
+                              </span>
+                            </span>
+                          </a>
+                        ))}
+                      </div>
+                    </>
+                  )}
+                </div>
+              </>
+            )}
 
         {!loading && !error && newsPool.length === 0 && !briefingArticle && (
           <div className="empty-state">No articles found.</div>
