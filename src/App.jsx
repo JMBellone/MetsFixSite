@@ -459,15 +459,6 @@ export default function App() {
         )}
 
         {/* ── See It on SNY ────────────────────────────────── */}
-        <div className="section-header section-header--mets">
-          <svg className="section-header-logo" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-            <rect x="1" y="4" width="22" height="14" rx="2" stroke="currentColor" strokeWidth="1.8" fill="none"/>
-            <line x1="8" y1="20" x2="16" y2="20" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round"/>
-            <line x1="12" y1="18" x2="12" y2="20" stroke="currentColor" strokeWidth="1.8"/>
-          </svg>
-          <span className="section-header-label">See It on SNY</span>
-          <span className="section-header-line" />
-        </div>
         <SNYCard />
 
         {/* ── Option Dates ─────────────────────────────────── */}

@@ -10,10 +10,19 @@ function timeAgo(dateStr) {
   return `${Math.floor(hours / 24)}d ago`
 }
 
-function VideoItem({ video }) {
+function PlayIcon() {
+  return (
+    <svg className="sny-play-icon" viewBox="0 0 68 48" xmlns="http://www.w3.org/2000/svg">
+      <rect width="68" height="48" rx="10" fill="rgba(0,0,0,0.65)" />
+      <polygon points="27,14 27,34 46,24" fill="white" />
+    </svg>
+  )
+}
+
+function VideoThumb({ video, className }) {
   const [playing, setPlaying] = useState(false)
   return (
-    <div className="sny-video">
+    <div className={className}>
       {playing ? (
         <div className="sny-embed-wrap">
           <iframe
@@ -27,12 +36,7 @@ function VideoItem({ video }) {
       ) : (
         <button className="sny-thumb-btn" onClick={() => setPlaying(true)} aria-label={`Play: ${video.title}`}>
           <img src={video.thumbnail} alt="" className="sny-thumb" />
-          <div className="sny-play-overlay">
-            <svg className="sny-play-icon" viewBox="0 0 68 48" xmlns="http://www.w3.org/2000/svg">
-              <rect width="68" height="48" rx="10" fill="rgba(0,0,0,0.65)" />
-              <polygon points="27,14 27,34 46,24" fill="white" />
-            </svg>
-          </div>
+          <div className="sny-play-overlay"><PlayIcon /></div>
         </button>
       )}
       <div className="sny-video-info">
@@ -50,23 +54,36 @@ export default function SNYCard() {
   useEffect(() => {
     fetch('/api/snyvideos')
       .then(r => r.ok ? r.json() : Promise.reject())
-      .then(data => { setVideos(data.videos || []) })
+      .then(data => { setVideos((data.videos || []).slice(0, 3)) })
       .catch(() => {})
       .finally(() => setLoading(false))
   }, [])
 
-  if (loading) return (
-    <div className="sny-card">
-      {Array.from({ length: 3 }).map((_, i) => (
-        <div key={i} className="sny-skeleton" />
-      ))}
-    </div>
-  )
-  if (!videos.length) return null
-
   return (
     <div className="sny-card">
-      {videos.map(v => <VideoItem key={v.videoId} video={v} />)}
+      <div className="sny-card-header">
+        <svg className="sny-card-header-icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <rect x="1" y="4" width="22" height="14" rx="2" stroke="currentColor" strokeWidth="1.8" fill="none"/>
+          <line x1="8" y1="20" x2="16" y2="20" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round"/>
+          <line x1="12" y1="18" x2="12" y2="20" stroke="currentColor" strokeWidth="1.8"/>
+        </svg>
+        <span className="sny-card-header-label">See It on SNY</span>
+      </div>
+
+      {loading && <div className="sny-skeleton" />}
+
+      {!loading && videos.length > 0 && (
+        <>
+          <VideoThumb video={videos[0]} className="sny-featured" />
+          {videos.length > 1 && (
+            <div className="sny-small-row">
+              {videos.slice(1).map(v => (
+                <VideoThumb key={v.videoId} video={v} className="sny-small" />
+              ))}
+            </div>
+          )}
+        </>
+      )}
     </div>
   )
 }
