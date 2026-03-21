@@ -9,6 +9,7 @@ import LatestUpdatesCard from './components/LatestUpdatesCard'
 import LastGameCard from './components/LastGameCard'
 import BlogRollCard from './components/BlogRollCard'
 import MLBNewsCard from './components/MLBNewsCard'
+import BeatWritersCard from './components/BeatWritersCard'
 import './App.css'
 
 function faviconUrl(link) {
@@ -476,6 +477,12 @@ export default function App() {
         {/* ── Injured List ─────────────────────────────────── */}
         <InjuredListCard />
 
+        {/* ── Ya Gotta Keep Reading ────────────────────────── */}
+        <div className="section-header section-header--mets">
+          <span className="section-header-label">Ya Gotta Keep Reading</span>
+          <span className="section-header-line" />
+        </div>
+
         {/* ── The Athletic ─────────────────────────────────── */}
         {athFeatured && (
           <div className="team-news-card">
@@ -573,14 +580,11 @@ export default function App() {
           </div>
         )}
 
-        {/* ── Ya Gotta Keep Reading ────────────────────────── */}
-        <div className="section-header section-header--mets">
-          <span className="section-header-label">Ya Gotta Keep Reading</span>
-          <span className="section-header-line" />
-        </div>
-
         {/* ── See It on SNY ────────────────────────────────── */}
         <SNYCard />
+
+        {/* ── More from the Beat ───────────────────────────── */}
+        <BeatWritersCard readIds={readIds} markRead={markRead} removeArticle={removeArticle} />
 
         {/* ── Blog Roll ────────────────────────────────────── */}
         <BlogRollCard />
