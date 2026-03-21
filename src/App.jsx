@@ -52,13 +52,6 @@ function DailyNoteCard() {
           <div key={i} className="daily-topic">
             <span className="daily-topic-headline">{item.topic}</span>
             <p className="daily-topic-summary">{item.summary}</p>
-            {item.players?.length > 0 && (
-              <div className="daily-topic-players">
-                {item.players.map(p => (
-                  <span key={p} className="daily-player-tag">{p}</span>
-                ))}
-              </div>
-            )}
             {item.source && (
               <span className="daily-topic-source">via {item.source}</span>
             )}
