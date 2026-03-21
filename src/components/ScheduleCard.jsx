@@ -4,9 +4,23 @@ function etDateKey(dateStr) {
   return new Date(dateStr).toLocaleDateString('en-CA', { timeZone: 'America/New_York' })
 }
 
-// Always start from March 26 (Opening Day)
-function nextThreeDates() {
-  const anchor = new Date(2026, 2, 26) // March 26, 2026
+// Before Opening Day: anchor on March 26. On/after Opening Day: anchor on first upcoming game.
+const OPENING_DAY = new Date(2026, 2, 26) // March 26, 2026 local
+
+function nextThreeDates(games) {
+  const todayKey = new Date().toLocaleDateString('en-CA', { timeZone: 'America/New_York' })
+  const today = new Date(...todayKey.split('-').map((v, i) => i === 1 ? Number(v) - 1 : Number(v)))
+
+  let anchor
+  if (today < OPENING_DAY) {
+    anchor = OPENING_DAY
+  } else if (games.length > 0) {
+    const [y, m, d] = etDateKey(games[0].date).split('-').map(Number)
+    anchor = new Date(y, m - 1, d)
+  } else {
+    anchor = today
+  }
+
   return Array.from({ length: 3 }, (_, i) => {
     const d = new Date(anchor)
     d.setDate(d.getDate() + i)
@@ -46,7 +60,7 @@ export default function ScheduleCard() {
 
   if (loading) return null
 
-  const dates = nextThreeDates()
+  const dates = nextThreeDates(games)
   const gamesByDate = {}
   games.forEach(g => {
     const key = etDateKey(g.date)

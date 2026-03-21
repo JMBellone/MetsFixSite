@@ -19,9 +19,13 @@ module.exports = async function handler(req, res) {
     if (!r.ok) throw new Error(`ESPN API error ${r.status}`);
     const data = await r.json();
 
+    const OPENING_DAY = new Date('2026-03-26T00:00:00-04:00');
     const events = data.events || [];
     const upcoming = events
-      .filter(e => e.competitions?.[0]?.status?.type?.state === 'pre')
+      .filter(e => {
+        if (e.competitions?.[0]?.status?.type?.state !== 'pre') return false;
+        return new Date(e.date) >= OPENING_DAY;
+      })
       .slice(0, 10)
       .map(e => {
         const comp = e.competitions[0];
@@ -49,7 +53,7 @@ module.exports = async function handler(req, res) {
         };
       });
 
-    res.setHeader('Cache-Control', 's-maxage=7200, stale-while-revalidate=300');
+    res.setHeader('Cache-Control', 's-maxage=7200, stale-while-revalidate=86400');
     res.setHeader('Content-Type', 'application/json');
     return res.status(200).json({ games: upcoming });
   } catch (err) {
