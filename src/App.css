@@ -308,6 +308,15 @@
   color: var(--text-muted);
 }
 
+.schedule-starters {
+  font-size: 0.62rem;
+  color: var(--text-muted);
+  line-height: 1.3;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
 .schedule-tv {
   display: inline-block;
   font-size: 0.62rem;

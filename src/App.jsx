@@ -217,6 +217,9 @@ export default function App() {
         {/* ── Last Game ────────────────────────────────────── */}
         <LastGameCard />
 
+        {/* ── Upcoming Games ───────────────────────────────── */}
+        <ScheduleCard />
+
         {loading && (
           <div className="article-list">
             {Array.from({ length: 5 }).map((_, i) => <SkeletonCard key={i} />)}
@@ -329,9 +332,6 @@ export default function App() {
                 </>
               )}
             </div>
-
-            {/* ── Upcoming Games (moved here) ───────────────── */}
-            <ScheduleCard />
 
             {/* ── MLB Standings ─────────────────────────────── */}
             <StandingsCard />

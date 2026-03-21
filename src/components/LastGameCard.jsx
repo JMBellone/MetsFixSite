@@ -183,16 +183,16 @@ export default function LastGameCard() {
 
         {/* Home */}
         <div className={`lg-score-team${game.metsIsHome && metsWon ? ' lg-score-team--winner' : ''}`}>
-          <span className={`lg-score-num${game.home.score > game.away.score ? ' lg-score-num--winner' : ''}`}>
-            {game.home.score}
-          </span>
-          <span className="lg-team-abbr">{game.home.abbr}</span>
           <img
             src={logoUrl(game.home.abbr)}
             alt={game.home.abbr}
             className="lg-team-logo"
             onError={e => { e.currentTarget.style.display = 'none' }}
           />
+          <span className="lg-team-abbr">{game.home.abbr}</span>
+          <span className={`lg-score-num${game.home.score > game.away.score ? ' lg-score-num--winner' : ''}`}>
+            {game.home.score}
+          </span>
         </div>
       </div>
 

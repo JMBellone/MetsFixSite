@@ -48,6 +48,13 @@ export default function ScheduleCard() {
               </div>
               <span className="schedule-date">{day}</span>
               <span className="schedule-time">{time}</span>
+              {(game.metsStarter || game.oppStarter) && (
+                <span className="schedule-starters">
+                  {game.metsStarter && game.oppStarter
+                    ? `${game.metsStarter} vs ${game.oppStarter}`
+                    : game.metsStarter || game.oppStarter}
+                </span>
+              )}
               {game.broadcast && (
                 <span className="schedule-tv">{game.broadcast}</span>
               )}

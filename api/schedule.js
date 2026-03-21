@@ -32,6 +32,9 @@ module.exports = async function handler(req, res) {
         const opponentTeam = opponent?.team || {};
         const opponentLogo = opponentTeam.logo || opponentTeam.logos?.[0]?.href || null;
 
+        const metsProb = ours?.probables?.[0]?.athlete?.shortName || null
+        const oppProb  = opponent?.probables?.[0]?.athlete?.shortName || null
+
         return {
           id: e.id,
           date: e.date,
@@ -41,6 +44,8 @@ module.exports = async function handler(req, res) {
           isHome: ours?.homeAway === 'home',
           broadcast,
           venue,
+          metsStarter: metsProb,
+          oppStarter: oppProb,
         };
       });
 
