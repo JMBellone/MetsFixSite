@@ -3,6 +3,7 @@ import SkeletonCard from './components/SkeletonCard'
 import ScheduleCard from './components/ScheduleCard'
 import StandingsCard from './components/StandingsCard'
 import OptionDatesCard from './components/OptionDatesCard'
+import InjuredListCard from './components/InjuredListCard'
 import SNYCard from './components/SNYCard'
 import './App.css'
 
@@ -466,6 +467,9 @@ export default function App() {
 
         {/* ── Option Dates ─────────────────────────────────── */}
         <OptionDatesCard />
+
+        {/* ── Injured List ─────────────────────────────────── */}
+        <InjuredListCard />
 
         {!loading && !error && newsPool.length === 0 && !briefingArticle && (
           <div className="empty-state">No articles found.</div>

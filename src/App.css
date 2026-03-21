@@ -1053,6 +1053,11 @@
   flex-shrink: 0;
 }
 
+.option-dates-injury {
+  font-size: 0.72rem;
+  color: var(--text-muted);
+}
+
 /* ── Standings panel layout ─────────────────────────────── */
 .standings-panel-label {
   padding: 5px 12px 4px;
