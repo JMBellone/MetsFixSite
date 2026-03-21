@@ -698,6 +698,99 @@
   font-size: 0.72rem;
 }
 
+/* ── Option Dates card ──────────────────────────────────── */
+.option-dates-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  overflow: hidden;
+}
+
+.option-dates-skeleton {
+  height: 140px;
+  background: linear-gradient(90deg, var(--surface) 25%, var(--surface-2) 50%, var(--surface) 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.4s infinite;
+}
+
+.option-dates-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.78rem;
+}
+
+.option-dates-th {
+  padding: 7px 12px;
+  font-size: 0.6rem;
+  font-weight: 800;
+  letter-spacing: 0.6px;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  opacity: 0.7;
+  background: var(--surface-2);
+  border-bottom: 1px solid var(--border);
+  text-align: left;
+}
+
+.option-dates-th--center {
+  text-align: center;
+}
+
+.option-dates-row {
+  border-bottom: 1px solid rgba(255,255,255,0.05);
+  transition: background 0.12s;
+}
+
+.option-dates-row:last-child {
+  border-bottom: none;
+}
+
+@media (hover: hover) {
+  .option-dates-row:hover { background: var(--surface-2); }
+}
+
+.option-dates-row--eligible {
+  background: rgba(50, 220, 120, 0.05);
+}
+
+.option-dates-td {
+  padding: 9px 12px;
+  vertical-align: middle;
+}
+
+.option-dates-name {
+  font-weight: 600;
+  color: var(--text);
+}
+
+.option-dates-pos {
+  font-size: 0.7rem;
+  font-weight: 700;
+  color: var(--text-muted);
+  text-align: center;
+}
+
+.option-dates-date {
+  font-size: 0.72rem;
+  color: var(--text-muted);
+  text-align: center;
+  white-space: nowrap;
+}
+
+.option-dates-date--eligible {
+  color: #32dc78;
+  font-weight: 700;
+}
+
+.option-dates-note {
+  padding: 6px 12px 8px;
+  font-size: 0.62rem;
+  color: var(--text-muted);
+  opacity: 0.6;
+  border-top: 1px solid var(--border);
+  margin: 0;
+}
+
 /* ── Responsive ─────────────────────────────────────────── */
 @media (min-width: 640px) {
   .main {

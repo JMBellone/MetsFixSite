@@ -2,6 +2,7 @@ import { useState, useEffect, useCallback, useRef } from 'react'
 import SkeletonCard from './components/SkeletonCard'
 import ScheduleCard from './components/ScheduleCard'
 import StandingsCard from './components/StandingsCard'
+import OptionDatesCard from './components/OptionDatesCard'
 import './App.css'
 
 function faviconUrl(link) {
@@ -458,6 +459,13 @@ export default function App() {
                 </div>
               </>
             )}
+
+        {/* ── Option Dates ─────────────────────────────────── */}
+        <div className="section-header section-header--mets">
+          <span className="section-header-label">Option Dates</span>
+          <span className="section-header-line" />
+        </div>
+        <OptionDatesCard />
 
         {!loading && !error && newsPool.length === 0 && !briefingArticle && (
           <div className="empty-state">No articles found.</div>
