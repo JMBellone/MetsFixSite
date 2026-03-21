@@ -10,7 +10,7 @@ module.exports = async function handler(req, res) {
       `https://statsapi.mlb.com/api/v1/schedule?teamId=${METS_ID}&sportId=1&gameType=S,R,E&date=${today}`
     )
     if (!schedRes.ok) {
-      res.setHeader('Cache-Control', 's-maxage=300, stale-while-revalidate=60')
+      res.setHeader('Cache-Control', 's-maxage=300, stale-while-revalidate=86400')
       return res.status(200).json({ isLive: false })
     }
     const schedData = await schedRes.json()
@@ -20,7 +20,7 @@ module.exports = async function handler(req, res) {
 
     if (!liveGame) {
       // No live game — cache for 5 minutes to avoid hammering the schedule API
-      res.setHeader('Cache-Control', 's-maxage=300, stale-while-revalidate=60')
+      res.setHeader('Cache-Control', 's-maxage=300, stale-while-revalidate=86400')
       return res.status(200).json({ isLive: false })
     }
 
@@ -79,7 +79,7 @@ module.exports = async function handler(req, res) {
     })
   } catch (e) {
     console.warn('[livegame]', e.message)
-    res.setHeader('Cache-Control', 's-maxage=300, stale-while-revalidate=60')
+    res.setHeader('Cache-Control', 's-maxage=300, stale-while-revalidate=86400')
     return res.status(200).json({ isLive: false })
   }
 }
