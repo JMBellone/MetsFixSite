@@ -4,17 +4,9 @@ function etDateKey(dateStr) {
   return new Date(dateStr).toLocaleDateString('en-CA', { timeZone: 'America/New_York' })
 }
 
-// Anchor on the first upcoming game's date so in-progress games don't show as Off Day
-function nextThreeDates(games) {
-  let anchor
-  if (games.length > 0) {
-    const [y, m, d] = etDateKey(games[0].date).split('-').map(Number)
-    anchor = new Date(y, m - 1, d)
-  } else {
-    const key = new Date().toLocaleDateString('en-CA', { timeZone: 'America/New_York' })
-    const [y, m, d] = key.split('-').map(Number)
-    anchor = new Date(y, m - 1, d)
-  }
+// Always start from March 26 (Opening Day)
+function nextThreeDates() {
+  const anchor = new Date(2026, 2, 26) // March 26, 2026
   return Array.from({ length: 3 }, (_, i) => {
     const d = new Date(anchor)
     d.setDate(d.getDate() + i)
@@ -54,7 +46,7 @@ export default function ScheduleCard() {
 
   if (loading) return null
 
-  const dates = nextThreeDates(games)
+  const dates = nextThreeDates()
   const gamesByDate = {}
   games.forEach(g => {
     const key = etDateKey(g.date)
