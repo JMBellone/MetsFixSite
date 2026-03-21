@@ -40,7 +40,7 @@ function parseItems(xml) {
       const d = new Date(pubStr.replace(/\bEDT\b/, '-0400').replace(/\bEST\b/, '-0500'))
       if (!isNaN(d.getTime())) pubDate = d.toISOString()
     }
-    // Extract image: media:content, media:thumbnail, or enclosure
+    // Extract image: media:content, media:thumbnail, enclosure, or <img> in description
     let image = null
     const mc = /<media:content[^>]+url=["']([^"']+)["'][^>]*/i.exec(block)
     if (mc) image = mc[1]
@@ -52,6 +52,11 @@ function parseItems(xml) {
       const enc = /<enclosure[^>]+url=["']([^"']+)["'][^>]+type=["']image[^"']*["'][^>]*/i.exec(block)
         || /<enclosure[^>]+type=["']image[^"']*["'][^>]+url=["']([^"']+)["'][^>]*/i.exec(block)
       if (enc) image = enc[1]
+    }
+    if (!image) {
+      const desc = get('description') || get('content:encoded') || get('content') || ''
+      const imgTag = /<img[^>]+src=["']([^"']+)["'][^>]*/i.exec(desc)
+      if (imgTag) image = imgTag[1]
     }
     items.push({ title, link, pubDate, image })
   }

@@ -1448,15 +1448,15 @@
   font-weight: 800;
   letter-spacing: 1.2px;
   text-transform: uppercase;
-  color: var(--text-muted);
+  color: #fff;
   text-decoration: none;
-  opacity: 0.55;
+  opacity: 0.75;
   transition: opacity 0.15s;
   margin-top: -6px;
 }
 
 @media (hover: hover) {
-  .briefing-signup:hover { opacity: 0.85; }
+  .briefing-signup:hover { opacity: 1; }
 }
 
 /* ── News section divider ───────────────────────────────── */

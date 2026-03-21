@@ -210,14 +210,17 @@ export default function App() {
 
         {/* ── Signup CTA ───────────────────────────────────── */}
         {briefingArticle && (
-          <a
-            href="https://themetropolitan.substack.com/subscribe"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="briefing-signup"
-          >
-            Sign up to receive Mets Fix in your inbox
-          </a>
+          <>
+            <a
+              href="https://themetropolitan.substack.com/subscribe"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="briefing-signup"
+            >
+              👉 Sign up to receive Mets Fix in your inbox
+            </a>
+            <div className="news-section-divider" />
+          </>
         )}
 
         {/* ── Top News Card ────────────────────────────────── */}
@@ -292,9 +295,6 @@ export default function App() {
         )}
 
         {/* ── Hot Off the Presses ──────────────────────────── */}
-        {!loading && !error && hotOff.length > 0 && (
-          <div className="news-section-divider" />
-        )}
         <LatestUpdatesCard title="Hot Off the Presses" articles={hotOff} />
 
         {/* ── Last Game ────────────────────────────────────── */}
@@ -433,11 +433,10 @@ export default function App() {
             {/* ── More on the Mets ─────────────────────────── */}
             {moreNews.length > 0 && (
               <>
-                <div className="section-header section-header--mets">
-                  <span className="section-header-label">More on the Mets</span>
-                  <span className="section-header-line" />
-                </div>
                 <div className="team-news-card">
+                  <div className="latest-updates-header">
+                    <span className="latest-updates-title">More on the Mets</span>
+                  </div>
                   {moreNews.map((a, idx) => (
                     <div key={a.id}>
                       {idx > 0 && <div className="team-news-divider" />}
@@ -467,19 +466,16 @@ export default function App() {
 
         {/* ── The Athletic ─────────────────────────────────── */}
         {athFeatured && (
-          <>
-            <div className="section-header section-header--mets">
-              <img
-                src="https://www.google.com/s2/favicons?domain=theathletic.com&sz=64"
-                alt="The Athletic"
-                className="section-header-logo"
-                onError={e => { e.currentTarget.style.display = 'none' }}
-              />
-              <span className="section-header-label">The Athletic</span>
-              <span className="section-header-line" />
-            </div>
-
-            <div className="team-news-card">
+          <div className="team-news-card">
+              <div className="latest-updates-header">
+                <img
+                  src="https://www.google.com/s2/favicons?domain=theathletic.com&sz=32"
+                  alt=""
+                  className="mlbnews-header-favicon"
+                  onError={e => { e.currentTarget.style.display = 'none' }}
+                />
+                <span className="latest-updates-title">The Athletic</span>
+              </div>
               <div className="team-news-item-wrap">
                 <a href={athFeatured.link} target="_blank" rel="noopener noreferrer"
                   className="team-news-featured" onClick={() => markRead(athFeatured.id)}>
@@ -562,8 +558,7 @@ export default function App() {
                   </div>
                 </>
               )}
-            </div>
-          </>
+          </div>
         )}
 
         {/* ── See It on SNY ────────────────────────────────── */}
