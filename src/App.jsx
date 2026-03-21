@@ -31,6 +31,30 @@ function SubscriberBadge({ paywalled }) {
   return <span className="subscriber-badge">Subscriber Content</span>
 }
 
+function DailyNoteCard() {
+  const [note, setNote] = useState(null)
+  useEffect(() => {
+    fetch('/api/daily')
+      .then(r => r.ok ? r.json() : null)
+      .then(data => { if (data?.text) setNote(data) })
+      .catch(() => {})
+  }, [])
+  if (!note) return null
+  return (
+    <div className="daily-card">
+      <div className="daily-header">
+        <span className="daily-label">From the Editor</span>
+        {note.date && <span className="daily-date">{note.date}</span>}
+      </div>
+      {note.image && (
+        <img src={note.image} alt="" className="daily-image"
+          onError={e => { e.currentTarget.style.display = 'none' }} />
+      )}
+      <p className="daily-text">{note.text}</p>
+    </div>
+  )
+}
+
 export default function App() {
   const [articles, setArticles] = useState([])
   const [loading, setLoading] = useState(true)
@@ -146,6 +170,9 @@ export default function App() {
       )}
 
       <main className="main">
+
+        {/* ── Daily note ───────────────────────────────────── */}
+        <DailyNoteCard />
 
         {/* ── The Latest Briefing ─────────────────────────── */}
         {briefingArticle && (
