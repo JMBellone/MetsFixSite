@@ -112,6 +112,7 @@ function PitchingTable({ team, pitchers }) {
 export default function LastGameCard() {
   const [data, setData] = useState(null)
   const [loading, setLoading] = useState(true)
+  const [showBoxScore, setShowBoxScore] = useState(false)
   const [metsTab, setMetsTab] = useState(true) // mobile: true=Mets, false=opponent
 
   useEffect(() => {
@@ -236,33 +237,45 @@ export default function LastGameCard() {
         </table>
       </div>
 
-      {/* Box score — mobile tabs */}
-      <div className="lg-boxscore-tabs">
-        <button
-          className={`lg-tab${metsTab ? ' lg-tab--active' : ''}`}
-          onClick={() => setMetsTab(true)}
-        >
-          {metsAbbr}
-        </button>
-        <button
-          className={`lg-tab${!metsTab ? ' lg-tab--active' : ''}`}
-          onClick={() => setMetsTab(false)}
-        >
-          {oppAbbr}
-        </button>
-      </div>
+      {/* Box score toggle */}
+      <button className="lg-boxscore-toggle" onClick={() => setShowBoxScore(s => !s)}>
+        {showBoxScore ? 'Hide Box Score' : 'Show Box Score'}
+        <svg viewBox="0 0 24 24" fill="none" className={`lg-toggle-chevron${showBoxScore ? ' lg-toggle-chevron--open' : ''}`}>
+          <polyline points="6,9 12,15 18,9" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"/>
+        </svg>
+      </button>
 
-      {/* Box score tables — mobile: one at a time, desktop: side by side */}
-      <div className="lg-boxscore-wrap">
-        <div className={`lg-boxscore-panel${!metsTab ? ' lg-boxscore-panel--hidden' : ''}`}>
-          <BattingTable team={metsAbbr} batters={metsBox.batters} totals={metsBox.totals} />
-          <PitchingTable team={metsAbbr} pitchers={metsBox.pitchers} />
-        </div>
-        <div className={`lg-boxscore-panel${metsTab ? ' lg-boxscore-panel--hidden' : ''}`}>
-          <BattingTable team={oppAbbr} batters={oppBox.batters} totals={oppBox.totals} />
-          <PitchingTable team={oppAbbr} pitchers={oppBox.pitchers} />
-        </div>
-      </div>
+      {/* Box score — mobile tabs */}
+      {showBoxScore && (
+        <>
+          <div className="lg-boxscore-tabs">
+            <button
+              className={`lg-tab${metsTab ? ' lg-tab--active' : ''}`}
+              onClick={() => setMetsTab(true)}
+            >
+              {metsAbbr}
+            </button>
+            <button
+              className={`lg-tab${!metsTab ? ' lg-tab--active' : ''}`}
+              onClick={() => setMetsTab(false)}
+            >
+              {oppAbbr}
+            </button>
+          </div>
+
+          {/* Box score tables — mobile: one at a time, desktop: side by side */}
+          <div className="lg-boxscore-wrap">
+            <div className={`lg-boxscore-panel${!metsTab ? ' lg-boxscore-panel--hidden' : ''}`}>
+              <BattingTable team={metsAbbr} batters={metsBox.batters} totals={metsBox.totals} />
+              <PitchingTable team={metsAbbr} pitchers={metsBox.pitchers} />
+            </div>
+            <div className={`lg-boxscore-panel${metsTab ? ' lg-boxscore-panel--hidden' : ''}`}>
+              <BattingTable team={oppAbbr} batters={oppBox.batters} totals={oppBox.totals} />
+              <PitchingTable team={oppAbbr} pitchers={oppBox.pitchers} />
+            </div>
+          </div>
+        </>
+      )}
     </div>
   )
 }

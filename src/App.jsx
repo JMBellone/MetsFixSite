@@ -297,11 +297,11 @@ export default function App() {
         {/* ── Hot Off the Presses ──────────────────────────── */}
         <LatestUpdatesCard title="Hot Off the Presses" articles={hotOff} />
 
-        {/* ── Last Game ────────────────────────────────────── */}
-        <LastGameCard />
-
         {/* ── Upcoming Games ───────────────────────────────── */}
         <ScheduleCard />
+
+        {/* ── Last Game ────────────────────────────────────── */}
+        <LastGameCard />
 
         {/* ── MLB News ─────────────────────────────────────── */}
         <MLBNewsCard />
