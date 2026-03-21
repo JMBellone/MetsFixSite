@@ -57,7 +57,7 @@ export default function RedditCard() {
               {p.flair && <span className="reddit-flair">{p.flair}</span>}
             </span>
             <span className="latest-updates-row-meta">
-              {p.score} pts · {p.numComments} comments · {timeAgo(p.pubDate)}
+              {p.author && `u/${p.author} · `}{timeAgo(p.pubDate)}
             </span>
           </a>
         ))}
