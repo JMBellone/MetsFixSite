@@ -12,6 +12,7 @@ import MLBNewsCard from './components/MLBNewsCard'
 import SNYFeaturedCard from './components/SNYFeaturedCard'
 import LiveScoreCard from './components/LiveScoreCard'
 import MetsVideoCard from './components/MetsVideoCard'
+import MetsStatsCard from './components/MetsStatsCard'
 import './App.css'
 
 function faviconUrl(link) {
@@ -550,6 +551,9 @@ export default function App() {
 
             {/* ── Mets YouTube Video ───────────────────────── */}
             <MetsVideoCard />
+
+            {/* ── Mets Stats ───────────────────────────────── */}
+            <MetsStatsCard />
 
             {/* ── More on the Mets ─────────────────────────── */}
             {moreNews.length > 0 && (

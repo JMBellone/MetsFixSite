@@ -2185,3 +2185,128 @@
   padding: 1px 4px;
   border-radius: 3px;
 }
+
+/* ── Mets Stats card ─────────────────────────────────────── */
+.stats-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  overflow: hidden;
+}
+
+.stats-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 14px 7px;
+  background: var(--surface-2);
+  border-bottom: 1px solid var(--border);
+}
+
+.stats-header-icon {
+  width: 16px;
+  height: 16px;
+  border-radius: 2px;
+  flex-shrink: 0;
+}
+
+.stats-title {
+  font-size: 0.72rem;
+  font-weight: 900;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  color: var(--mets-blue-light);
+}
+
+.stats-badge {
+  margin-left: auto;
+  font-size: 0.6rem;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  background: rgba(255, 89, 16, 0.12);
+  color: var(--mets-orange);
+  border: 1px solid rgba(255, 89, 16, 0.3);
+  padding: 2px 6px;
+  border-radius: 4px;
+}
+
+.stats-tabs {
+  display: flex;
+  border-bottom: 1px solid var(--border);
+}
+
+.stats-tab {
+  flex: 1;
+  padding: 9px 0;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  background: none;
+  border: none;
+  border-bottom: 2px solid transparent;
+  cursor: pointer;
+  transition: color 0.12s;
+}
+
+.stats-tab--active {
+  color: var(--mets-blue-light);
+  border-bottom-color: var(--mets-blue-light);
+}
+
+.stats-table-wrap {
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+}
+
+.stats-table-wrap::-webkit-scrollbar { display: none; }
+
+.stats-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.78rem;
+}
+
+.stats-th {
+  padding: 6px 12px;
+  text-align: right;
+  font-size: 0.62rem;
+  font-weight: 700;
+  letter-spacing: 0.6px;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  background: var(--surface-2);
+  border-bottom: 1px solid var(--border);
+  white-space: nowrap;
+}
+
+.stats-th--left {
+  text-align: left;
+}
+
+.stats-td {
+  padding: 7px 12px;
+  text-align: right;
+  color: var(--text);
+  white-space: nowrap;
+}
+
+.stats-td--left {
+  text-align: left;
+  font-weight: 600;
+}
+
+.stats-row {
+  border-bottom: 1px solid var(--border);
+}
+
+.stats-row:last-child {
+  border-bottom: none;
+}
+
+.stats-row--alt {
+  background: var(--surface-2);
+}
