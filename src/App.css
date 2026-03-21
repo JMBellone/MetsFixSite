@@ -846,10 +846,11 @@
   border-bottom: 1px solid var(--border);
 }
 
-.sny-card-header-icon {
-  width: 18px;
-  height: 18px;
-  color: var(--mets-blue-light);
+.sny-card-header-logo {
+  width: 20px;
+  height: 20px;
+  object-fit: contain;
+  border-radius: 3px;
   flex-shrink: 0;
 }
 

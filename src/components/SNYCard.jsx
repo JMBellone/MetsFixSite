@@ -62,11 +62,12 @@ export default function SNYCard() {
   return (
     <div className="sny-card">
       <div className="sny-card-header">
-        <svg className="sny-card-header-icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <rect x="1" y="4" width="22" height="14" rx="2" stroke="currentColor" strokeWidth="1.8" fill="none"/>
-          <line x1="8" y1="20" x2="16" y2="20" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round"/>
-          <line x1="12" y1="18" x2="12" y2="20" stroke="currentColor" strokeWidth="1.8"/>
-        </svg>
+        <img
+          src="https://www.google.com/s2/favicons?domain=sny.tv&sz=64"
+          alt="SNY"
+          className="sny-card-header-logo"
+          onError={e => { e.currentTarget.style.display = 'none' }}
+        />
         <span className="sny-card-header-label">See It on SNY</span>
       </div>
 
