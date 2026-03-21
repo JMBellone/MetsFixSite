@@ -1809,3 +1809,270 @@
   /* Hide NL/AL tab buttons on desktop — both leagues visible */
   .standings-league-tabs { display: none; }
 }
+
+/* ── Live Score Card ────────────────────────────────────── */
+.live-card {
+  background: linear-gradient(135deg, #002D72 0%, #001f54 100%);
+  border-radius: 10px;
+  margin-bottom: 12px;
+  overflow: hidden;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+}
+
+.live-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 14px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.live-badge {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 0.65rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  color: #ff4444;
+}
+
+.live-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: #ff4444;
+  animation: live-pulse 1.4s ease-in-out infinite;
+}
+
+@keyframes live-pulse {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.4; transform: scale(0.85); }
+}
+
+.live-status {
+  font-size: 0.68rem;
+  color: rgba(255, 255, 255, 0.5);
+  flex: 1;
+}
+
+.live-refresh-btn {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  background: none;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 5px;
+  color: rgba(255, 255, 255, 0.7);
+  padding: 3px 8px;
+  cursor: pointer;
+  font-size: 0.65rem;
+  transition: background 0.15s, color 0.15s;
+}
+
+@media (hover: hover) {
+  .live-refresh-btn:hover { background: rgba(255,255,255,0.1); color: #fff; }
+}
+
+.live-refresh-btn:disabled { opacity: 0.5; cursor: default; }
+
+.live-refresh-icon {
+  width: 13px;
+  height: 13px;
+}
+
+.live-refresh-btn--spinning .live-refresh-icon {
+  animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+.live-refresh-time {
+  color: rgba(255, 255, 255, 0.45);
+}
+
+/* Scoreboard */
+.live-scoreboard {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0;
+  padding: 16px 14px 12px;
+}
+
+.live-team {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  min-width: 60px;
+}
+
+.live-team--home {
+  align-items: center;
+}
+
+.live-team-logo {
+  width: 48px;
+  height: 48px;
+  object-fit: contain;
+}
+
+.live-team-abbr {
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: rgba(255, 255, 255, 0.85);
+  letter-spacing: 0.04em;
+}
+
+.live-team-label {
+  font-size: 0.58rem;
+  font-weight: 600;
+  color: var(--mets-orange);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.live-scores {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex: 1;
+  justify-content: center;
+}
+
+.live-score {
+  font-size: 2.6rem;
+  font-weight: 800;
+  color: rgba(255, 255, 255, 0.6);
+  line-height: 1;
+  min-width: 36px;
+  text-align: center;
+}
+
+.live-score--lead {
+  color: #ffffff;
+}
+
+.live-scores-sep {
+  font-size: 1.4rem;
+  font-weight: 300;
+  color: rgba(255, 255, 255, 0.3);
+}
+
+/* Game state row */
+.live-state {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  padding: 0 14px 14px;
+}
+
+.live-inning {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  color: #fff;
+}
+
+.live-inning-arrow {
+  font-size: 0.6rem;
+  color: rgba(255, 255, 255, 0.6);
+}
+
+.live-inning-text {
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: #fff;
+}
+
+.live-outs {
+  display: flex;
+  gap: 4px;
+  align-items: center;
+}
+
+.live-out-dot {
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  border: 1.5px solid rgba(255, 255, 255, 0.35);
+  background: transparent;
+}
+
+.live-out-dot--on {
+  background: #f5c518;
+  border-color: #f5c518;
+}
+
+.live-count {
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: rgba(255, 255, 255, 0.75);
+  letter-spacing: 0.04em;
+}
+
+/* Bases diamond */
+.live-diamond {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+}
+
+.live-diamond-mid {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+
+.live-base {
+  width: 11px;
+  height: 11px;
+  transform: rotate(45deg);
+  border: 1.5px solid rgba(255, 255, 255, 0.3);
+  background: transparent;
+}
+
+.live-base--on {
+  background: #f5c518;
+  border-color: #f5c518;
+}
+
+.live-base--home {
+  width: 9px;
+  height: 9px;
+  background: rgba(255, 255, 255, 0.15);
+  border-color: rgba(255, 255, 255, 0.2);
+}
+
+/* Batter / Pitcher */
+.live-matchup {
+  display: flex;
+  gap: 16px;
+  padding: 8px 14px 12px;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  justify-content: center;
+}
+
+.live-matchup-item {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 0.72rem;
+  color: rgba(255, 255, 255, 0.7);
+}
+
+.live-matchup-label {
+  font-size: 0.6rem;
+  font-weight: 700;
+  color: var(--mets-orange);
+  letter-spacing: 0.06em;
+  background: rgba(255, 107, 0, 0.15);
+  padding: 1px 4px;
+  border-radius: 3px;
+}

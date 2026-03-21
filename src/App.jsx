@@ -11,6 +11,7 @@ import BlogRollCard from './components/BlogRollCard'
 import RedditCard from './components/RedditCard'
 import MLBNewsCard from './components/MLBNewsCard'
 import SNYFeaturedCard from './components/SNYFeaturedCard'
+import LiveScoreCard from './components/LiveScoreCard'
 import './App.css'
 
 function faviconUrl(link) {
@@ -175,6 +176,9 @@ export default function App() {
       )}
 
       <main className="main">
+
+        {/* ── Live Score ───────────────────────────────────── */}
+        <LiveScoreCard />
 
         {/* ── The Latest Briefing ─────────────────────────── */}
         {briefingArticle && (
