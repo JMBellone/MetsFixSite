@@ -183,6 +183,7 @@ export default function App() {
                 className={`briefing-link${readIds.has(briefingArticle.id) ? ' briefing-link--read' : ''}`}
                 onClick={() => markRead(briefingArticle.id)}
               >
+                <img src="/metsfix-banner.png" alt="Get Your Mets Fix" className="briefing-banner" />
                 <div className="briefing-body">
                   <span className="briefing-source">Mets Fix</span>
                   <span className="briefing-title">{briefingArticle.title}</span>
