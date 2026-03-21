@@ -9,7 +9,6 @@ import LatestUpdatesCard from './components/LatestUpdatesCard'
 import LastGameCard from './components/LastGameCard'
 import BlogRollCard from './components/BlogRollCard'
 import MLBNewsCard from './components/MLBNewsCard'
-import BeatWritersCard from './components/BeatWritersCard'
 import SNYFeaturedCard from './components/SNYFeaturedCard'
 import './App.css'
 
@@ -297,7 +296,7 @@ export default function App() {
         )}
 
         {/* ── Hot Off the Presses ──────────────────────────── */}
-        <LatestUpdatesCard title="Hot Off the Presses" articles={hotOff} />
+        <LatestUpdatesCard title="Recently Published" articles={hotOff} />
 
         {/* ── Upcoming Games ───────────────────────────────── */}
         <ScheduleCard />
@@ -586,9 +585,6 @@ export default function App() {
 
         {/* ── See It on SNY ────────────────────────────────── */}
         <SNYCard />
-
-        {/* ── More from the Beat ───────────────────────────── */}
-        <BeatWritersCard readIds={readIds} markRead={markRead} removeArticle={removeArticle} />
 
         {/* ── Blog Roll ────────────────────────────────────── */}
         <BlogRollCard />

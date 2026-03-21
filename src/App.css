@@ -920,6 +920,8 @@
 }
 
 .sny-play-icon {
+  width: 54px;
+  height: 38px;
   filter: drop-shadow(0 2px 6px rgba(0,0,0,0.5));
   transition: transform 0.15s;
 }
@@ -1085,6 +1087,20 @@
 .option-dates-injury {
   font-size: 0.72rem;
   color: var(--text-muted);
+}
+
+.il-detail-link {
+  display: block;
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: var(--mets-blue-light);
+  text-decoration: none;
+  padding: 2px 0;
+  transition: opacity 0.15s;
+}
+
+@media (hover: hover) {
+  .il-detail-link:hover { opacity: 0.75; }
 }
 
 /* ── Last Game card ─────────────────────────────────────── */

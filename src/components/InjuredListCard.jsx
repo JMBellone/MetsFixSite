@@ -58,6 +58,18 @@ export default function InjuredListCard() {
               <td className="option-dates-td option-dates-date">{fmtDate(p.datePlaced)}</td>
             </tr>
           ))}
+          <tr className="option-dates-row">
+            <td className="option-dates-td" colSpan={4}>
+              <a
+                href="https://www.mlb.com/mets/news/mets-injuries-and-roster-moves"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="il-detail-link"
+              >
+                👉 Detailed Mets Injury and Transaction News
+              </a>
+            </td>
+          </tr>
         </tbody>
       </table>
     </div>
