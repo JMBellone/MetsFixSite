@@ -81,10 +81,6 @@ export default function App() {
     try { return new Set(JSON.parse(localStorage.getItem('metsReadArticles') || '[]')) }
     catch { return new Set() }
   })
-  const [removedIds, setRemovedIds] = useState(() => {
-    try { return new Set(JSON.parse(localStorage.getItem('metsRemovedArticles') || '[]')) }
-    catch { return new Set() }
-  })
   const [pullY, setPullY] = useState(0)
   const touchStartY = useRef(0)
 
@@ -137,19 +133,10 @@ export default function App() {
     })
   }, [])
 
-  const removeArticle = useCallback((id) => {
-    setRemovedIds(prev => {
-      const next = new Set(prev)
-      next.add(id)
-      localStorage.setItem('metsRemovedArticles', JSON.stringify([...next]))
-      return next
-    })
-  }, [])
-
-  const briefingArticle = articles.find(a => a.team === 'metropolitan' && !removedIds.has(a.id)) || null
+  const briefingArticle = articles.find(a => a.team === 'metropolitan') || null
 
   const newsPool = articles
-    .filter(a => a.team === 'mets' && !removedIds.has(a.id))
+    .filter(a => a.team === 'mets')
     .sort((a, b) => new Date(b.pubDate) - new Date(a.pubDate))
 
   // Top card: MLB.com + SNY only, guarantee ≥2 MLB articles
@@ -169,18 +156,27 @@ export default function App() {
 
   const topIds = new Set(topPool.slice(0, 5).map(a => a.id))
 
-  // Dive Into the News: all mets articles not in top card
-  const divePool = newsPool.filter(a => !topIds.has(a.id))
+  // Dive Into the News: force 3 most recent Athletic + 7 others, guarantee Athletic in first 15
+  const athleticForDive = articles
+    .filter(a => a.source === 'The Athletic' && !topIds.has(a.id))
+    .sort((a, b) => new Date(b.pubDate) - new Date(a.pubDate))
+    .slice(0, 3)
+  const athleticForDiveIds = new Set(athleticForDive.map(a => a.id))
+  const othersForDive = newsPool
+    .filter(a => !topIds.has(a.id) && !athleticForDiveIds.has(a.id))
+    .slice(0, 7)
+  const divePool = [...athleticForDive, ...othersForDive]
+    .sort((a, b) => new Date(b.pubDate) - new Date(a.pubDate))
   const featured   = divePool[0]
   const secondary  = divePool[1]
   const tertiary   = divePool[2]
   const headlines  = divePool.slice(3, 5)
   const moreNews   = divePool.slice(5, 10)
 
-  const shownIds = new Set([...topIds, ...divePool.slice(0, 10).map(a => a.id)])
-  // SFE gets the 3 most recent Athletic articles; Athletic card gets the next batch after those
+  const shownIds = new Set([...topIds, ...divePool.map(a => a.id)])
+  // SFE gets the 3 most recent Athletic not already in dive; Athletic card gets the next batch after those
   const athleticAllByDate = articles
-    .filter(a => a.source === 'The Athletic' && !removedIds.has(a.id) && !shownIds.has(a.id))
+    .filter(a => a.source === 'The Athletic' && !shownIds.has(a.id))
     .sort((a, b) => new Date(b.pubDate) - new Date(a.pubDate))
   const sfePriorityAthletic = athleticAllByDate.slice(0, 3)
   const sfePriorityAthleticIds = new Set(sfePriorityAthletic.map(a => a.id))
@@ -194,7 +190,6 @@ export default function App() {
   const SEVENTY_TWO_H = 72 * 60 * 60 * 1000
   const sfeBase = articles
     .filter(a =>
-      !removedIds.has(a.id) &&
       !allShownIds.has(a.id) &&
       a.team !== 'metropolitan' &&
       Date.now() - new Date(a.pubDate).getTime() < SEVENTY_TWO_H
@@ -311,7 +306,6 @@ export default function App() {
                   <span className="team-news-meta">{timeAgo(topFeatured.pubDate)} · {topFeatured.source}{topFeatured.paywalled && <SubscriberIcon />}</span>
                 </div>
               </a>
-              <button className="item-remove" onClick={() => removeArticle(topFeatured.id)} aria-label="Remove">✕</button>
             </div>
 
             {topSecondary && (
@@ -331,7 +325,6 @@ export default function App() {
                       <span className="team-news-meta">{timeAgo(topSecondary.pubDate)} · {topSecondary.source}{topSecondary.paywalled && <SubscriberIcon />}</span>
                     </div>
                   </a>
-                  <button className="item-remove" onClick={() => removeArticle(topSecondary.id)} aria-label="Remove">✕</button>
                 </div>
               </>
             )}
@@ -353,7 +346,6 @@ export default function App() {
                       <span className="team-news-meta">{timeAgo(topTertiary.pubDate)} · {topTertiary.source}{topTertiary.paywalled && <SubscriberIcon />}</span>
                     </div>
                   </a>
-                  <button className="item-remove" onClick={() => removeArticle(topTertiary.id)} aria-label="Remove">✕</button>
                 </div>
               </>
             )}
@@ -375,7 +367,6 @@ export default function App() {
                         {topHeadline1.source}{topHeadline1.paywalled && <SubscriberIcon />}
                       </span>
                     </a>
-                    <button className="item-remove" onClick={() => removeArticle(topHeadline1.id)} aria-label="Remove">✕</button>
                   </div>
                 </div>
               </>
@@ -398,7 +389,6 @@ export default function App() {
                         {topHeadline2.source}{topHeadline2.paywalled && <SubscriberIcon />}
                       </span>
                     </a>
-                    <button className="item-remove" onClick={() => removeArticle(topHeadline2.id)} aria-label="Remove">✕</button>
                   </div>
                 </div>
               </>
@@ -476,7 +466,6 @@ export default function App() {
                     <span className="team-news-meta">{timeAgo(featured.pubDate)} · {featured.source}{featured.paywalled && <SubscriberIcon />}</span>
                   </div>
                 </a>
-                <button className="item-remove" onClick={() => removeArticle(featured.id)} aria-label="Remove">✕</button>
               </div>
 
               {/* Secondary */}
@@ -497,7 +486,6 @@ export default function App() {
                         <span className="team-news-meta">{timeAgo(secondary.pubDate)} · {secondary.source}{secondary.paywalled && <SubscriberIcon />}</span>
                       </div>
                     </a>
-                    <button className="item-remove" onClick={() => removeArticle(secondary.id)} aria-label="Remove">✕</button>
                   </div>
                 </>
               )}
@@ -520,7 +508,6 @@ export default function App() {
                         <span className="team-news-meta">{timeAgo(tertiary.pubDate)} · {tertiary.source}{tertiary.paywalled && <SubscriberIcon />}</span>
                       </div>
                     </a>
-                    <button className="item-remove" onClick={() => removeArticle(tertiary.id)} aria-label="Remove">✕</button>
                   </div>
                 </>
               )}
@@ -584,7 +571,6 @@ export default function App() {
                             </span>
                           </div>
                         </a>
-                        <button className="item-remove" onClick={() => removeArticle(a.id)} aria-label="Remove">✕</button>
                       </div>
                     </div>
                   ))}
@@ -638,7 +624,6 @@ export default function App() {
                     <span className="team-news-meta">{timeAgo(athFeatured.pubDate)} · The Athletic{athFeatured.paywalled && <SubscriberIcon />}</span>
                   </div>
                 </a>
-                <button className="item-remove" onClick={() => removeArticle(athFeatured.id)} aria-label="Remove">✕</button>
               </div>
 
               {athSecondary && (
@@ -658,7 +643,6 @@ export default function App() {
                         <span className="team-news-meta">{timeAgo(athSecondary.pubDate)} · The Athletic{athSecondary.paywalled && <SubscriberIcon />}</span>
                       </div>
                     </a>
-                    <button className="item-remove" onClick={() => removeArticle(athSecondary.id)} aria-label="Remove">✕</button>
                   </div>
                 </>
               )}
@@ -680,7 +664,6 @@ export default function App() {
                         <span className="team-news-meta">{timeAgo(athTertiary.pubDate)} · The Athletic{athTertiary.paywalled && <SubscriberIcon />}</span>
                       </div>
                     </a>
-                    <button className="item-remove" onClick={() => removeArticle(athTertiary.id)} aria-label="Remove">✕</button>
                   </div>
                 </>
               )}
@@ -759,8 +742,7 @@ export default function App() {
                               </span>
                             </div>
                           </a>
-                          <button className="item-remove" onClick={() => removeArticle(a.id)} aria-label="Remove">✕</button>
-                        </div>
+                          </div>
                       ))}
 
                       {/* Small — thumbnail + title */}
@@ -786,8 +768,7 @@ export default function App() {
                                 </span>
                               </div>
                             </a>
-                            <button className="item-remove" onClick={() => removeArticle(a.id)} aria-label="Remove">✕</button>
-                          </div>
+                              </div>
                         </div>
                       ))}
 
@@ -809,8 +790,7 @@ export default function App() {
                                   {a.source}{a.paywalled && <SubscriberIcon />}
                                 </span>
                               </a>
-                              <button className="item-remove" onClick={() => removeArticle(a.id)} aria-label="Remove">✕</button>
-                            </div>
+                                  </div>
                           </div>
                         </div>
                       ))}
@@ -832,7 +812,6 @@ export default function App() {
                                   {a.source}{a.paywalled && <SubscriberIcon />}
                                 </span>
                               </a>
-                              <button className="item-remove item-remove--sm" onClick={() => removeArticle(a.id)} aria-label="Remove">✕</button>
                             </div>
                           ))}
                         </div>

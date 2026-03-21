@@ -781,11 +781,6 @@
   overflow: hidden;
 }
 
-.item-remove--sm {
-  font-size: 0.6rem;
-  padding: 2px 4px;
-  opacity: 0.4;
-}
 
 .team-news-headlines {
   display: flex;
@@ -856,36 +851,6 @@
 
 .team-news--read { opacity: 0.45; }
 
-/* Remove button (appears on hover) */
-.item-remove {
-  position: absolute;
-  top: 6px;
-  right: 6px;
-  width: 22px;
-  height: 22px;
-  border-radius: 50%;
-  border: none;
-  background: rgba(255, 255, 255, 0.07);
-  color: var(--text-muted);
-  font-size: 0.6rem;
-  line-height: 1;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  opacity: 0;
-  transition: opacity 0.15s, background 0.15s;
-  z-index: 2;
-  -webkit-tap-highlight-color: transparent;
-}
-
-.team-news-item-wrap:hover .item-remove,
-.item-remove:focus { opacity: 1; }
-
-.item-remove:hover {
-  background: rgba(255, 80, 80, 0.2);
-  color: #ff5050;
-}
 
 /* ── Subscriber icon ────────────────────────────────────── */
 .subscriber-icon {
