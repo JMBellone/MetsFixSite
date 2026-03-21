@@ -3,22 +3,29 @@
 const METS_ID = 121
 
 module.exports = async function handler(req, res) {
-  // Short cache — live data
-  res.setHeader('Cache-Control', 's-maxage=20, stale-while-revalidate=10')
-
   const today = new Date().toISOString().split('T')[0]
 
   try {
     const schedRes = await fetch(
       `https://statsapi.mlb.com/api/v1/schedule?teamId=${METS_ID}&sportId=1&gameType=S,R,E&date=${today}`
     )
-    if (!schedRes.ok) return res.status(200).json({ isLive: false })
+    if (!schedRes.ok) {
+      res.setHeader('Cache-Control', 's-maxage=300, stale-while-revalidate=60')
+      return res.status(200).json({ isLive: false })
+    }
     const schedData = await schedRes.json()
 
     const games = (schedData.dates || []).flatMap(d => d.games || [])
     const liveGame = games.find(g => g.status.abstractGameState === 'Live')
 
-    if (!liveGame) return res.status(200).json({ isLive: false })
+    if (!liveGame) {
+      // No live game — cache for 5 minutes to avoid hammering the schedule API
+      res.setHeader('Cache-Control', 's-maxage=300, stale-while-revalidate=60')
+      return res.status(200).json({ isLive: false })
+    }
+
+    // Game is live — short cache for real-time feel
+    res.setHeader('Cache-Control', 's-maxage=20, stale-while-revalidate=10')
 
     const gamePk = liveGame.gamePk
     const metsIsHome = liveGame.teams.home.team.id === METS_ID
@@ -31,10 +38,8 @@ module.exports = async function handler(req, res) {
     const lsData = lsRes.ok ? await lsRes.json() : {}
     const bsData = bsRes.ok ? await bsRes.json() : null
 
-    const homeAbbr = bsData?.teams?.home?.team?.abbreviation || ''
-    const awayAbbr = bsData?.teams?.away?.team?.abbreviation || ''
-    const homeName = bsData?.teams?.home?.team?.name || liveGame.teams.home.team.name
-    const awayName = bsData?.teams?.away?.team?.name || liveGame.teams.away.team.name
+    const homeTeam = bsData?.teams?.home?.team || {}
+    const awayTeam = bsData?.teams?.away?.team || {}
 
     const offense = lsData.offense || {}
     const defense = lsData.defense || {}
@@ -46,14 +51,16 @@ module.exports = async function handler(req, res) {
       metsIsHome,
       home: {
         id: liveGame.teams.home.team.id,
-        name: homeName,
-        abbr: homeAbbr,
+        name: homeTeam.name || liveGame.teams.home.team.name,
+        teamName: homeTeam.teamName || homeTeam.abbreviation || '',
+        abbr: homeTeam.abbreviation || '',
         score: liveGame.teams.home.score ?? 0,
       },
       away: {
         id: liveGame.teams.away.team.id,
-        name: awayName,
-        abbr: awayAbbr,
+        name: awayTeam.name || liveGame.teams.away.team.name,
+        teamName: awayTeam.teamName || awayTeam.abbreviation || '',
+        abbr: awayTeam.abbreviation || '',
         score: liveGame.teams.away.score ?? 0,
       },
       inning: lsData.currentInning ?? 0,
@@ -72,6 +79,7 @@ module.exports = async function handler(req, res) {
     })
   } catch (e) {
     console.warn('[livegame]', e.message)
+    res.setHeader('Cache-Control', 's-maxage=300, stale-while-revalidate=60')
     return res.status(200).json({ isLive: false })
   }
 }

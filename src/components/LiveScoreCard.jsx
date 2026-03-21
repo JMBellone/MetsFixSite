@@ -50,24 +50,31 @@ export default function LiveScoreCard() {
   const [lastUpdated, setLastUpdated] = useState(null)
   const intervalRef = useRef(null)
 
+  const scheduleInterval = useCallback((isLive) => {
+    clearInterval(intervalRef.current)
+    // Poll every 30s during a live game; every 5 min otherwise (in case a game starts)
+    intervalRef.current = setInterval(fetchGame, isLive ? 30000 : 300000)
+  }, []) // eslint-disable-line react-hooks/exhaustive-deps
+
   const fetchGame = useCallback(async () => {
     setRefreshing(true)
     try {
       const res = await fetch('/api/livegame')
       if (!res.ok) return
       const data = await res.json()
-      setGame(data.isLive ? data : null)
+      const live = data.isLive ? data : null
+      setGame(live)
       setLastUpdated(new Date())
+      scheduleInterval(!!live)
     } catch {
-      // silently fail — if fetch fails, keep showing last known state
+      // silently fail — keep showing last known state
     } finally {
       setRefreshing(false)
     }
-  }, [])
+  }, [scheduleInterval])
 
   useEffect(() => {
     fetchGame()
-    intervalRef.current = setInterval(fetchGame, 30000)
     return () => clearInterval(intervalRef.current)
   }, [fetchGame])
 
@@ -75,10 +82,6 @@ export default function LiveScoreCard() {
 
   const { home, away, inningHalf, inningOrdinal, outs, balls, strikes, runners, batter, pitcher, status } = game
   const isTop = inningHalf === 'Top'
-  const metScore = game.metsIsHome ? home.score : away.score
-  const oppScore = game.metsIsHome ? away.score : home.score
-  const winning = metScore > oppScore
-  const losing = metScore < oppScore
 
   const timeStr = lastUpdated
     ? lastUpdated.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit', hour12: true })
@@ -107,15 +110,14 @@ export default function LiveScoreCard() {
       {/* Scoreboard */}
       <div className="live-scoreboard">
         {/* Away team */}
-        <div className={`live-team${!game.metsIsHome && losing ? ' live-team--mets' : ''}`}>
+        <div className="live-team">
           <img
             src={logoUrl(away.abbr)}
-            alt={away.abbr}
+            alt={away.teamName || away.abbr}
             className="live-team-logo"
             onError={e => { e.currentTarget.style.display = 'none' }}
           />
-          <span className="live-team-abbr">{away.abbr || away.name}</span>
-          {!game.metsIsHome && <span className="live-team-label">Mets</span>}
+          <span className="live-team-name">{away.teamName || away.abbr}</span>
         </div>
 
         <div className="live-scores">
@@ -125,15 +127,14 @@ export default function LiveScoreCard() {
         </div>
 
         {/* Home team */}
-        <div className={`live-team live-team--home${game.metsIsHome && losing ? ' live-team--mets' : ''}`}>
+        <div className="live-team live-team--home">
           <img
             src={logoUrl(home.abbr)}
-            alt={home.abbr}
+            alt={home.teamName || home.abbr}
             className="live-team-logo"
             onError={e => { e.currentTarget.style.display = 'none' }}
           />
-          <span className="live-team-abbr">{home.abbr || home.name}</span>
-          {game.metsIsHome && <span className="live-team-label">Mets</span>}
+          <span className="live-team-name">{home.teamName || home.abbr}</span>
         </div>
       </div>
 

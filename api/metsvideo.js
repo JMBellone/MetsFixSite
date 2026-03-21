@@ -12,11 +12,6 @@ function decodeEntities(str) {
     .replace(/<!\[CDATA\[([\s\S]*?)\]\]>/g, '$1')
 }
 
-function isShort(title) {
-  const lc = title.toLowerCase()
-  return lc.includes('#shorts') || lc.includes('#short')
-}
-
 module.exports = async function handler(req, res) {
   res.setHeader('Cache-Control', 's-maxage=900, stale-while-revalidate=60')
 
@@ -42,8 +37,13 @@ module.exports = async function handler(req, res) {
       const thumbMatch = entry.match(/<media:thumbnail[^>]+url="([^"]+)"/)
       const thumbnail = thumbMatch ? thumbMatch[1] : `https://i.ytimg.com/vi/${videoId}/hqdefault.jpg`
 
+      // The <link rel="alternate" href="..."> in each entry definitively identifies
+      // Shorts (/shorts/{id}) vs regular videos (/watch?v={id})
+      const linkMatch = entry.match(/<link[^>]+rel="alternate"[^>]+href="([^"]+)"/)
+      const videoLink = linkMatch ? linkMatch[1] : ''
+
       if (!videoId || !title) continue
-      if (isShort(title)) continue
+      if (videoLink.includes('/shorts/')) continue
 
       return res.status(200).json({ video: { videoId, title, published, thumbnail } })
     }
