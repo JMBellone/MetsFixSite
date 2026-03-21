@@ -151,19 +151,32 @@ export default function App() {
     .filter(a => a.team === 'mets' && !removedIds.has(a.id))
     .sort((a, b) => new Date(b.pubDate) - new Date(a.pubDate))
 
-  const topFeatured   = newsPool[0]
-  const topSecondary  = newsPool[1]
-  const topTertiary   = newsPool[2]
-  const topHeadline1  = newsPool[3]
-  const topHeadline2  = newsPool[4]
+  // Top card: MLB.com + SNY only, guarantee ≥2 MLB articles
+  const mlbArticles = newsPool.filter(a => a.source === 'MLB.com').slice(0, 2)
+  const mlbIds = new Set(mlbArticles.map(a => a.id))
+  const topRemainder = newsPool
+    .filter(a => (a.source === 'MLB.com' || a.source === 'SNY') && !mlbIds.has(a.id))
+    .slice(0, 3)
+  const topPool = [...mlbArticles, ...topRemainder]
+    .sort((a, b) => new Date(b.pubDate) - new Date(a.pubDate))
 
-  const featured   = newsPool[5]
-  const secondary  = newsPool[6]
-  const tertiary   = newsPool[7]
-  const headlines  = newsPool.slice(8, 10)
-  const moreNews   = newsPool.slice(10, 15)
+  const topFeatured  = topPool[0]
+  const topSecondary = topPool[1]
+  const topTertiary  = topPool[2]
+  const topHeadline1 = topPool[3]
+  const topHeadline2 = topPool[4]
 
-  const shownIds = new Set(newsPool.slice(0, 15).map(a => a.id))
+  const topIds = new Set(topPool.slice(0, 5).map(a => a.id))
+
+  // Dive Into the News: all mets articles not in top card
+  const divePool = newsPool.filter(a => !topIds.has(a.id))
+  const featured   = divePool[0]
+  const secondary  = divePool[1]
+  const tertiary   = divePool[2]
+  const headlines  = divePool.slice(3, 5)
+  const moreNews   = divePool.slice(5, 10)
+
+  const shownIds = new Set([...topIds, ...divePool.slice(0, 10).map(a => a.id)])
   const athleticPool = articles
     .filter(a => a.source === 'The Athletic' && !removedIds.has(a.id) && !shownIds.has(a.id))
     .sort((a, b) => new Date(b.pubDate) - new Date(a.pubDate))
