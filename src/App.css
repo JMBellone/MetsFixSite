@@ -748,7 +748,7 @@
 
 .team-news-sidebyside-item {
   display: flex;
-  align-items: flex-start;
+  align-items: stretch;
   background: var(--surface);
   gap: 0;
 }
@@ -757,10 +757,17 @@
   flex: 1;
   display: flex;
   flex-direction: column;
-  gap: 5px;
   padding: 12px 8px;
   text-decoration: none;
   min-width: 0;
+}
+
+.team-news-sidebyside-link .team-news-sidebyside-title {
+  flex: 1;
+}
+
+.team-news-sidebyside-link .team-news-meta {
+  margin-top: auto;
 }
 
 .team-news-sidebyside-title {
