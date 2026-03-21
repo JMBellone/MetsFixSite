@@ -31,55 +31,6 @@ function SubscriberBadge({ paywalled }) {
   return <span className="subscriber-badge">Subscriber Content</span>
 }
 
-function DailyNoteCard() {
-  const [note, setNote] = useState(null)
-  useEffect(() => {
-    fetch('/api/daily')
-      .then(r => r.ok ? r.json() : null)
-      .then(data => { if (data) setNote(data) })
-      .catch(() => {})
-  }, [])
-  if (!note) return null
-
-  // Topics list format
-  if (note.type === 'topics' && note.items?.length) {
-    return (
-      <div className="daily-card">
-        <div className="daily-header">
-          <span className="daily-label">Today's Topics</span>
-        </div>
-        {note.items.map((item, i) => (
-          <div key={i} className="daily-topic">
-            <span className="daily-topic-headline">{item.topic}</span>
-            <p className="daily-topic-summary">{item.summary}</p>
-            {item.source && (
-              <span className="daily-topic-source">via {item.source}</span>
-            )}
-          </div>
-        ))}
-      </div>
-    )
-  }
-
-  // Simple text format
-  if (note.type === 'note' && note.text) {
-    return (
-      <div className="daily-card">
-        <div className="daily-header">
-          <span className="daily-label">From the Editor</span>
-          {note.date && <span className="daily-date">{note.date}</span>}
-        </div>
-        {note.image && (
-          <img src={note.image} alt="" className="daily-image"
-            onError={e => { e.currentTarget.style.display = 'none' }} />
-        )}
-        <p className="daily-text">{note.text}</p>
-      </div>
-    )
-  }
-
-  return null
-}
 
 export default function App() {
   const [articles, setArticles] = useState([])
@@ -196,9 +147,6 @@ export default function App() {
       )}
 
       <main className="main">
-
-        {/* ── Daily note ───────────────────────────────────── */}
-        <DailyNoteCard />
 
         {/* ── The Latest Briefing ─────────────────────────── */}
         {briefingArticle && (
