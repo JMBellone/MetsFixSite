@@ -35,17 +35,21 @@ function formatDate() {
   })
 }
 
-function getBriefingLabel() {
+function getBriefingTime() {
   const et = new Date().toLocaleString('en-US', {
     timeZone: 'America/New_York', hour: '2-digit', minute: '2-digit', hour12: false,
   })
   const [h, m] = et.split(':').map(Number)
   const mins = h * 60 + m
-  // 4:00 AM–12:00 PM → Morning (240–720)
-  if (mins >= 240 && mins <= 720) return '☀️ Morning Briefing'
-  // 12:01 PM–5:00 PM → Afternoon (721–1020)
-  if (mins <= 1020) return '🍎 Afternoon Briefing'
-  // 5:01 PM–3:59 AM → Evening (1021–1439 and 0–239)
+  if (mins >= 240 && mins <= 720) return 'morning'
+  if (mins <= 1020) return 'afternoon'
+  return 'evening'
+}
+
+function getBriefingLabel() {
+  const t = getBriefingTime()
+  if (t === 'morning') return '☀️ Morning Briefing'
+  if (t === 'afternoon') return '🍎 Afternoon Briefing'
   return '☾ Evening Briefing'
 }
 
@@ -154,6 +158,17 @@ export default function App() {
   const athTertiary  = athleticPool[2]
   const athHeadlines = athleticPool.slice(3, 5)
 
+  const allShownIds = new Set([...shownIds, ...athleticPool.map(a => a.id)])
+  const FORTY_EIGHT_H = 48 * 60 * 60 * 1000
+  const remainingPool = articles
+    .filter(a =>
+      !removedIds.has(a.id) &&
+      !allShownIds.has(a.id) &&
+      a.team !== 'metropolitan' &&
+      Date.now() - new Date(a.pubDate).getTime() < FORTY_EIGHT_H
+    )
+    .sort((a, b) => new Date(b.pubDate) - new Date(a.pubDate))
+
   return (
     <div
       onTouchStart={onTouchStart}
@@ -184,7 +199,7 @@ export default function App() {
         {/* ── The Latest Briefing ─────────────────────────── */}
         {briefingArticle && (
           <>
-            <div className="section-header section-header--mets section-header--briefing">
+            <div className={`section-header section-header--mets section-header--briefing section-header--briefing-${getBriefingTime()}`}>
               <span className="section-header-label">{getBriefingLabel()}</span>
               <span className="section-header-line" />
             </div>
@@ -611,6 +626,36 @@ export default function App() {
 
         {/* ── Mets Reddit ──────────────────────────────────── */}
         <RedditCard />
+
+        {/* ── Remaining Articles ───────────────────────────── */}
+        {!loading && remainingPool.length > 0 && (
+          <div className="team-news-card">
+            <div className="latest-updates-header">
+              <span className="latest-updates-title">More Mets News</span>
+            </div>
+            {remainingPool.map((a, idx) => (
+              <div key={a.id}>
+                {idx > 0 && <div className="team-news-divider" />}
+                <div className="team-news-item-wrap">
+                  <a href={a.link} target="_blank" rel="noopener noreferrer"
+                    className="team-news-secondary" onClick={() => markRead(a.id)}>
+                    {a.image && (
+                      <img src={a.image} alt="" className="team-news-secondary-img"
+                        onError={e => { e.currentTarget.style.display = 'none' }} />
+                    )}
+                    <div className="team-news-secondary-body">
+                      <span className={`team-news-secondary-title${readIds.has(a.id) ? ' team-news--read' : ''}`}>
+                        {a.title}
+                      </span>
+                      <span className="team-news-meta">{timeAgo(a.pubDate)} · {a.source}{a.paywalled && <SubscriberIcon />}</span>
+                    </div>
+                  </a>
+                  <button className="item-remove" onClick={() => removeArticle(a.id)} aria-label="Remove">✕</button>
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
 
         {!loading && !error && newsPool.length === 0 && !briefingArticle && (
           <div className="empty-state">No articles found.</div>

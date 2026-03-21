@@ -37,7 +37,15 @@ function parseItems(xml) {
       const d = new Date(pubStr.replace(/\bEDT\b/, '-0400').replace(/\bEST\b/, '-0500'))
       if (!isNaN(d.getTime())) pubDate = d.toISOString()
     }
-    items.push({ title, link, pubDate })
+
+    // Extract first image from content CDATA (Atom: <content>, RSS: <content:encoded>)
+    const contentHtml = get('content') || get('content:encoded') || get('description') || ''
+    const imgMatch = /<img[^>]+src=["']([^"']+)["'][^>]*>/i.exec(contentHtml)
+    const image = imgMatch && imgMatch[1] &&
+      !imgMatch[1].includes('1x1') &&
+      !imgMatch[1].startsWith('data:') ? imgMatch[1] : null
+
+    items.push({ title, link, pubDate, image })
   }
   return items
 }

@@ -122,6 +122,22 @@
   background: linear-gradient(to right, rgba(245, 208, 0, 0.4), transparent);
 }
 
+.section-header--briefing-afternoon .section-header-label {
+  color: #ff4444;
+}
+
+.section-header--briefing-afternoon .section-header-line {
+  background: linear-gradient(to right, rgba(255, 68, 68, 0.4), transparent);
+}
+
+.section-header--briefing-evening .section-header-label {
+  color: #ffffff;
+}
+
+.section-header--briefing-evening .section-header-line {
+  background: linear-gradient(to right, rgba(255, 255, 255, 0.25), transparent);
+}
+
 .section-header--mets .section-header-line {
   background: linear-gradient(to right, rgba(74, 127, 212, 0.5), transparent);
 }
