@@ -48,10 +48,6 @@ export default function MLBNewsCard() {
             rel="noopener noreferrer"
             className="mlbnews-row"
           >
-            <div className="mlbnews-row-body">
-              <span className="mlbnews-row-title">{a.title}</span>
-              <span className="mlbnews-row-meta">{timeAgo(a.pubDate)}</span>
-            </div>
             {a.image && (
               <img
                 src={a.image}
@@ -60,6 +56,10 @@ export default function MLBNewsCard() {
                 onError={e => { e.currentTarget.style.display = 'none' }}
               />
             )}
+            <div className="mlbnews-row-body">
+              <span className="mlbnews-row-title">{a.title}</span>
+              <span className="mlbnews-row-meta">{timeAgo(a.pubDate)}</span>
+            </div>
           </a>
         ))}
       </div>

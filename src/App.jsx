@@ -5,7 +5,6 @@ import StandingsCard from './components/StandingsCard'
 import OptionDatesCard from './components/OptionDatesCard'
 import InjuredListCard from './components/InjuredListCard'
 import SNYCard from './components/SNYCard'
-import LatestUpdatesCard from './components/LatestUpdatesCard'
 import LastGameCard from './components/LastGameCard'
 import BlogRollCard from './components/BlogRollCard'
 import RedditCard from './components/RedditCard'
@@ -157,15 +156,14 @@ export default function App() {
   const topTertiary   = newsPool[2]
   const topHeadline1  = newsPool[3]
   const topHeadline2  = newsPool[4]
-  const hotOff        = newsPool.slice(5, 10)
 
-  const featured   = newsPool[8]
-  const secondary  = newsPool[9]
-  const tertiary   = newsPool[10]
-  const headlines  = newsPool.slice(11, 13)
-  const moreNews   = newsPool.slice(13, 18)
+  const featured   = newsPool[5]
+  const secondary  = newsPool[6]
+  const tertiary   = newsPool[7]
+  const headlines  = newsPool.slice(8, 10)
+  const moreNews   = newsPool.slice(10, 15)
 
-  const shownIds = new Set(newsPool.slice(0, 18).map(a => a.id))
+  const shownIds = new Set(newsPool.slice(0, 15).map(a => a.id))
   const athleticPool = articles
     .filter(a => a.source === 'The Athletic' && !removedIds.has(a.id) && !shownIds.has(a.id))
     .sort((a, b) => new Date(b.pubDate) - new Date(a.pubDate))
@@ -382,15 +380,6 @@ export default function App() {
               </>
             )}
           </div>
-        )}
-
-        {/* ── Hot Off the Presses ──────────────────────────── */}
-        {loading ? (
-          <div className="latest-updates-card">
-            <div className="option-dates-skeleton" />
-          </div>
-        ) : (
-          <LatestUpdatesCard title="Recently Published" articles={hotOff} />
         )}
 
         {/* ── Upcoming Games ───────────────────────────────── */}

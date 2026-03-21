@@ -4,15 +4,22 @@ function etDateKey(dateStr) {
   return new Date(dateStr).toLocaleDateString('en-CA', { timeZone: 'America/New_York' })
 }
 
-function nextThreeDates() {
-  const result = []
-  const now = new Date()
-  for (let i = 0; i < 3; i++) {
-    const d = new Date(now)
-    d.setDate(d.getDate() + i)
-    result.push(d.toLocaleDateString('en-CA', { timeZone: 'America/New_York' }))
+// Anchor on the first upcoming game's date so in-progress games don't show as Off Day
+function nextThreeDates(games) {
+  let anchor
+  if (games.length > 0) {
+    const [y, m, d] = etDateKey(games[0].date).split('-').map(Number)
+    anchor = new Date(y, m - 1, d)
+  } else {
+    const key = new Date().toLocaleDateString('en-CA', { timeZone: 'America/New_York' })
+    const [y, m, d] = key.split('-').map(Number)
+    anchor = new Date(y, m - 1, d)
   }
-  return result
+  return Array.from({ length: 3 }, (_, i) => {
+    const d = new Date(anchor)
+    d.setDate(d.getDate() + i)
+    return d.toLocaleDateString('en-CA')
+  })
 }
 
 function formatDateKey(dateKey) {
@@ -26,6 +33,11 @@ function formatTime(dateStr) {
   return new Date(dateStr).toLocaleTimeString('en-US', {
     hour: 'numeric', minute: '2-digit', timeZone: 'America/New_York',
   }) + ' ET'
+}
+
+function lastName(name) {
+  if (!name) return null
+  return name.split(' ').pop()
 }
 
 export default function ScheduleCard() {
@@ -42,7 +54,7 @@ export default function ScheduleCard() {
 
   if (loading) return null
 
-  const dates = nextThreeDates()
+  const dates = nextThreeDates(games)
   const gamesByDate = {}
   games.forEach(g => {
     const key = etDateKey(g.date)
@@ -83,8 +95,8 @@ export default function ScheduleCard() {
                 {(game.metsStarter || game.oppStarter) && (
                   <span className="schedule-starters">
                     {game.metsStarter && game.oppStarter
-                      ? `${game.metsStarter} vs ${game.oppStarter}`
-                      : game.metsStarter || game.oppStarter}
+                      ? `${lastName(game.metsStarter)} vs ${lastName(game.oppStarter)}`
+                      : lastName(game.metsStarter) || lastName(game.oppStarter)}
                   </span>
                 )}
                 {game.broadcast && (
