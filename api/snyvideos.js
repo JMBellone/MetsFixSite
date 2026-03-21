@@ -69,7 +69,7 @@ module.exports = async function handler(req, res) {
       if (videoId && title && isMets(title)) allEntries.push({ videoId, title, published, thumbnail })
     }
 
-    res.status(200).json({ videos: allEntries.slice(0, 5) })
+    res.status(200).json({ videos: allEntries.slice(0, 6) })
   } catch (e) {
     res.status(500).json({ error: e.message })
   }

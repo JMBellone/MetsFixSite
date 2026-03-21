@@ -906,6 +906,8 @@
   transition: opacity 0.15s;
 }
 
+.sny-thumb--featured { opacity: 1; }
+.sny-video-title--featured { font-size: 0.9rem; }
 .sny-thumb-btn:hover .sny-thumb { opacity: 0.75; }
 
 .sny-play-overlay {
@@ -1687,6 +1689,34 @@
   border-radius: 4px;
   flex-shrink: 0;
   background: var(--surface-2);
+}
+
+/* ── Standings toggle ───────────────────────────────────── */
+.standings-toggle {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  width: 100%;
+  padding: 8px 14px;
+  background: none;
+  border: none;
+  border-top: 1px solid var(--border);
+  color: #fff;
+  font-family: var(--font);
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  cursor: pointer;
+  transition: color 0.15s, background 0.15s;
+  -webkit-tap-highlight-color: transparent;
+}
+
+@media (hover: hover) {
+  .standings-toggle:hover {
+    background: var(--surface-2);
+    color: var(--mets-blue-light);
+  }
 }
 
 /* ── Standings panel layout ─────────────────────────────── */

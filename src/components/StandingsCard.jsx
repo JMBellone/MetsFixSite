@@ -61,6 +61,7 @@ function LeaguePanel({ label, divisions, highlightAbbr, className }) {
 export default function StandingsCard() {
   const [standings, setStandings] = useState(null)
   const [league, setLeague] = useState('nl')
+  const [showFull, setShowFull] = useState(false)
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
@@ -72,6 +73,10 @@ export default function StandingsCard() {
   }, [])
 
   if (loading || !standings) return null
+
+  // Default: East divisions only. Full: all divisions.
+  const nlDivisions = showFull ? standings.nl : [standings.nl[0]]
+  const alDivisions = showFull ? standings.al : [standings.al[0]]
 
   return (
     <div className="standings-card">
@@ -99,8 +104,10 @@ export default function StandingsCard() {
       {/* Mobile: single panel based on selected tab */}
       <div className="standings-mobile">
         <LeaguePanel
-          label={league === 'nl' ? 'National League' : 'American League'}
-          divisions={league === 'nl' ? standings.nl : standings.al}
+          label={league === 'nl'
+            ? (showFull ? 'National League' : 'NL East')
+            : (showFull ? 'American League' : 'AL East')}
+          divisions={league === 'nl' ? nlDivisions : alDivisions}
           highlightAbbr={league === 'nl' ? 'NYM' : ''}
         />
       </div>
@@ -108,18 +115,26 @@ export default function StandingsCard() {
       {/* Desktop: both leagues side by side */}
       <div className="standings-desktop">
         <LeaguePanel
-          label="National League"
-          divisions={standings.nl}
+          label={showFull ? 'National League' : 'NL East'}
+          divisions={nlDivisions}
           highlightAbbr="NYM"
           className="standings-panel--nl"
         />
         <LeaguePanel
-          label="American League"
-          divisions={standings.al}
+          label={showFull ? 'American League' : 'AL East'}
+          divisions={alDivisions}
           highlightAbbr=""
           className="standings-panel--al"
         />
       </div>
+
+      {/* Show full standings toggle */}
+      <button className="standings-toggle" onClick={() => setShowFull(s => !s)}>
+        {showFull ? 'Hide Full Standings' : 'Show Full Standings'}
+        <svg viewBox="0 0 24 24" fill="none" className={`lg-toggle-chevron${showFull ? ' lg-toggle-chevron--open' : ''}`}>
+          <polyline points="6,9 12,15 18,9" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"/>
+        </svg>
+      </button>
     </div>
   )
 }

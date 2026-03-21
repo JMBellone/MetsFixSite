@@ -54,7 +54,7 @@ export default function SNYCard() {
   useEffect(() => {
     fetch('/api/snyvideos')
       .then(r => r.ok ? r.json() : Promise.reject())
-      .then(data => { setVideos((data.videos || []).slice(0, 3)) })
+      .then(data => { setVideos((data.videos || []).slice(1, 4)) })
       .catch(() => {})
       .finally(() => setLoading(false))
   }, [])

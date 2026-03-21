@@ -10,6 +10,7 @@ import LastGameCard from './components/LastGameCard'
 import BlogRollCard from './components/BlogRollCard'
 import MLBNewsCard from './components/MLBNewsCard'
 import BeatWritersCard from './components/BeatWritersCard'
+import SNYFeaturedCard from './components/SNYFeaturedCard'
 import './App.css'
 
 function faviconUrl(link) {
@@ -303,6 +304,9 @@ export default function App() {
 
         {/* ── Last Game ────────────────────────────────────── */}
         <LastGameCard />
+
+        {/* ── SNY Featured Video ───────────────────────────── */}
+        <SNYFeaturedCard />
 
         {/* ── MLB News ─────────────────────────────────────── */}
         <MLBNewsCard />
