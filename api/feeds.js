@@ -42,6 +42,13 @@ const FEEDS = [
     paywalled: false,
     authority: 1,
   },
+  {
+    url: 'https://blogs.fangraphs.com/category/teams/mets/feed',
+    source: 'FanGraphs',
+    team: 'mets',
+    paywalled: false,
+    authority: 2,
+  },
 ];
 
 function decodeHtmlEntities(str) {
