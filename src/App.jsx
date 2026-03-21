@@ -7,7 +7,6 @@ import InjuredListCard from './components/InjuredListCard'
 import SNYCard from './components/SNYCard'
 import LatestUpdatesCard from './components/LatestUpdatesCard'
 import LastGameCard from './components/LastGameCard'
-import ColumnistsCard from './components/ColumnistsCard'
 import BlogRollCard from './components/BlogRollCard'
 import './App.css'
 
@@ -45,9 +44,8 @@ function getBriefingLabel() {
   return '☾ Evening Briefing'
 }
 
-function SubscriberBadge({ paywalled }) {
-  if (!paywalled) return null
-  return <span className="subscriber-badge">Subscriber Content</span>
+function SubscriberIcon() {
+  return <span className="subscriber-icon" title="Subscriber Content">$</span>
 }
 
 
@@ -55,7 +53,6 @@ export default function App() {
   const [articles, setArticles] = useState([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(null)
-  const [columnistLinks, setColumnistLinks] = useState(new Set())
   const [readIds, setReadIds] = useState(() => {
     try { return new Set(JSON.parse(localStorage.getItem('metsReadArticles') || '[]')) }
     catch { return new Set() }
@@ -89,13 +86,6 @@ export default function App() {
   }, [])
 
   useEffect(() => { fetchFeeds() }, [fetchFeeds])
-
-  useEffect(() => {
-    fetch('/api/columnists')
-      .then(r => r.ok ? r.json() : Promise.reject())
-      .then(data => setColumnistLinks(new Set((data.articles || []).map(a => a.link))))
-      .catch(() => {})
-  }, [])
 
   const onTouchStart = useCallback((e) => {
     if (window.scrollY === 0) touchStartY.current = e.touches[0].clientY
@@ -135,7 +125,7 @@ export default function App() {
   const briefingArticle = articles.find(a => a.team === 'metropolitan' && !removedIds.has(a.id)) || null
 
   const newsPool = articles
-    .filter(a => a.team === 'mets' && !removedIds.has(a.id) && !columnistLinks.has(a.link))
+    .filter(a => a.team === 'mets' && !removedIds.has(a.id))
     .sort((a, b) => new Date(b.pubDate) - new Date(a.pubDate))
 
   const featured   = newsPool[0]
@@ -220,6 +210,21 @@ export default function App() {
         {/* ── Upcoming Games ───────────────────────────────── */}
         <ScheduleCard />
 
+        {/* ── MLB Standings ─────────────────────────────────── */}
+        <StandingsCard />
+
+        {/* ── Dive Into the News ───────────────────────────── */}
+        <div className="section-header section-header--mets">
+          <img
+            src="https://a.espncdn.com/i/teamlogos/mlb/500/nym.png"
+            alt="Mets"
+            className="section-header-logo"
+            onError={e => { e.currentTarget.style.display = 'none' }}
+          />
+          <span className="section-header-label">Dive Into the News</span>
+          <span className="section-header-line" />
+        </div>
+
         {loading && (
           <div className="article-list">
             {Array.from({ length: 5 }).map((_, i) => <SkeletonCard key={i} />)}
@@ -253,8 +258,7 @@ export default function App() {
                     <span className={`team-news-featured-title${readIds.has(featured.id) ? ' team-news--read' : ''}`}>
                       {featured.title}
                     </span>
-                    <span className="team-news-meta">{timeAgo(featured.pubDate)} · {featured.source}</span>
-                    <SubscriberBadge paywalled={featured.paywalled} />
+                    <span className="team-news-meta">{timeAgo(featured.pubDate)} · {featured.source}{featured.paywalled && <SubscriberIcon />}</span>
                   </div>
                 </a>
                 <button className="item-remove" onClick={() => removeArticle(featured.id)} aria-label="Remove">✕</button>
@@ -275,8 +279,7 @@ export default function App() {
                         <span className={`team-news-secondary-title${readIds.has(secondary.id) ? ' team-news--read' : ''}`}>
                           {secondary.title}
                         </span>
-                        <span className="team-news-meta">{timeAgo(secondary.pubDate)} · {secondary.source}</span>
-                        <SubscriberBadge paywalled={secondary.paywalled} />
+                        <span className="team-news-meta">{timeAgo(secondary.pubDate)} · {secondary.source}{secondary.paywalled && <SubscriberIcon />}</span>
                       </div>
                     </a>
                     <button className="item-remove" onClick={() => removeArticle(secondary.id)} aria-label="Remove">✕</button>
@@ -299,8 +302,7 @@ export default function App() {
                         <span className={`team-news-secondary-title${readIds.has(tertiary.id) ? ' team-news--read' : ''}`}>
                           {tertiary.title}
                         </span>
-                        <span className="team-news-meta">{timeAgo(tertiary.pubDate)} · {tertiary.source}</span>
-                        <SubscriberBadge paywalled={tertiary.paywalled} />
+                        <span className="team-news-meta">{timeAgo(tertiary.pubDate)} · {tertiary.source}{tertiary.paywalled && <SubscriberIcon />}</span>
                       </div>
                     </a>
                     <button className="item-remove" onClick={() => removeArticle(tertiary.id)} aria-label="Remove">✕</button>
@@ -322,8 +324,7 @@ export default function App() {
                           <span className="team-news-headline-source">
                             <img src={faviconUrl(a.link)} alt="" className="team-news-source-favicon"
                               onError={e => { e.currentTarget.style.display = 'none' }} />
-                            {a.source} · {timeAgo(a.pubDate)}
-                            {a.paywalled && <span className="subscriber-badge subscriber-badge--inline">Subscriber</span>}
+                            {a.source}{a.paywalled && <SubscriberIcon />} · {timeAgo(a.pubDate)}
                           </span>
                         </span>
                       </a>
@@ -332,12 +333,6 @@ export default function App() {
                 </>
               )}
             </div>
-
-            {/* ── MLB Standings ─────────────────────────────── */}
-            <StandingsCard />
-
-            {/* ── Columnists ────────────────────────────────── */}
-            <ColumnistsCard />
 
             {/* ── More on the Mets ─────────────────────────── */}
             {moreNews.length > 0 && (
@@ -361,8 +356,7 @@ export default function App() {
                             <span className={`team-news-secondary-title${readIds.has(a.id) ? ' team-news--read' : ''}`}>
                               {a.title}
                             </span>
-                            <span className="team-news-meta">{timeAgo(a.pubDate)} · {a.source}</span>
-                            <SubscriberBadge paywalled={a.paywalled} />
+                            <span className="team-news-meta">{timeAgo(a.pubDate)} · {a.source}{a.paywalled && <SubscriberIcon />}</span>
                           </div>
                         </a>
                         <button className="item-remove" onClick={() => removeArticle(a.id)} aria-label="Remove">✕</button>
@@ -401,8 +395,7 @@ export default function App() {
                     <span className={`team-news-featured-title${readIds.has(athFeatured.id) ? ' team-news--read' : ''}`}>
                       {athFeatured.title}
                     </span>
-                    <span className="team-news-meta">{timeAgo(athFeatured.pubDate)} · The Athletic</span>
-                    <SubscriberBadge paywalled={athFeatured.paywalled} />
+                    <span className="team-news-meta">{timeAgo(athFeatured.pubDate)} · The Athletic{athFeatured.paywalled && <SubscriberIcon />}</span>
                   </div>
                 </a>
                 <button className="item-remove" onClick={() => removeArticle(athFeatured.id)} aria-label="Remove">✕</button>
@@ -422,8 +415,7 @@ export default function App() {
                         <span className={`team-news-secondary-title${readIds.has(athSecondary.id) ? ' team-news--read' : ''}`}>
                           {athSecondary.title}
                         </span>
-                        <span className="team-news-meta">{timeAgo(athSecondary.pubDate)} · The Athletic</span>
-                        <SubscriberBadge paywalled={athSecondary.paywalled} />
+                        <span className="team-news-meta">{timeAgo(athSecondary.pubDate)} · The Athletic{athSecondary.paywalled && <SubscriberIcon />}</span>
                       </div>
                     </a>
                     <button className="item-remove" onClick={() => removeArticle(athSecondary.id)} aria-label="Remove">✕</button>
@@ -445,8 +437,7 @@ export default function App() {
                         <span className={`team-news-secondary-title${readIds.has(athTertiary.id) ? ' team-news--read' : ''}`}>
                           {athTertiary.title}
                         </span>
-                        <span className="team-news-meta">{timeAgo(athTertiary.pubDate)} · The Athletic</span>
-                        <SubscriberBadge paywalled={athTertiary.paywalled} />
+                        <span className="team-news-meta">{timeAgo(athTertiary.pubDate)} · The Athletic{athTertiary.paywalled && <SubscriberIcon />}</span>
                       </div>
                     </a>
                     <button className="item-remove" onClick={() => removeArticle(athTertiary.id)} aria-label="Remove">✕</button>
@@ -467,8 +458,7 @@ export default function App() {
                           <span className="team-news-headline-source">
                             <img src={faviconUrl(a.link)} alt="" className="team-news-source-favicon"
                               onError={e => { e.currentTarget.style.display = 'none' }} />
-                            The Athletic · {timeAgo(a.pubDate)}
-                            {a.paywalled && <span className="subscriber-badge subscriber-badge--inline">Subscriber</span>}
+                            The Athletic{a.paywalled && <SubscriberIcon />} · {timeAgo(a.pubDate)}
                           </span>
                         </span>
                       </a>
