@@ -40,10 +40,14 @@ function parseItems(xml) {
       const d = new Date(pubStr.replace(/\bEDT\b/, '-0400').replace(/\bEST\b/, '-0500'))
       if (!isNaN(d.getTime())) pubDate = d.toISOString()
     }
-    // Extract image: media:content, media:thumbnail, enclosure, or <img> in description
+    // Extract image: MLB custom <image href>, media:content, media:thumbnail, enclosure, or <img>
     let image = null
-    const mc = /<media:content[^>]+url=["']([^"']+)["'][^>]*/i.exec(block)
-    if (mc) image = mc[1]
+    const mlbImg = /<image[^>]+href=["']([^"']+)["'][^>]*/i.exec(block)
+    if (mlbImg) image = mlbImg[1]
+    if (!image) {
+      const mc = /<media:content[^>]+url=["']([^"']+)["'][^>]*/i.exec(block)
+      if (mc) image = mc[1]
+    }
     if (!image) {
       const mt = /<media:thumbnail[^>]+url=["']([^"']+)["'][^>]*/i.exec(block)
       if (mt) image = mt[1]
