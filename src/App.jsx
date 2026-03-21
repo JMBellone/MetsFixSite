@@ -187,15 +187,19 @@ export default function App() {
   const athHeadlines = athleticPool.slice(3, 5)
 
   const allShownIds = new Set([...shownIds, ...athleticPool.map(a => a.id)])
-  const FORTY_EIGHT_H = 48 * 60 * 60 * 1000
-  const remainingPool = articles
+  const SEVENTY_TWO_H = 72 * 60 * 60 * 1000
+  const SFE_PRIORITY = new Set(['MLB.com', 'SNY', 'NY Post', 'The Athletic'])
+  const sfeBase = articles
     .filter(a =>
       !removedIds.has(a.id) &&
       !allShownIds.has(a.id) &&
       a.team !== 'metropolitan' &&
-      Date.now() - new Date(a.pubDate).getTime() < FORTY_EIGHT_H
+      Date.now() - new Date(a.pubDate).getTime() < SEVENTY_TWO_H
     )
     .sort((a, b) => new Date(b.pubDate) - new Date(a.pubDate))
+  const sfePriority = sfeBase.filter(a => SFE_PRIORITY.has(a.source)).slice(0, 3)
+  const sfePriorityIds = new Set(sfePriority.map(a => a.id))
+  const remainingPool = [...sfePriority, ...sfeBase.filter(a => !sfePriorityIds.has(a.id))]
 
   return (
     <div
