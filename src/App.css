@@ -16,16 +16,11 @@
   justify-content: space-between;
 }
 
-.logo-text {
-  font-size: 1.3rem;
-  font-weight: 900;
-  letter-spacing: -0.5px;
-  color: #fff;
-  line-height: 1;
-}
-
-.logo-text span {
-  color: var(--mets-orange);
+.header-logo-img {
+  height: 36px;
+  width: auto;
+  object-fit: contain;
+  display: block;
 }
 
 .header-date {
@@ -1028,7 +1023,7 @@
     gap: 14px;
   }
 
-  .logo-text { font-size: 1.5rem; }
+  .header-logo-img { height: 42px; }
 
   .header {
     padding: calc(16px + env(safe-area-inset-top, 0px)) 24px 16px;
