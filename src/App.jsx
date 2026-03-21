@@ -196,10 +196,10 @@ export default function App() {
       Date.now() - new Date(a.pubDate).getTime() < SEVENTY_TWO_H
     )
     .sort((a, b) => new Date(b.pubDate) - new Date(a.pubDate))
-  // 3 most recent from each priority source (in source order), then rest by date
-  const sfePriority = ['MLB.com', 'SNY', 'NY Post', 'The Athletic'].flatMap(src =>
-    sfeBase.filter(a => a.source === src).slice(0, 3)
-  )
+  // 3 most recent from each priority source, sorted by publish time, then rest by date
+  const sfePriority = ['MLB.com', 'SNY', 'NY Post', 'The Athletic']
+    .flatMap(src => sfeBase.filter(a => a.source === src).slice(0, 3))
+    .sort((a, b) => new Date(b.pubDate) - new Date(a.pubDate))
   const sfePriorityIds = new Set(sfePriority.map(a => a.id))
   const remainingPool = [...sfePriority, ...sfeBase.filter(a => !sfePriorityIds.has(a.id))]
 
