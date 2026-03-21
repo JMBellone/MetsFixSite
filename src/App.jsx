@@ -720,14 +720,17 @@ export default function App() {
 
         {/* ── Stories From Earlier ─────────────────────────── */}
         {!loading && remainingPool.length > 0 && (() => {
-          const sfeGroups = groupRemainingArticles(remainingPool)
+          const chunks = []
+          for (let i = 0; i < remainingPool.length; i += 10) chunks.push(remainingPool.slice(i, i + 10))
           return (
             <>
               <div className="section-header section-header--mets">
                 <span className="section-header-label">📰 Stories From Earlier</span>
                 <span className="section-header-line" />
               </div>
-              <div className="team-news-card">
+              {chunks.map((chunk, ci) => {
+                const sfeGroups = groupRemainingArticles(chunk)
+                return <div key={ci} className="team-news-card">
                 {sfeGroups.map((group, gi) => {
                   const prevType = gi > 0 ? sfeGroups[gi - 1].type : null
                   const showDivider = gi > 0 && group.type !== 'headline' && prevType !== 'headline'
@@ -837,7 +840,8 @@ export default function App() {
                     </div>
                   )
                 })}
-              </div>
+                </div>
+              })}
             </>
           )
         })()}
