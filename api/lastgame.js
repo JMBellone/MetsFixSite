@@ -24,9 +24,7 @@ module.exports = async function handler(req, res) {
 
     const last = completed[completed.length - 1]
     const gamePk = last.gamePk
-    const homeTeam = last.teams.home.team
-    const awayTeam = last.teams.away.team
-    const metsIsHome = homeTeam.id === METS_ID
+    const metsIsHome = last.teams.home.team.id === METS_ID
 
     // Fetch linescore + boxscore in parallel
     const [lsRes, bsRes] = await Promise.all([
@@ -34,6 +32,10 @@ module.exports = async function handler(req, res) {
       fetch(`https://statsapi.mlb.com/api/v1/game/${gamePk}/boxscore`),
     ])
     const [lsData, bsData] = await Promise.all([lsRes.json(), bsRes.json()])
+
+    // Boxscore has full team info including abbreviation; schedule only has id/name/link
+    const homeTeam = bsData.teams.home.team
+    const awayTeam = bsData.teams.away.team
 
     // Linescore — inning-by-inning
     const innings = (lsData.innings || []).map(inn => ({

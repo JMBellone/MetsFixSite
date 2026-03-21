@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react'
 
 function logoUrl(abbr) {
+  if (!abbr) return ''
   return `https://a.espncdn.com/i/teamlogos/mlb/500/${abbr.toLowerCase()}.png`
 }
 
@@ -13,6 +14,7 @@ function fmtDate(dateStr) {
 }
 
 function shortName(full) {
+  if (!full) return ''
   return full.replace(/^([A-Z][a-z]*)(?:\s[A-Z]\.?)?\s+/, m => {
     const parts = m.trim().split(/\s+/)
     return parts[0][0] + '. '
