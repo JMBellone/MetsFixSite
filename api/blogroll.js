@@ -1,8 +1,8 @@
 // api/blogroll.js — Amazin Avenue & MetsmerizedOnline
 
 const FEEDS = [
-  { url: 'https://www.amazinavenue.com/rss/current', source: 'Amazin Avenue' },
-  { url: 'https://metsmerized.com/feed/', source: 'Metsmerized Online' },
+  { url: 'https://www.amazinavenue.com/rss/index.xml', source: 'Amazin Avenue' },
+  { url: 'https://www.metsmerizedonline.com/feed/', source: 'Metsmerized Online' },
 ]
 
 function decode(str) {
