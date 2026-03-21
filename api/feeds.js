@@ -171,12 +171,6 @@ async function fetchFeed(feedConfig) {
     if (!item.pubDate) continue;
     if (item.pubDate.getTime() < cutoff) continue;
 
-    // Drop articles with no Mets connection in title or URL
-    if (feedConfig.team === 'mets') {
-      const haystack = (item.title + ' ' + item.link).toLowerCase();
-      if (!haystack.includes('mets')) continue;
-    }
-
     results.push({
       id: `${source}-${Buffer.from(item.link).toString('base64').replace(/=/g, '')}`,
       team: feedConfig.team || 'mets',
