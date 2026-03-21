@@ -16,6 +16,19 @@
   justify-content: space-between;
 }
 
+.logo-group {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.logo-mrmet {
+  height: 44px;
+  width: auto;
+  display: block;
+  flex-shrink: 0;
+}
+
 .logo-text {
   font-size: 1.3rem;
   font-weight: 900;
