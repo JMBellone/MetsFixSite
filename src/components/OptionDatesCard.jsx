@@ -1,5 +1,7 @@
 import { useState, useEffect } from 'react'
 
+const MILB_LOGO = 'https://www.milb.com/assets/images/milb-logo.png'
+
 function fmtDate(dateStr) {
   if (!dateStr) return '—'
   const [y, m, d] = dateStr.split('-').map(Number)
@@ -38,6 +40,17 @@ export default function OptionDatesCard() {
       <table className="option-dates-table">
         <thead>
           <tr>
+            <th className="option-dates-title-row" colSpan={4}>
+              <img
+                src={MILB_LOGO}
+                alt="MiLB"
+                className="option-dates-logo"
+                onError={e => { e.currentTarget.src = 'https://www.google.com/s2/favicons?domain=milb.com&sz=64' }}
+              />
+              Option Dates
+            </th>
+          </tr>
+          <tr>
             <th className="option-dates-th">Player</th>
             <th className="option-dates-th option-dates-th--center">Pos</th>
             <th className="option-dates-th option-dates-th--center">Optioned</th>
@@ -48,8 +61,10 @@ export default function OptionDatesCard() {
           {players.map(p => {
             const eligible = isEligible(p.eligibleDate)
             return (
-              <tr key={`${p.name}-${p.dateOptioned}`}
-                className={`option-dates-row${eligible ? ' option-dates-row--eligible' : ''}`}>
+              <tr
+                key={`${p.name}-${p.dateOptioned}`}
+                className={`option-dates-row${eligible ? ' option-dates-row--eligible' : ''}`}
+              >
                 <td className="option-dates-td option-dates-name">{p.name}</td>
                 <td className="option-dates-td option-dates-pos">{p.position}</td>
                 <td className="option-dates-td option-dates-date">{fmtDate(p.dateOptioned)}</td>

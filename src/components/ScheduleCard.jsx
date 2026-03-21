@@ -29,7 +29,6 @@ export default function ScheduleCard() {
     <div className="schedule-card">
       <div className="schedule-header">
         <span className="schedule-title">Upcoming Games</span>
-        <span className="schedule-subtitle">Next {games.length}</span>
       </div>
       <div className="schedule-grid">
         {games.map(game => {

@@ -3,6 +3,7 @@ import SkeletonCard from './components/SkeletonCard'
 import ScheduleCard from './components/ScheduleCard'
 import StandingsCard from './components/StandingsCard'
 import OptionDatesCard from './components/OptionDatesCard'
+import SNYCard from './components/SNYCard'
 import './App.css'
 
 function faviconUrl(link) {
@@ -103,10 +104,6 @@ export default function App() {
     })
   }, [])
 
-  const isNew = (article) => lastVisitTime && article.pubDate
-    ? new Date(article.pubDate) > lastVisitTime
-    : false
-
   const briefingArticle = articles.find(a => a.team === 'metropolitan' && !removedIds.has(a.id)) || null
 
   const newsPool = articles
@@ -119,7 +116,6 @@ export default function App() {
   const headlines  = newsPool.slice(3, 5)
   const moreNews   = newsPool.slice(5, 10)
 
-  // Athletic articles not already shown in the sections above
   const shownIds = new Set(newsPool.slice(0, 10).map(a => a.id))
   const athleticPool = articles
     .filter(a => a.source === 'The Athletic' && !removedIds.has(a.id) && !shownIds.has(a.id))
@@ -150,7 +146,6 @@ export default function App() {
       )}
 
       <main className="main">
-        <ScheduleCard />
 
         {/* ── The Latest Briefing ─────────────────────────── */}
         {briefingArticle && (
@@ -312,7 +307,10 @@ export default function App() {
               )}
             </div>
 
-            {/* ── NL East Standings ────────────────────────── */}
+            {/* ── Upcoming Games (moved here) ───────────────── */}
+            <ScheduleCard />
+
+            {/* ── MLB Standings ─────────────────────────────── */}
             <StandingsCard />
 
             {/* ── More on the Mets ─────────────────────────── */}
@@ -352,119 +350,126 @@ export default function App() {
           </>
         )}
 
-        {/* ── The Athletic ─────────────────────────────── */}
-            {athFeatured && (
-              <>
-                <div className="section-header section-header--mets">
-                  <img
-                    src="https://www.google.com/s2/favicons?domain=theathletic.com&sz=64"
-                    alt="The Athletic"
-                    className="section-header-logo"
-                    onError={e => { e.currentTarget.style.display = 'none' }}
-                  />
-                  <span className="section-header-label">The Athletic</span>
-                  <span className="section-header-line" />
-                </div>
+        {/* ── The Athletic ─────────────────────────────────── */}
+        {athFeatured && (
+          <>
+            <div className="section-header section-header--mets">
+              <img
+                src="https://www.google.com/s2/favicons?domain=theathletic.com&sz=64"
+                alt="The Athletic"
+                className="section-header-logo"
+                onError={e => { e.currentTarget.style.display = 'none' }}
+              />
+              <span className="section-header-label">The Athletic</span>
+              <span className="section-header-line" />
+            </div>
 
-                <div className="team-news-card">
-                  {/* Featured */}
+            <div className="team-news-card">
+              <div className="team-news-item-wrap">
+                <a href={athFeatured.link} target="_blank" rel="noopener noreferrer"
+                  className="team-news-featured" onClick={() => markRead(athFeatured.id)}>
+                  {athFeatured.image && (
+                    <img src={athFeatured.image} alt="" className="team-news-featured-img"
+                      onError={e => { e.currentTarget.style.display = 'none' }} />
+                  )}
+                  <div className="team-news-featured-body">
+                    <span className={`team-news-featured-title${readIds.has(athFeatured.id) ? ' team-news--read' : ''}`}>
+                      {athFeatured.title}
+                    </span>
+                    <span className="team-news-meta">{timeAgo(athFeatured.pubDate)} · The Athletic</span>
+                    <SubscriberBadge paywalled={athFeatured.paywalled} />
+                  </div>
+                </a>
+                <button className="item-remove" onClick={() => removeArticle(athFeatured.id)} aria-label="Remove">✕</button>
+              </div>
+
+              {athSecondary && (
+                <>
+                  <div className="team-news-divider" />
                   <div className="team-news-item-wrap">
-                    <a href={athFeatured.link} target="_blank" rel="noopener noreferrer"
-                      className="team-news-featured" onClick={() => markRead(athFeatured.id)}>
-                      {athFeatured.image && (
-                        <img src={athFeatured.image} alt="" className="team-news-featured-img"
+                    <a href={athSecondary.link} target="_blank" rel="noopener noreferrer"
+                      className="team-news-secondary" onClick={() => markRead(athSecondary.id)}>
+                      {athSecondary.image && (
+                        <img src={athSecondary.image} alt="" className="team-news-secondary-img"
                           onError={e => { e.currentTarget.style.display = 'none' }} />
                       )}
-                      <div className="team-news-featured-body">
-                        <span className={`team-news-featured-title${readIds.has(athFeatured.id) ? ' team-news--read' : ''}`}>
-                          {athFeatured.title}
+                      <div className="team-news-secondary-body">
+                        <span className={`team-news-secondary-title${readIds.has(athSecondary.id) ? ' team-news--read' : ''}`}>
+                          {athSecondary.title}
                         </span>
-                        <span className="team-news-meta">{timeAgo(athFeatured.pubDate)} · The Athletic</span>
-                        <SubscriberBadge paywalled={athFeatured.paywalled} />
+                        {athSecondary.description && <span className="team-news-secondary-desc">{athSecondary.description}</span>}
+                        <span className="team-news-meta">{timeAgo(athSecondary.pubDate)} · The Athletic</span>
+                        <SubscriberBadge paywalled={athSecondary.paywalled} />
                       </div>
                     </a>
-                    <button className="item-remove" onClick={() => removeArticle(athFeatured.id)} aria-label="Remove">✕</button>
+                    <button className="item-remove" onClick={() => removeArticle(athSecondary.id)} aria-label="Remove">✕</button>
                   </div>
+                </>
+              )}
 
-                  {athSecondary && (
-                    <>
-                      <div className="team-news-divider" />
-                      <div className="team-news-item-wrap">
-                        <a href={athSecondary.link} target="_blank" rel="noopener noreferrer"
-                          className="team-news-secondary" onClick={() => markRead(athSecondary.id)}>
-                          {athSecondary.image && (
-                            <img src={athSecondary.image} alt="" className="team-news-secondary-img"
+              {athTertiary && (
+                <>
+                  <div className="team-news-divider" />
+                  <div className="team-news-item-wrap">
+                    <a href={athTertiary.link} target="_blank" rel="noopener noreferrer"
+                      className="team-news-secondary" onClick={() => markRead(athTertiary.id)}>
+                      {athTertiary.image && (
+                        <img src={athTertiary.image} alt="" className="team-news-secondary-img"
+                          onError={e => { e.currentTarget.style.display = 'none' }} />
+                      )}
+                      <div className="team-news-secondary-body">
+                        <span className={`team-news-secondary-title${readIds.has(athTertiary.id) ? ' team-news--read' : ''}`}>
+                          {athTertiary.title}
+                        </span>
+                        {athTertiary.description && <span className="team-news-secondary-desc">{athTertiary.description}</span>}
+                        <span className="team-news-meta">{timeAgo(athTertiary.pubDate)} · The Athletic</span>
+                        <SubscriberBadge paywalled={athTertiary.paywalled} />
+                      </div>
+                    </a>
+                    <button className="item-remove" onClick={() => removeArticle(athTertiary.id)} aria-label="Remove">✕</button>
+                  </div>
+                </>
+              )}
+
+              {athHeadlines.length > 0 && (
+                <>
+                  <div className="team-news-divider" />
+                  <div className="team-news-headlines team-news-headlines--row">
+                    {athHeadlines.map(a => (
+                      <a key={a.id} href={a.link} target="_blank" rel="noopener noreferrer"
+                        className={`team-news-headline${readIds.has(a.id) ? ' team-news--read' : ''}`}
+                        onClick={() => markRead(a.id)}>
+                        <span className="team-news-headline-body">
+                          <span className="team-news-headline-title">{a.title}</span>
+                          <span className="team-news-headline-source">
+                            <img src={faviconUrl(a.link)} alt="" className="team-news-source-favicon"
                               onError={e => { e.currentTarget.style.display = 'none' }} />
-                          )}
-                          <div className="team-news-secondary-body">
-                            <span className={`team-news-secondary-title${readIds.has(athSecondary.id) ? ' team-news--read' : ''}`}>
-                              {athSecondary.title}
-                            </span>
-                            {athSecondary.description && <span className="team-news-secondary-desc">{athSecondary.description}</span>}
-                            <span className="team-news-meta">{timeAgo(athSecondary.pubDate)} · The Athletic</span>
-                            <SubscriberBadge paywalled={athSecondary.paywalled} />
-                          </div>
-                        </a>
-                        <button className="item-remove" onClick={() => removeArticle(athSecondary.id)} aria-label="Remove">✕</button>
-                      </div>
-                    </>
-                  )}
+                            The Athletic · {timeAgo(a.pubDate)}
+                            {a.paywalled && <span className="subscriber-badge subscriber-badge--inline">Subscriber</span>}
+                          </span>
+                        </span>
+                      </a>
+                    ))}
+                  </div>
+                </>
+              )}
+            </div>
+          </>
+        )}
 
-                  {athTertiary && (
-                    <>
-                      <div className="team-news-divider" />
-                      <div className="team-news-item-wrap">
-                        <a href={athTertiary.link} target="_blank" rel="noopener noreferrer"
-                          className="team-news-secondary" onClick={() => markRead(athTertiary.id)}>
-                          {athTertiary.image && (
-                            <img src={athTertiary.image} alt="" className="team-news-secondary-img"
-                              onError={e => { e.currentTarget.style.display = 'none' }} />
-                          )}
-                          <div className="team-news-secondary-body">
-                            <span className={`team-news-secondary-title${readIds.has(athTertiary.id) ? ' team-news--read' : ''}`}>
-                              {athTertiary.title}
-                            </span>
-                            {athTertiary.description && <span className="team-news-secondary-desc">{athTertiary.description}</span>}
-                            <span className="team-news-meta">{timeAgo(athTertiary.pubDate)} · The Athletic</span>
-                            <SubscriberBadge paywalled={athTertiary.paywalled} />
-                          </div>
-                        </a>
-                        <button className="item-remove" onClick={() => removeArticle(athTertiary.id)} aria-label="Remove">✕</button>
-                      </div>
-                    </>
-                  )}
-
-                  {athHeadlines.length > 0 && (
-                    <>
-                      <div className="team-news-divider" />
-                      <div className="team-news-headlines team-news-headlines--row">
-                        {athHeadlines.map(a => (
-                          <a key={a.id} href={a.link} target="_blank" rel="noopener noreferrer"
-                            className={`team-news-headline${readIds.has(a.id) ? ' team-news--read' : ''}`}
-                            onClick={() => markRead(a.id)}>
-                            <span className="team-news-headline-body">
-                              <span className="team-news-headline-title">{a.title}</span>
-                              <span className="team-news-headline-source">
-                                <img src={faviconUrl(a.link)} alt="" className="team-news-source-favicon"
-                                  onError={e => { e.currentTarget.style.display = 'none' }} />
-                                The Athletic · {timeAgo(a.pubDate)}
-                                {a.paywalled && <span className="subscriber-badge subscriber-badge--inline">Subscriber</span>}
-                              </span>
-                            </span>
-                          </a>
-                        ))}
-                      </div>
-                    </>
-                  )}
-                </div>
-              </>
-            )}
-
-        {/* ── Option Dates ─────────────────────────────────── */}
+        {/* ── See It on SNY ────────────────────────────────── */}
         <div className="section-header section-header--mets">
-          <span className="section-header-label">Option Dates</span>
+          <svg className="section-header-logo" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+            <rect x="1" y="4" width="22" height="14" rx="2" stroke="currentColor" strokeWidth="1.8" fill="none"/>
+            <line x1="8" y1="20" x2="16" y2="20" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round"/>
+            <line x1="12" y1="18" x2="12" y2="20" stroke="currentColor" strokeWidth="1.8"/>
+          </svg>
+          <span className="section-header-label">See It on SNY</span>
           <span className="section-header-line" />
         </div>
+        <SNYCard />
+
+        {/* ── Option Dates ─────────────────────────────────── */}
         <OptionDatesCard />
 
         {!loading && !error && newsPool.length === 0 && !briefingArticle && (

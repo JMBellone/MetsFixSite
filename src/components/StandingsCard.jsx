@@ -30,6 +30,34 @@ function Division({ division, highlightAbbr }) {
   )
 }
 
+function ColHeader() {
+  return (
+    <div className="standings-col-header">
+      <span />
+      <span className="standings-col-label" style={{ textAlign: 'left' }}>Team</span>
+      <span className="standings-col-label">W</span>
+      <span className="standings-col-label">L</span>
+      <span className="standings-col-label">PCT</span>
+      <span className="standings-col-label">GB</span>
+      <span className="standings-col-label">WCGB</span>
+    </div>
+  )
+}
+
+function LeaguePanel({ label, divisions, highlightAbbr, className }) {
+  return (
+    <div className={`standings-panel${className ? ` ${className}` : ''}`}>
+      <div className="standings-panel-label">{label}</div>
+      <ColHeader />
+      <div className="standings-list">
+        {divisions.map(div => (
+          <Division key={div.name} division={div} highlightAbbr={highlightAbbr} />
+        ))}
+      </div>
+    </div>
+  )
+}
+
 export default function StandingsCard() {
   const [standings, setStandings] = useState(null)
   const [league, setLeague] = useState('nl')
@@ -45,8 +73,6 @@ export default function StandingsCard() {
 
   if (loading || !standings) return null
 
-  const divisions = league === 'nl' ? standings.nl : standings.al
-
   return (
     <div className="standings-card">
       <div className="standings-header">
@@ -57,6 +83,7 @@ export default function StandingsCard() {
           onError={e => { e.currentTarget.style.display = 'none' }}
         />
         <span className="standings-header-title">MLB Standings</span>
+        {/* Tabs shown on mobile only (hidden on desktop via CSS) */}
         <div className="standings-league-tabs">
           <button
             className={`standings-league-tab${league === 'nl' ? ' standings-league-tab--active' : ''}`}
@@ -69,24 +96,29 @@ export default function StandingsCard() {
         </div>
       </div>
 
-      <div className="standings-col-header">
-        <span />
-        <span className="standings-col-label" style={{ textAlign: 'left' }}>Team</span>
-        <span className="standings-col-label">W</span>
-        <span className="standings-col-label">L</span>
-        <span className="standings-col-label">PCT</span>
-        <span className="standings-col-label">GB</span>
-        <span className="standings-col-label">WCGB</span>
+      {/* Mobile: single panel based on selected tab */}
+      <div className="standings-mobile">
+        <LeaguePanel
+          label={league === 'nl' ? 'National League' : 'American League'}
+          divisions={league === 'nl' ? standings.nl : standings.al}
+          highlightAbbr={league === 'nl' ? 'NYM' : ''}
+        />
       </div>
 
-      <div className="standings-list">
-        {divisions.map(division => (
-          <Division
-            key={division.name}
-            division={division}
-            highlightAbbr={league === 'nl' ? 'NYM' : ''}
-          />
-        ))}
+      {/* Desktop: both leagues side by side */}
+      <div className="standings-desktop">
+        <LeaguePanel
+          label="National League"
+          divisions={standings.nl}
+          highlightAbbr="NYM"
+          className="standings-panel--nl"
+        />
+        <LeaguePanel
+          label="American League"
+          divisions={standings.al}
+          highlightAbbr=""
+          className="standings-panel--al"
+        />
       </div>
     </div>
   )

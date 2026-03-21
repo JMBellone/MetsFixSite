@@ -698,6 +698,106 @@
   font-size: 0.72rem;
 }
 
+/* ── SNY video card ─────────────────────────────────────── */
+.sny-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+.sny-skeleton {
+  height: 180px;
+  background: linear-gradient(90deg, var(--surface) 25%, var(--surface-2) 50%, var(--surface) 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.4s infinite;
+  border-bottom: 1px solid var(--border);
+}
+
+.sny-skeleton:last-child { border-bottom: none; }
+
+.sny-video {
+  border-bottom: 1px solid var(--border);
+}
+
+.sny-video:last-child { border-bottom: none; }
+
+.sny-thumb-btn {
+  display: block;
+  position: relative;
+  width: 100%;
+  background: #000;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  line-height: 0;
+}
+
+.sny-thumb {
+  width: 100%;
+  aspect-ratio: 16/9;
+  object-fit: cover;
+  display: block;
+  opacity: 0.9;
+  transition: opacity 0.15s;
+}
+
+.sny-thumb-btn:hover .sny-thumb { opacity: 0.75; }
+
+.sny-play-overlay {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none;
+}
+
+.sny-play-icon {
+  width: 54px;
+  height: 38px;
+  filter: drop-shadow(0 2px 6px rgba(0,0,0,0.5));
+  transition: transform 0.15s;
+}
+
+.sny-thumb-btn:hover .sny-play-icon { transform: scale(1.08); }
+
+.sny-embed-wrap {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 16/9;
+  background: #000;
+}
+
+.sny-embed {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  border: none;
+}
+
+.sny-video-info {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 10px 14px 12px;
+}
+
+.sny-video-title {
+  font-size: 0.875rem;
+  font-weight: 700;
+  line-height: 1.3;
+  color: var(--text);
+}
+
+.sny-video-meta {
+  font-size: 0.68rem;
+  color: var(--text-muted);
+}
+
 /* ── Option Dates card ──────────────────────────────────── */
 .option-dates-card {
   background: var(--surface);
@@ -791,6 +891,44 @@
   margin: 0;
 }
 
+.option-dates-title-row {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  padding: 8px 12px 7px;
+  background: var(--surface-2);
+  border-bottom: 1px solid var(--border);
+  font-size: 0.72rem;
+  font-weight: 800;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  color: var(--mets-blue-light);
+  text-align: left;
+}
+
+.option-dates-logo {
+  width: 20px;
+  height: 20px;
+  object-fit: contain;
+  flex-shrink: 0;
+}
+
+/* ── Standings panel layout ─────────────────────────────── */
+.standings-panel-label {
+  padding: 5px 12px 4px;
+  font-size: 0.6rem;
+  font-weight: 800;
+  letter-spacing: 0.8px;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  background: var(--surface-2);
+  border-bottom: 1px solid var(--border);
+}
+
+/* Mobile: only show active league (controlled via .standings-mobile / .standings-desktop) */
+.standings-desktop { display: none; }
+.standings-mobile  { display: block; }
+
 /* ── Responsive ─────────────────────────────────────────── */
 @media (min-width: 640px) {
   .main {
@@ -811,4 +949,22 @@
     padding-left: 16px;
     padding-right: 16px;
   }
+
+  /* Side-by-side standings on desktop */
+  .standings-mobile { display: none; }
+  .standings-desktop {
+    display: flex;
+  }
+
+  .standings-panel {
+    flex: 1;
+    min-width: 0;
+  }
+
+  .standings-panel--nl {
+    border-right: 1px solid var(--border);
+  }
+
+  /* Hide NL/AL tab buttons on desktop — both leagues visible */
+  .standings-league-tabs { display: none; }
 }
