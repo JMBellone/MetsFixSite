@@ -113,6 +113,16 @@
   text-shadow: 0 0 20px rgba(0, 45, 114, 0.5);
 }
 
+.section-header--briefing .section-header-label {
+  font-size: 0.88rem;
+  color: #f5d000;
+  text-shadow: 0 0 12px rgba(245, 208, 0, 0.4);
+}
+
+.section-header--briefing .section-header-line {
+  background: linear-gradient(to right, rgba(245, 208, 0, 0.4), transparent);
+}
+
 .section-header--mets .section-header-line {
   background: linear-gradient(to right, rgba(74, 127, 212, 0.5), transparent);
 }

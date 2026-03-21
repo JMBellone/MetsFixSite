@@ -169,7 +169,7 @@ export default function App() {
         {/* ── The Latest Briefing ─────────────────────────── */}
         {briefingArticle && (
           <>
-            <div className="section-header section-header--mets">
+            <div className="section-header section-header--mets section-header--briefing">
               <span className="section-header-label">{getBriefingLabel()}</span>
               <span className="section-header-line" />
             </div>
