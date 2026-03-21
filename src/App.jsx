@@ -464,6 +464,18 @@ export default function App() {
           </>
         )}
 
+        {/* ── Roster Activity ──────────────────────────────── */}
+        <div className="section-header section-header--mets">
+          <span className="section-header-label">🍎 Roster Activity</span>
+          <span className="section-header-line" />
+        </div>
+
+        {/* ── Option Dates ─────────────────────────────────── */}
+        <OptionDatesCard />
+
+        {/* ── Injured List ─────────────────────────────────── */}
+        <InjuredListCard />
+
         {/* ── The Athletic ─────────────────────────────────── */}
         {athFeatured && (
           <div className="team-news-card">
@@ -561,23 +573,17 @@ export default function App() {
           </div>
         )}
 
+        {/* ── Ya Gotta Keep Reading ────────────────────────── */}
+        <div className="section-header section-header--mets">
+          <span className="section-header-label">Ya Gotta Keep Reading</span>
+          <span className="section-header-line" />
+        </div>
+
         {/* ── See It on SNY ────────────────────────────────── */}
         <SNYCard />
 
         {/* ── Blog Roll ────────────────────────────────────── */}
         <BlogRollCard />
-
-        {/* ── Roster Activity ──────────────────────────────── */}
-        <div className="section-header section-header--mets">
-          <span className="section-header-label">🍎 Roster Activity</span>
-          <span className="section-header-line" />
-        </div>
-
-        {/* ── Option Dates ─────────────────────────────────── */}
-        <OptionDatesCard />
-
-        {/* ── Injured List ─────────────────────────────────── */}
-        <InjuredListCard />
 
         {!loading && !error && newsPool.length === 0 && !briefingArticle && (
           <div className="empty-state">No articles found.</div>
