@@ -8,6 +8,7 @@ import SNYCard from './components/SNYCard'
 import LatestUpdatesCard from './components/LatestUpdatesCard'
 import LastGameCard from './components/LastGameCard'
 import BlogRollCard from './components/BlogRollCard'
+import MLBNewsCard from './components/MLBNewsCard'
 import './App.css'
 
 function faviconUrl(link) {
@@ -301,6 +302,9 @@ export default function App() {
 
         {/* ── Upcoming Games ───────────────────────────────── */}
         <ScheduleCard />
+
+        {/* ── MLB News ─────────────────────────────────────── */}
+        <MLBNewsCard />
 
         {/* ── MLB Standings ─────────────────────────────────── */}
         <StandingsCard />
