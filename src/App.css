@@ -1440,6 +1440,33 @@
   }
 }
 
+/* ── Briefing signup CTA ────────────────────────────────── */
+.briefing-signup {
+  display: block;
+  text-align: center;
+  font-size: 0.62rem;
+  font-weight: 800;
+  letter-spacing: 1.2px;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  text-decoration: none;
+  opacity: 0.55;
+  transition: opacity 0.15s;
+  margin-top: -6px;
+}
+
+@media (hover: hover) {
+  .briefing-signup:hover { opacity: 0.85; }
+}
+
+/* ── News section divider ───────────────────────────────── */
+.news-section-divider {
+  height: 1px;
+  background: var(--border);
+  opacity: 0.5;
+  margin: 2px 0;
+}
+
 /* ── Latest Updates / Columnists / Blog Roll cards ──────── */
 .latest-updates-card {
   background: var(--surface);

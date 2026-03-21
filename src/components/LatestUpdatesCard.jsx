@@ -23,16 +23,19 @@ function ClockIcon() {
   )
 }
 
-export default function LatestUpdatesCard() {
-  const [articles, setArticles] = useState([])
-  const [loading, setLoading] = useState(true)
+export default function LatestUpdatesCard({ articles: propArticles, title = 'Latest Updates' }) {
+  const [fetchedArticles, setFetchedArticles] = useState([])
+  const [loading, setLoading] = useState(propArticles == null)
 
   useEffect(() => {
+    if (propArticles != null) return
     fetch('/api/latestupdates')
       .then(r => r.ok ? r.json() : Promise.reject())
-      .then(data => { setArticles(data.articles || []); setLoading(false) })
+      .then(data => { setFetchedArticles(data.articles || []); setLoading(false) })
       .catch(() => setLoading(false))
-  }, [])
+  }, [propArticles])
+
+  const articles = propArticles != null ? propArticles : fetchedArticles
 
   if (loading) return (
     <div className="latest-updates-card">
@@ -45,7 +48,7 @@ export default function LatestUpdatesCard() {
     <div className="latest-updates-card">
       <div className="latest-updates-header">
         <ClockIcon />
-        <span className="latest-updates-title">Latest Updates</span>
+        <span className="latest-updates-title">{title}</span>
       </div>
       <div className="latest-updates-list">
         {articles.map((a, i) => (

@@ -128,13 +128,18 @@ export default function App() {
     .filter(a => a.team === 'mets' && !removedIds.has(a.id))
     .sort((a, b) => new Date(b.pubDate) - new Date(a.pubDate))
 
-  const featured   = newsPool[0]
-  const secondary  = newsPool[1]
-  const tertiary   = newsPool[2]
-  const headlines  = newsPool.slice(3, 5)
-  const moreNews   = newsPool.slice(5, 10)
+  const topFeatured  = newsPool[0]
+  const topSecondary = newsPool[1]
+  const topTertiary  = newsPool[2]
+  const hotOff       = newsPool.slice(3, 8)
 
-  const shownIds = new Set(newsPool.slice(0, 10).map(a => a.id))
+  const featured   = newsPool[8]
+  const secondary  = newsPool[9]
+  const tertiary   = newsPool[10]
+  const headlines  = newsPool.slice(11, 13)
+  const moreNews   = newsPool.slice(13, 18)
+
+  const shownIds = new Set(newsPool.slice(0, 18).map(a => a.id))
   const athleticPool = articles
     .filter(a => a.source === 'The Athletic' && !removedIds.has(a.id) && !shownIds.has(a.id))
     .sort((a, b) => new Date(b.pubDate) - new Date(a.pubDate))
@@ -202,8 +207,94 @@ export default function App() {
           </>
         )}
 
-        {/* ── Latest Updates ───────────────────────────────── */}
-        <LatestUpdatesCard />
+        {/* ── Signup CTA ───────────────────────────────────── */}
+        {briefingArticle && (
+          <a
+            href="https://themetropolitan.substack.com/subscribe"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="briefing-signup"
+          >
+            Sign up to receive Mets Fix in your inbox
+          </a>
+        )}
+
+        {/* ── Top News Card ────────────────────────────────── */}
+        {!loading && !error && topFeatured && (
+          <div className="team-news-card">
+            <div className="team-news-item-wrap">
+              <a
+                href={topFeatured.link}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="team-news-featured"
+                onClick={() => markRead(topFeatured.id)}
+              >
+                {topFeatured.image && (
+                  <img src={topFeatured.image} alt="" className="team-news-featured-img"
+                    onError={e => { e.currentTarget.style.display = 'none' }} />
+                )}
+                <div className="team-news-featured-body">
+                  <span className={`team-news-featured-title${readIds.has(topFeatured.id) ? ' team-news--read' : ''}`}>
+                    {topFeatured.title}
+                  </span>
+                  <span className="team-news-meta">{timeAgo(topFeatured.pubDate)} · {topFeatured.source}{topFeatured.paywalled && <SubscriberIcon />}</span>
+                </div>
+              </a>
+              <button className="item-remove" onClick={() => removeArticle(topFeatured.id)} aria-label="Remove">✕</button>
+            </div>
+
+            {topSecondary && (
+              <>
+                <div className="team-news-divider" />
+                <div className="team-news-item-wrap">
+                  <a href={topSecondary.link} target="_blank" rel="noopener noreferrer"
+                    className="team-news-secondary" onClick={() => markRead(topSecondary.id)}>
+                    {topSecondary.image && (
+                      <img src={topSecondary.image} alt="" className="team-news-secondary-img"
+                        onError={e => { e.currentTarget.style.display = 'none' }} />
+                    )}
+                    <div className="team-news-secondary-body">
+                      <span className={`team-news-secondary-title${readIds.has(topSecondary.id) ? ' team-news--read' : ''}`}>
+                        {topSecondary.title}
+                      </span>
+                      <span className="team-news-meta">{timeAgo(topSecondary.pubDate)} · {topSecondary.source}{topSecondary.paywalled && <SubscriberIcon />}</span>
+                    </div>
+                  </a>
+                  <button className="item-remove" onClick={() => removeArticle(topSecondary.id)} aria-label="Remove">✕</button>
+                </div>
+              </>
+            )}
+
+            {topTertiary && (
+              <>
+                <div className="team-news-divider" />
+                <div className="team-news-item-wrap">
+                  <a href={topTertiary.link} target="_blank" rel="noopener noreferrer"
+                    className="team-news-secondary" onClick={() => markRead(topTertiary.id)}>
+                    {topTertiary.image && (
+                      <img src={topTertiary.image} alt="" className="team-news-secondary-img"
+                        onError={e => { e.currentTarget.style.display = 'none' }} />
+                    )}
+                    <div className="team-news-secondary-body">
+                      <span className={`team-news-secondary-title${readIds.has(topTertiary.id) ? ' team-news--read' : ''}`}>
+                        {topTertiary.title}
+                      </span>
+                      <span className="team-news-meta">{timeAgo(topTertiary.pubDate)} · {topTertiary.source}{topTertiary.paywalled && <SubscriberIcon />}</span>
+                    </div>
+                  </a>
+                  <button className="item-remove" onClick={() => removeArticle(topTertiary.id)} aria-label="Remove">✕</button>
+                </div>
+              </>
+            )}
+          </div>
+        )}
+
+        {/* ── Hot Off the Presses ──────────────────────────── */}
+        {!loading && !error && hotOff.length > 0 && (
+          <div className="news-section-divider" />
+        )}
+        <LatestUpdatesCard title="Hot Off the Presses" articles={hotOff} />
 
         {/* ── Last Game ────────────────────────────────────── */}
         <LastGameCard />

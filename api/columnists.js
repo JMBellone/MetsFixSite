@@ -1,7 +1,6 @@
-// api/columnists.js — Joel Sherman (NY Post) & John Harper (SNY)
+// api/columnists.js — John Harper (SNY)
 
 const FEEDS = [
-  { url: 'https://nypost.com/author/joel-sherman/feed/', source: 'NY Post', author: 'Joel Sherman' },
   { url: 'https://sny.tv/author/john-harper/feed/', source: 'SNY', author: 'John Harper' },
 ]
 
