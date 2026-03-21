@@ -405,7 +405,14 @@ export default function App() {
         <SNYFeaturedCard />
 
         {/* ── MLB News ─────────────────────────────────────── */}
-        <MLBNewsCard shownLinks={new Set(articles.map(a => a.link))} />
+        <MLBNewsCard shownLinks={new Set(articles.flatMap(a => {
+          const links = [a.link]
+          try {
+            const u = new URL(a.link)
+            links.push(u.origin + u.pathname.replace(/^\/[a-z-]+\/news\//, '/news/'))
+          } catch {}
+          return links
+        }))} />
 
         {/* ── MLB Standings ─────────────────────────────────── */}
         <StandingsCard />
