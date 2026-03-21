@@ -45,10 +45,13 @@ function lastName(fullName) {
   return parts.length > 1 ? parts.slice(1).join(' ') : fullName
 }
 
+const PREVIEW = 8
+
 export default function MetsStatsCard() {
   const [data, setData] = useState(null)
   const [loading, setLoading] = useState(true)
   const [tab, setTab] = useState('Hitters')
+  const [showAll, setShowAll] = useState(false)
 
   useEffect(() => {
     fetch('/api/metsstats')
@@ -64,8 +67,9 @@ export default function MetsStatsCard() {
   )
   if (!data) return null
 
-  const rows = tab === 'Hitters' ? data.hitters : tab === 'Starters' ? data.starters : data.relievers
+  const allRows = tab === 'Hitters' ? data.hitters : tab === 'Starters' ? data.starters : data.relievers
   const cols = tab === 'Hitters' ? HITTER_COLS : tab === 'Starters' ? STARTER_COLS : RELIEVER_COLS
+  const rows = showAll ? allRows : allRows.slice(0, PREVIEW)
 
   return (
     <div className="stats-card">
@@ -85,7 +89,7 @@ export default function MetsStatsCard() {
           <button
             key={t}
             className={`stats-tab${tab === t ? ' stats-tab--active' : ''}`}
-            onClick={() => setTab(t)}
+            onClick={() => { setTab(t); setShowAll(false) }}
           >
             {t}
           </button>
@@ -116,6 +120,12 @@ export default function MetsStatsCard() {
           </tbody>
         </table>
       </div>
+
+      {allRows.length > PREVIEW && (
+        <button className="stats-show-more" onClick={() => setShowAll(v => !v)}>
+          {showAll ? 'Show Less' : `Show All ${allRows.length}`}
+        </button>
+      )}
     </div>
   )
 }

@@ -2310,3 +2310,23 @@
 .stats-row--alt {
   background: var(--surface-2);
 }
+
+.stats-show-more {
+  display: block;
+  width: 100%;
+  padding: 10px;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  color: var(--mets-blue-light);
+  background: none;
+  border: none;
+  border-top: 1px solid var(--border);
+  cursor: pointer;
+  transition: background 0.12s;
+}
+
+@media (hover: hover) {
+  .stats-show-more:hover { background: var(--surface-2); }
+}

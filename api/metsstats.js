@@ -50,8 +50,8 @@ module.exports = async function handler(req, res) {
         sb: s.stat.stolenBases ?? 0,
         pa: s.stat.plateAppearances ?? 0,
       }))
-      .filter(p => p.pa > 0)
-      .sort((a, b) => b.pa - a.pa)
+      .filter(p => p.ab > 0)
+      .sort((a, b) => b.ab - a.ab)
 
     // Starters: gamesStarted > 0; Relievers: gamesStarted === 0
     const starters = []

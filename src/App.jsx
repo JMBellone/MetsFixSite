@@ -576,7 +576,12 @@ export default function App() {
                             <span className={`team-news-secondary-title${readIds.has(a.id) ? ' team-news--read' : ''}`}>
                               {a.title}
                             </span>
-                            <span className="team-news-meta">{timeAgo(a.pubDate)} · {a.source}{a.paywalled && <SubscriberIcon />}</span>
+                            <span className="team-news-meta">
+                              {timeAgo(a.pubDate)} ·{' '}
+                              <img src={faviconUrl(a.link)} alt="" className="news-meta-favicon"
+                                onError={e => { e.currentTarget.style.display = 'none' }} />
+                              {a.source}{a.paywalled && <SubscriberIcon />}
+                            </span>
                           </div>
                         </a>
                         <button className="item-remove" onClick={() => removeArticle(a.id)} aria-label="Remove">✕</button>
