@@ -81,7 +81,6 @@ export default function BlogRollCard() {
                 </span>
               </div>
             </a>
-            <button className="item-remove" onClick={() => removeArticle(a.link)} aria-label="Remove">✕</button>
           </div>
         </div>
       ))}
