@@ -1067,6 +1067,362 @@
   color: var(--text-muted);
 }
 
+/* ── Last Game card ─────────────────────────────────────── */
+.lg-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  overflow: hidden;
+}
+
+.lg-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 14px 7px;
+  background: var(--surface-2);
+  border-bottom: 1px solid var(--border);
+}
+
+.lg-header-icon {
+  width: 16px;
+  height: 16px;
+  color: var(--mets-blue-light);
+  flex-shrink: 0;
+}
+
+.lg-header-label {
+  font-size: 0.72rem;
+  font-weight: 900;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  color: var(--mets-blue-light);
+}
+
+/* Score section */
+.lg-score-section {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 14px 12px;
+  gap: 8px;
+}
+
+.lg-score-team {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  min-width: 64px;
+}
+
+.lg-team-logo {
+  width: 44px;
+  height: 44px;
+  object-fit: contain;
+}
+
+.lg-team-abbr {
+  font-size: 0.65rem;
+  font-weight: 800;
+  letter-spacing: 0.5px;
+  color: var(--text-muted);
+  text-transform: uppercase;
+}
+
+.lg-score-num {
+  font-size: 2.2rem;
+  font-weight: 900;
+  color: var(--text-muted);
+  line-height: 1;
+  letter-spacing: -1px;
+}
+
+.lg-score-num--winner {
+  color: var(--text);
+}
+
+.lg-score-center {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 3px;
+  flex: 1;
+}
+
+.lg-status {
+  font-size: 0.6rem;
+  font-weight: 900;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  color: var(--mets-blue-light);
+  background: rgba(74, 127, 212, 0.12);
+  border: 1px solid rgba(74, 127, 212, 0.25);
+  border-radius: 4px;
+  padding: 2px 7px;
+}
+
+.lg-score-date {
+  font-size: 0.65rem;
+  font-weight: 600;
+  color: var(--text-muted);
+  text-align: center;
+}
+
+.lg-venue {
+  font-size: 0.6rem;
+  color: var(--text-muted);
+  opacity: 0.7;
+  text-align: center;
+}
+
+/* Linescore */
+.lg-linescore-wrap {
+  overflow-x: auto;
+  scrollbar-width: none;
+  border-top: 1px solid var(--border);
+  border-bottom: 1px solid var(--border);
+}
+
+.lg-linescore-wrap::-webkit-scrollbar { display: none; }
+
+.lg-linescore {
+  width: 100%;
+  border-collapse: collapse;
+  min-width: max-content;
+}
+
+.lg-ls-th {
+  padding: 5px 8px;
+  font-size: 0.58rem;
+  font-weight: 800;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  opacity: 0.6;
+  text-align: center;
+  background: var(--surface-2);
+  white-space: nowrap;
+}
+
+.lg-ls-th.lg-ls-team {
+  text-align: left;
+  padding-left: 14px;
+  opacity: 1;
+}
+
+.lg-ls-sep {
+  width: 1px;
+  padding: 0;
+  background: var(--border) !important;
+  opacity: 1 !important;
+}
+
+.lg-ls-row { border-bottom: 1px solid rgba(255,255,255,0.05); }
+.lg-ls-row:last-child { border-bottom: none; }
+
+.lg-ls-td {
+  padding: 6px 8px;
+  font-size: 0.72rem;
+  font-weight: 600;
+  color: var(--text-muted);
+  text-align: center;
+  white-space: nowrap;
+}
+
+.lg-ls-td.lg-ls-team {
+  font-weight: 800;
+  color: var(--text-muted);
+  text-align: left;
+  padding-left: 14px;
+}
+
+.lg-ls-td.lg-ls-mets {
+  color: var(--mets-blue-light);
+}
+
+.lg-ls-td.lg-ls-total {
+  font-weight: 800;
+  color: var(--text);
+}
+
+/* Mobile tabs (visible on mobile, hidden on desktop) */
+.lg-boxscore-tabs {
+  display: flex;
+  padding: 10px 14px 0;
+  gap: 6px;
+}
+
+.lg-tab {
+  padding: 4px 12px;
+  font-size: 0.65rem;
+  font-weight: 800;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  background: none;
+  color: var(--text-muted);
+  font-family: var(--font);
+  cursor: pointer;
+  transition: color 0.15s, background 0.15s, border-color 0.15s;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.lg-tab--active {
+  background: rgba(74, 127, 212, 0.15);
+  border-color: rgba(74, 127, 212, 0.4);
+  color: var(--mets-blue-light);
+}
+
+/* Box score panels */
+.lg-boxscore-wrap {
+  display: flex;
+  flex-direction: column;
+}
+
+.lg-boxscore-panel--hidden {
+  display: none;
+}
+
+/* Batting / pitching tables */
+.lg-batting,
+.lg-pitching {
+  overflow-x: auto;
+  scrollbar-width: none;
+  border-top: 1px solid var(--border);
+}
+
+.lg-batting::-webkit-scrollbar,
+.lg-pitching::-webkit-scrollbar { display: none; }
+
+.lg-pitching { border-top-color: rgba(255,255,255,0.05); }
+
+.lg-table {
+  width: 100%;
+  border-collapse: collapse;
+  min-width: max-content;
+}
+
+.lg-th {
+  padding: 5px 8px;
+  font-size: 0.58rem;
+  font-weight: 800;
+  letter-spacing: 0.6px;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  opacity: 0.7;
+  background: var(--surface-2);
+  border-bottom: 1px solid var(--border);
+  text-align: right;
+  white-space: nowrap;
+}
+
+.lg-th.lg-th-name {
+  text-align: left;
+  padding-left: 14px;
+  font-size: 0.6rem;
+  opacity: 1;
+  color: var(--text-muted);
+  min-width: 130px;
+}
+
+.lg-row {
+  border-bottom: 1px solid rgba(255,255,255,0.04);
+  transition: background 0.12s;
+}
+
+.lg-row:last-child { border-bottom: none; }
+.lg-row--sub { opacity: 0.75; }
+
+@media (hover: hover) {
+  .lg-row:hover { background: var(--surface-2); }
+}
+
+.lg-row--totals {
+  background: rgba(255,255,255,0.03);
+  border-top: 1px solid var(--border);
+}
+
+.lg-td {
+  padding: 6px 8px;
+  font-size: 0.72rem;
+  vertical-align: middle;
+}
+
+.lg-td.lg-name {
+  padding-left: 14px;
+  display: flex;
+  align-items: baseline;
+  gap: 5px;
+  min-width: 130px;
+}
+
+.lg-player-name {
+  font-weight: 600;
+  color: var(--text);
+  white-space: nowrap;
+}
+
+.lg-player-pos {
+  font-size: 0.6rem;
+  font-weight: 700;
+  color: var(--text-muted);
+  white-space: nowrap;
+}
+
+.lg-pitcher-note {
+  font-size: 0.6rem;
+  color: var(--text-muted);
+  white-space: nowrap;
+  margin-left: 3px;
+}
+
+.lg-totals-label {
+  font-weight: 700;
+  color: var(--text-muted);
+  font-size: 0.65rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.lg-stat {
+  text-align: right;
+  color: var(--text-muted);
+  font-variant-numeric: tabular-nums;
+  min-width: 28px;
+}
+
+/* Desktop: side-by-side panels, tabs hidden */
+@media (min-width: 640px) {
+  .lg-boxscore-tabs {
+    display: none;
+  }
+
+  .lg-boxscore-wrap {
+    flex-direction: row;
+  }
+
+  .lg-boxscore-panel {
+    flex: 1;
+    min-width: 0;
+  }
+
+  .lg-boxscore-panel--hidden {
+    display: flex;
+    flex-direction: column;
+    border-left: 1px solid var(--border);
+  }
+
+  .lg-th-name {
+    min-width: 110px;
+  }
+
+  .lg-td.lg-name {
+    min-width: 110px;
+  }
+}
+
 /* ── Latest Updates / Columnists / Blog Roll cards ──────── */
 .latest-updates-card {
   background: var(--surface);

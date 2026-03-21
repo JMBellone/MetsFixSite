@@ -6,6 +6,7 @@ import OptionDatesCard from './components/OptionDatesCard'
 import InjuredListCard from './components/InjuredListCard'
 import SNYCard from './components/SNYCard'
 import LatestUpdatesCard from './components/LatestUpdatesCard'
+import LastGameCard from './components/LastGameCard'
 import ColumnistsCard from './components/ColumnistsCard'
 import BlogRollCard from './components/BlogRollCard'
 import './App.css'
@@ -212,6 +213,9 @@ export default function App() {
 
         {/* ── Latest Updates ───────────────────────────────── */}
         <LatestUpdatesCard />
+
+        {/* ── Last Game ────────────────────────────────────── */}
+        <LastGameCard />
 
         {loading && (
           <div className="article-list">
