@@ -636,22 +636,75 @@ export default function App() {
             {remainingPool.map((a, idx) => (
               <div key={a.id}>
                 {idx > 0 && <div className="team-news-divider" />}
-                <div className="team-news-item-wrap">
-                  <a href={a.link} target="_blank" rel="noopener noreferrer"
-                    className="team-news-secondary" onClick={() => markRead(a.id)}>
-                    {a.image && (
-                      <img src={a.image} alt="" className="team-news-secondary-img"
-                        onError={e => { e.currentTarget.style.display = 'none' }} />
-                    )}
-                    <div className="team-news-secondary-body">
-                      <span className={`team-news-secondary-title${readIds.has(a.id) ? ' team-news--read' : ''}`}>
-                        {a.title}
-                      </span>
-                      <span className="team-news-meta">{timeAgo(a.pubDate)} · {a.source}{a.paywalled && <SubscriberIcon />}</span>
-                    </div>
-                  </a>
-                  <button className="item-remove" onClick={() => removeArticle(a.id)} aria-label="Remove">✕</button>
-                </div>
+
+                {/* idx 0 — full-width featured image */}
+                {idx === 0 ? (
+                  <div className="team-news-item-wrap">
+                    <a href={a.link} target="_blank" rel="noopener noreferrer"
+                      className="team-news-featured" onClick={() => markRead(a.id)}>
+                      {a.image && (
+                        <img src={a.image} alt="" className="team-news-featured-img"
+                          onError={e => { e.currentTarget.style.display = 'none' }} />
+                      )}
+                      <div className="team-news-featured-body">
+                        <span className={`team-news-featured-title${readIds.has(a.id) ? ' team-news--read' : ''}`}>
+                          {a.title}
+                        </span>
+                        <span className="team-news-meta">
+                          {timeAgo(a.pubDate)} ·{' '}
+                          <img src={faviconUrl(a.link)} alt="" className="news-meta-favicon"
+                            onError={e => { e.currentTarget.style.display = 'none' }} />
+                          {a.source}{a.paywalled && <SubscriberIcon />}
+                        </span>
+                      </div>
+                    </a>
+                    <button className="item-remove" onClick={() => removeArticle(a.id)} aria-label="Remove">✕</button>
+                  </div>
+
+                /* idx 1–5 — secondary with small image */
+                ) : idx < 6 ? (
+                  <div className="team-news-item-wrap">
+                    <a href={a.link} target="_blank" rel="noopener noreferrer"
+                      className="team-news-secondary" onClick={() => markRead(a.id)}>
+                      {a.image && (
+                        <img src={a.image} alt="" className="team-news-secondary-img"
+                          onError={e => { e.currentTarget.style.display = 'none' }} />
+                      )}
+                      <div className="team-news-secondary-body">
+                        <span className={`team-news-secondary-title${readIds.has(a.id) ? ' team-news--read' : ''}`}>
+                          {a.title}
+                        </span>
+                        <span className="team-news-meta">
+                          {timeAgo(a.pubDate)} ·{' '}
+                          <img src={faviconUrl(a.link)} alt="" className="news-meta-favicon"
+                            onError={e => { e.currentTarget.style.display = 'none' }} />
+                          {a.source}{a.paywalled && <SubscriberIcon />}
+                        </span>
+                      </div>
+                    </a>
+                    <button className="item-remove" onClick={() => removeArticle(a.id)} aria-label="Remove">✕</button>
+                  </div>
+
+                /* idx 6+ — no image, larger headline-only */
+                ) : (
+                  <div className="team-news-item-wrap">
+                    <a href={a.link} target="_blank" rel="noopener noreferrer"
+                      className="team-news-secondary" onClick={() => markRead(a.id)}>
+                      <div className="team-news-secondary-body">
+                        <span className={`team-news-secondary-title team-news-secondary-title--headline${readIds.has(a.id) ? ' team-news--read' : ''}`}>
+                          {a.title}
+                        </span>
+                        <span className="team-news-meta">
+                          {timeAgo(a.pubDate)} ·{' '}
+                          <img src={faviconUrl(a.link)} alt="" className="news-meta-favicon"
+                            onError={e => { e.currentTarget.style.display = 'none' }} />
+                          {a.source}{a.paywalled && <SubscriberIcon />}
+                        </span>
+                      </div>
+                    </a>
+                    <button className="item-remove" onClick={() => removeArticle(a.id)} aria-label="Remove">✕</button>
+                  </div>
+                )}
               </div>
             ))}
           </div>

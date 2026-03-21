@@ -1,5 +1,9 @@
 import { useState, useEffect } from 'react'
 
+function faviconUrl(link) {
+  try { return `https://www.google.com/s2/favicons?domain=${new URL(link).hostname}&sz=32` } catch { return '' }
+}
+
 function timeAgo(pubDate) {
   if (!pubDate) return ''
   const diffMs = Date.now() - new Date(pubDate).getTime()
@@ -69,7 +73,12 @@ export default function BlogRollCard() {
               )}
               <div className="team-news-secondary-body">
                 <span className="team-news-secondary-title">{a.title}</span>
-                <span className="team-news-meta">{timeAgo(a.pubDate)} · {a.source}</span>
+                <span className="team-news-meta">
+                  {timeAgo(a.pubDate)} ·{' '}
+                  <img src={faviconUrl(a.link)} alt="" className="news-meta-favicon"
+                    onError={e => { e.currentTarget.style.display = 'none' }} />
+                  {a.source}
+                </span>
               </div>
             </a>
             <button className="item-remove" onClick={() => removeArticle(a.link)} aria-label="Remove">✕</button>
