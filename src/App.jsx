@@ -5,6 +5,9 @@ import StandingsCard from './components/StandingsCard'
 import OptionDatesCard from './components/OptionDatesCard'
 import InjuredListCard from './components/InjuredListCard'
 import SNYCard from './components/SNYCard'
+import LatestUpdatesCard from './components/LatestUpdatesCard'
+import ColumnistsCard from './components/ColumnistsCard'
+import BlogRollCard from './components/BlogRollCard'
 import './App.css'
 
 function faviconUrl(link) {
@@ -51,6 +54,7 @@ export default function App() {
   const [articles, setArticles] = useState([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(null)
+  const [columnistLinks, setColumnistLinks] = useState(new Set())
   const [readIds, setReadIds] = useState(() => {
     try { return new Set(JSON.parse(localStorage.getItem('metsReadArticles') || '[]')) }
     catch { return new Set() }
@@ -84,6 +88,13 @@ export default function App() {
   }, [])
 
   useEffect(() => { fetchFeeds() }, [fetchFeeds])
+
+  useEffect(() => {
+    fetch('/api/columnists')
+      .then(r => r.ok ? r.json() : Promise.reject())
+      .then(data => setColumnistLinks(new Set((data.articles || []).map(a => a.link))))
+      .catch(() => {})
+  }, [])
 
   const onTouchStart = useCallback((e) => {
     if (window.scrollY === 0) touchStartY.current = e.touches[0].clientY
@@ -123,7 +134,7 @@ export default function App() {
   const briefingArticle = articles.find(a => a.team === 'metropolitan' && !removedIds.has(a.id)) || null
 
   const newsPool = articles
-    .filter(a => a.team === 'mets' && !removedIds.has(a.id))
+    .filter(a => a.team === 'mets' && !removedIds.has(a.id) && !columnistLinks.has(a.link))
     .sort((a, b) => new Date(b.pubDate) - new Date(a.pubDate))
 
   const featured   = newsPool[0]
@@ -199,7 +210,9 @@ export default function App() {
           </>
         )}
 
-        {/* ── The Latest News ──────────────────────────────── */}
+        {/* ── Latest Updates ───────────────────────────────── */}
+        <LatestUpdatesCard />
+
         {loading && (
           <div className="article-list">
             {Array.from({ length: 5 }).map((_, i) => <SkeletonCard key={i} />)}
@@ -215,17 +228,6 @@ export default function App() {
 
         {!loading && !error && featured && (
           <>
-            <div className="section-header section-header--mets">
-              <img
-                src="https://a.espncdn.com/i/teamlogos/mlb/500/nym.png"
-                alt="Mets"
-                className="section-header-logo"
-                onError={e => { e.currentTarget.style.display = 'none' }}
-              />
-              <span className="section-header-label">The Latest News</span>
-              <span className="section-header-line" />
-            </div>
-
             <div className="team-news-card">
               {/* Featured */}
               <div className="team-news-item-wrap">
@@ -266,7 +268,6 @@ export default function App() {
                         <span className={`team-news-secondary-title${readIds.has(secondary.id) ? ' team-news--read' : ''}`}>
                           {secondary.title}
                         </span>
-                        {secondary.description && <span className="team-news-secondary-desc">{secondary.description}</span>}
                         <span className="team-news-meta">{timeAgo(secondary.pubDate)} · {secondary.source}</span>
                         <SubscriberBadge paywalled={secondary.paywalled} />
                       </div>
@@ -291,7 +292,6 @@ export default function App() {
                         <span className={`team-news-secondary-title${readIds.has(tertiary.id) ? ' team-news--read' : ''}`}>
                           {tertiary.title}
                         </span>
-                        {tertiary.description && <span className="team-news-secondary-desc">{tertiary.description}</span>}
                         <span className="team-news-meta">{timeAgo(tertiary.pubDate)} · {tertiary.source}</span>
                         <SubscriberBadge paywalled={tertiary.paywalled} />
                       </div>
@@ -332,6 +332,9 @@ export default function App() {
             {/* ── MLB Standings ─────────────────────────────── */}
             <StandingsCard />
 
+            {/* ── Columnists ────────────────────────────────── */}
+            <ColumnistsCard />
+
             {/* ── More on the Mets ─────────────────────────── */}
             {moreNews.length > 0 && (
               <>
@@ -354,7 +357,6 @@ export default function App() {
                             <span className={`team-news-secondary-title${readIds.has(a.id) ? ' team-news--read' : ''}`}>
                               {a.title}
                             </span>
-                            {a.description && <span className="team-news-secondary-desc">{a.description}</span>}
                             <span className="team-news-meta">{timeAgo(a.pubDate)} · {a.source}</span>
                             <SubscriberBadge paywalled={a.paywalled} />
                           </div>
@@ -416,7 +418,6 @@ export default function App() {
                         <span className={`team-news-secondary-title${readIds.has(athSecondary.id) ? ' team-news--read' : ''}`}>
                           {athSecondary.title}
                         </span>
-                        {athSecondary.description && <span className="team-news-secondary-desc">{athSecondary.description}</span>}
                         <span className="team-news-meta">{timeAgo(athSecondary.pubDate)} · The Athletic</span>
                         <SubscriberBadge paywalled={athSecondary.paywalled} />
                       </div>
@@ -440,7 +441,6 @@ export default function App() {
                         <span className={`team-news-secondary-title${readIds.has(athTertiary.id) ? ' team-news--read' : ''}`}>
                           {athTertiary.title}
                         </span>
-                        {athTertiary.description && <span className="team-news-secondary-desc">{athTertiary.description}</span>}
                         <span className="team-news-meta">{timeAgo(athTertiary.pubDate)} · The Athletic</span>
                         <SubscriberBadge paywalled={athTertiary.paywalled} />
                       </div>
@@ -478,6 +478,15 @@ export default function App() {
 
         {/* ── See It on SNY ────────────────────────────────── */}
         <SNYCard />
+
+        {/* ── Blog Roll ────────────────────────────────────── */}
+        <BlogRollCard />
+
+        {/* ── Roster Activity ──────────────────────────────── */}
+        <div className="section-header section-header--mets">
+          <span className="section-header-label">🍎 Roster Activity</span>
+          <span className="section-header-line" />
+        </div>
 
         {/* ── Option Dates ─────────────────────────────────── */}
         <OptionDatesCard />

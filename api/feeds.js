@@ -42,13 +42,6 @@ const FEEDS = [
     paywalled: false,
     authority: 1,
   },
-  {
-    url: 'https://www.amazinavenue.com/rss/current',
-    source: 'Amazin Avenue',
-    team: 'mets',
-    paywalled: false,
-    authority: 2,
-  },
 ];
 
 function decodeHtmlEntities(str) {
