@@ -177,16 +177,19 @@ export default function App() {
   const moreNews   = divePool.slice(5, 10)
 
   const shownIds = new Set([...topIds, ...divePool.slice(0, 10).map(a => a.id)])
-  const athleticPool = articles
+  // SFE gets the 3 most recent Athletic articles; Athletic card gets the next batch after those
+  const athleticAllByDate = articles
     .filter(a => a.source === 'The Athletic' && !removedIds.has(a.id) && !shownIds.has(a.id))
     .sort((a, b) => new Date(b.pubDate) - new Date(a.pubDate))
-    .slice(0, 5)
+  const sfePriorityAthletic = athleticAllByDate.slice(0, 3)
+  const sfePriorityAthleticIds = new Set(sfePriorityAthletic.map(a => a.id))
+  const athleticPool = athleticAllByDate.filter(a => !sfePriorityAthleticIds.has(a.id)).slice(0, 5)
   const athFeatured  = athleticPool[0]
   const athSecondary = athleticPool[1]
   const athTertiary  = athleticPool[2]
   const athHeadlines = athleticPool.slice(3, 5)
 
-  const allShownIds = new Set([...shownIds, ...athleticPool.map(a => a.id)])
+  const allShownIds = new Set([...shownIds, ...sfePriorityAthleticIds, ...athleticPool.map(a => a.id)])
   const SEVENTY_TWO_H = 72 * 60 * 60 * 1000
   const sfeBase = articles
     .filter(a =>
@@ -196,10 +199,11 @@ export default function App() {
       Date.now() - new Date(a.pubDate).getTime() < SEVENTY_TWO_H
     )
     .sort((a, b) => new Date(b.pubDate) - new Date(a.pubDate))
-  // 3 most recent from each priority source, sorted by publish time, then rest by date
-  const sfePriority = ['MLB.com', 'SNY', 'NY Post', 'The Athletic']
-    .flatMap(src => sfeBase.filter(a => a.source === src).slice(0, 3))
-    .sort((a, b) => new Date(b.pubDate) - new Date(a.pubDate))
+  // 3 most recent from MLB.com/SNY/NY Post pulled from sfeBase; Athletic handled separately above
+  const sfePriority = [
+    ...['MLB.com', 'SNY', 'NY Post'].flatMap(src => sfeBase.filter(a => a.source === src).slice(0, 3)),
+    ...sfePriorityAthletic,
+  ].sort((a, b) => new Date(b.pubDate) - new Date(a.pubDate))
   const sfePriorityIds = new Set(sfePriority.map(a => a.id))
   const remainingPool = [...sfePriority, ...sfeBase.filter(a => !sfePriorityIds.has(a.id))]
 
