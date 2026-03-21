@@ -188,7 +188,6 @@ export default function App() {
 
   const allShownIds = new Set([...shownIds, ...athleticPool.map(a => a.id)])
   const SEVENTY_TWO_H = 72 * 60 * 60 * 1000
-  const SFE_PRIORITY = new Set(['MLB.com', 'SNY', 'NY Post', 'The Athletic'])
   const sfeBase = articles
     .filter(a =>
       !removedIds.has(a.id) &&
@@ -197,7 +196,10 @@ export default function App() {
       Date.now() - new Date(a.pubDate).getTime() < SEVENTY_TWO_H
     )
     .sort((a, b) => new Date(b.pubDate) - new Date(a.pubDate))
-  const sfePriority = sfeBase.filter(a => SFE_PRIORITY.has(a.source)).slice(0, 3)
+  // 3 most recent from each priority source (in source order), then rest by date
+  const sfePriority = ['MLB.com', 'SNY', 'NY Post', 'The Athletic'].flatMap(src =>
+    sfeBase.filter(a => a.source === src).slice(0, 3)
+  )
   const sfePriorityIds = new Set(sfePriority.map(a => a.id))
   const remainingPool = [...sfePriority, ...sfeBase.filter(a => !sfePriorityIds.has(a.id))]
 
