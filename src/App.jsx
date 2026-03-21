@@ -8,6 +8,7 @@ import SNYCard from './components/SNYCard'
 import LatestUpdatesCard from './components/LatestUpdatesCard'
 import LastGameCard from './components/LastGameCard'
 import BlogRollCard from './components/BlogRollCard'
+import RedditCard from './components/RedditCard'
 import MLBNewsCard from './components/MLBNewsCard'
 import SNYFeaturedCard from './components/SNYFeaturedCard'
 import './App.css'
@@ -225,6 +226,11 @@ export default function App() {
         )}
 
         {/* ── Top News Card ────────────────────────────────── */}
+        {loading && (
+          <div className="team-news-card">
+            {Array.from({ length: 3 }).map((_, i) => <SkeletonCard key={i} />)}
+          </div>
+        )}
         {!loading && !error && topFeatured && (
           <div className="team-news-card">
             <div className="team-news-item-wrap">
@@ -296,7 +302,13 @@ export default function App() {
         )}
 
         {/* ── Hot Off the Presses ──────────────────────────── */}
-        <LatestUpdatesCard title="Recently Published" articles={hotOff} />
+        {loading ? (
+          <div className="latest-updates-card">
+            <div className="option-dates-skeleton" />
+          </div>
+        ) : (
+          <LatestUpdatesCard title="Recently Published" articles={hotOff} />
+        )}
 
         {/* ── Upcoming Games ───────────────────────────────── */}
         <ScheduleCard />
@@ -588,6 +600,9 @@ export default function App() {
 
         {/* ── Blog Roll ────────────────────────────────────── */}
         <BlogRollCard />
+
+        {/* ── Mets Reddit ──────────────────────────────────── */}
+        <RedditCard />
 
         {!loading && !error && newsPool.length === 0 && !briefingArticle && (
           <div className="empty-state">No articles found.</div>

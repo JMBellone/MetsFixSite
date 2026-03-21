@@ -170,6 +170,7 @@ async function fetchFeed(feedConfig) {
   for (const item of items) {
     if (!item.pubDate) continue;
     if (item.pubDate.getTime() < cutoff) continue;
+    if (item.link && item.link.includes('mets-injuries-and-roster-moves')) continue;
 
     results.push({
       id: `${source}-${Buffer.from(item.link).toString('base64').replace(/=/g, '')}`,

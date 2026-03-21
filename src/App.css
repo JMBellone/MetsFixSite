@@ -1103,6 +1103,25 @@
   .il-detail-link:hover { opacity: 0.75; }
 }
 
+/* ── Reddit card ────────────────────────────────────────── */
+.reddit-icon {
+  width: 20px;
+  height: 20px;
+  flex-shrink: 0;
+}
+
+.reddit-flair {
+  display: inline-block;
+  margin-left: 6px;
+  padding: 1px 5px;
+  font-size: 0.65rem;
+  font-weight: 600;
+  color: #FF4500;
+  background: rgba(255, 69, 0, 0.12);
+  border-radius: 3px;
+  vertical-align: middle;
+}
+
 /* ── Last Game card ─────────────────────────────────────── */
 .lg-card {
   background: var(--surface);
