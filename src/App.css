@@ -292,6 +292,13 @@
 
 .schedule-game:last-child { border-right: none; }
 
+.schedule-off-label {
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: var(--text-muted);
+  font-style: italic;
+}
+
 .schedule-matchup {
   display: flex;
   align-items: center;
@@ -712,7 +719,7 @@
 
 /* Stories From Earlier — big headline tier */
 .sfe-headline-article {
-  padding: 14px 0;
+  padding: 14px 16px;
 }
 
 .sfe-headline-link {

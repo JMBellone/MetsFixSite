@@ -22,7 +22,7 @@ module.exports = async function handler(req, res) {
     const events = data.events || [];
     const upcoming = events
       .filter(e => e.competitions?.[0]?.status?.type?.state === 'pre')
-      .slice(0, 5)
+      .slice(0, 10)
       .map(e => {
         const comp = e.competitions[0];
         const ours = comp.competitors.find(c => c.team.abbreviation === 'NYM');

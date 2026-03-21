@@ -152,10 +152,12 @@ export default function App() {
     .filter(a => a.team === 'mets' && !removedIds.has(a.id))
     .sort((a, b) => new Date(b.pubDate) - new Date(a.pubDate))
 
-  const topFeatured  = newsPool[0]
-  const topSecondary = newsPool[1]
-  const topTertiary  = newsPool[2]
-  const hotOff       = newsPool.slice(3, 8)
+  const topFeatured   = newsPool[0]
+  const topSecondary  = newsPool[1]
+  const topTertiary   = newsPool[2]
+  const topHeadline1  = newsPool[3]
+  const topHeadline2  = newsPool[4]
+  const hotOff        = newsPool.slice(5, 10)
 
   const featured   = newsPool[8]
   const secondary  = newsPool[9]
@@ -330,6 +332,52 @@ export default function App() {
                     </div>
                   </a>
                   <button className="item-remove" onClick={() => removeArticle(topTertiary.id)} aria-label="Remove">✕</button>
+                </div>
+              </>
+            )}
+
+            {topHeadline1 && (
+              <>
+                <div className="team-news-divider" />
+                <div className="sfe-headline-article">
+                  <div className="team-news-item-wrap">
+                    <a href={topHeadline1.link} target="_blank" rel="noopener noreferrer"
+                      className="sfe-headline-link" onClick={() => markRead(topHeadline1.id)}>
+                      <span className={`sfe-headline-title${readIds.has(topHeadline1.id) ? ' team-news--read' : ''}`}>
+                        {topHeadline1.title}
+                      </span>
+                      <span className="team-news-meta">
+                        {timeAgo(topHeadline1.pubDate)} ·{' '}
+                        <img src={faviconUrl(topHeadline1.link)} alt="" className="news-meta-favicon"
+                          onError={e => { e.currentTarget.style.display = 'none' }} />
+                        {topHeadline1.source}{topHeadline1.paywalled && <SubscriberIcon />}
+                      </span>
+                    </a>
+                    <button className="item-remove" onClick={() => removeArticle(topHeadline1.id)} aria-label="Remove">✕</button>
+                  </div>
+                </div>
+              </>
+            )}
+
+            {topHeadline2 && (
+              <>
+                <div className="team-news-divider" />
+                <div className="sfe-headline-article">
+                  <div className="team-news-item-wrap">
+                    <a href={topHeadline2.link} target="_blank" rel="noopener noreferrer"
+                      className="sfe-headline-link" onClick={() => markRead(topHeadline2.id)}>
+                      <span className={`sfe-headline-title${readIds.has(topHeadline2.id) ? ' team-news--read' : ''}`}>
+                        {topHeadline2.title}
+                      </span>
+                      <span className="team-news-meta">
+                        {timeAgo(topHeadline2.pubDate)} ·{' '}
+                        <img src={faviconUrl(topHeadline2.link)} alt="" className="news-meta-favicon"
+                          onError={e => { e.currentTarget.style.display = 'none' }} />
+                        {topHeadline2.source}{topHeadline2.paywalled && <SubscriberIcon />}
+                      </span>
+                    </a>
+                    <button className="item-remove" onClick={() => removeArticle(topHeadline2.id)} aria-label="Remove">✕</button>
+                  </div>
                 </div>
               </>
             )}
@@ -712,23 +760,26 @@ export default function App() {
                         </div>
                       ))}
 
-                      {/* Headline — large text, no divider lines, padding only */}
-                      {group.type === 'headline' && group.items.map(a => (
-                        <div key={a.id} className="sfe-headline-article">
-                          <div className="team-news-item-wrap">
-                            <a href={a.link} target="_blank" rel="noopener noreferrer"
-                              className="sfe-headline-link" onClick={() => markRead(a.id)}>
-                              <span className={`sfe-headline-title${readIds.has(a.id) ? ' team-news--read' : ''}`}>
-                                {a.title}
-                              </span>
-                              <span className="team-news-meta">
-                                {timeAgo(a.pubDate)} ·{' '}
-                                <img src={faviconUrl(a.link)} alt="" className="news-meta-favicon"
-                                  onError={e => { e.currentTarget.style.display = 'none' }} />
-                                {a.source}{a.paywalled && <SubscriberIcon />}
-                              </span>
-                            </a>
-                            <button className="item-remove" onClick={() => removeArticle(a.id)} aria-label="Remove">✕</button>
+                      {/* Headline — large text, dividers between items */}
+                      {group.type === 'headline' && group.items.map((a, i) => (
+                        <div key={a.id}>
+                          {i > 0 && <div className="team-news-divider" />}
+                          <div className="sfe-headline-article">
+                            <div className="team-news-item-wrap">
+                              <a href={a.link} target="_blank" rel="noopener noreferrer"
+                                className="sfe-headline-link" onClick={() => markRead(a.id)}>
+                                <span className={`sfe-headline-title${readIds.has(a.id) ? ' team-news--read' : ''}`}>
+                                  {a.title}
+                                </span>
+                                <span className="team-news-meta">
+                                  {timeAgo(a.pubDate)} ·{' '}
+                                  <img src={faviconUrl(a.link)} alt="" className="news-meta-favicon"
+                                    onError={e => { e.currentTarget.style.display = 'none' }} />
+                                  {a.source}{a.paywalled && <SubscriberIcon />}
+                                </span>
+                              </a>
+                              <button className="item-remove" onClick={() => removeArticle(a.id)} aria-label="Remove">✕</button>
+                            </div>
                           </div>
                         </div>
                       ))}

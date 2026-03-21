@@ -1,14 +1,31 @@
 import { useState, useEffect } from 'react'
 
-function formatGame(dateStr) {
-  const date = new Date(dateStr)
-  const day = date.toLocaleDateString('en-US', {
-    weekday: 'short', month: 'short', day: 'numeric', timeZone: 'America/New_York'
+function etDateKey(dateStr) {
+  return new Date(dateStr).toLocaleDateString('en-CA', { timeZone: 'America/New_York' })
+}
+
+function nextThreeDates() {
+  const result = []
+  const now = new Date()
+  for (let i = 0; i < 3; i++) {
+    const d = new Date(now)
+    d.setDate(d.getDate() + i)
+    result.push(d.toLocaleDateString('en-CA', { timeZone: 'America/New_York' }))
+  }
+  return result
+}
+
+function formatDateKey(dateKey) {
+  const [y, m, d] = dateKey.split('-').map(Number)
+  return new Date(y, m - 1, d).toLocaleDateString('en-US', {
+    weekday: 'short', month: 'short', day: 'numeric',
   })
-  const time = date.toLocaleTimeString('en-US', {
-    hour: 'numeric', minute: '2-digit', timeZone: 'America/New_York'
+}
+
+function formatTime(dateStr) {
+  return new Date(dateStr).toLocaleTimeString('en-US', {
+    hour: 'numeric', minute: '2-digit', timeZone: 'America/New_York',
   }) + ' ET'
-  return { day, time }
 }
 
 export default function ScheduleCard() {
@@ -23,7 +40,16 @@ export default function ScheduleCard() {
       .finally(() => setLoading(false))
   }, [])
 
-  if (loading || games.length === 0) return null
+  if (loading) return null
+
+  const dates = nextThreeDates()
+  const gamesByDate = {}
+  games.forEach(g => {
+    const key = etDateKey(g.date)
+    if (!gamesByDate[key]) gamesByDate[key] = g
+  })
+
+  const slots = dates.map(dateKey => ({ dateKey, game: gamesByDate[dateKey] || null }))
 
   return (
     <div className="schedule-card">
@@ -37,36 +63,42 @@ export default function ScheduleCard() {
         <span className="schedule-title">Upcoming Schedule</span>
       </div>
       <div className="schedule-grid">
-        {games.map(game => {
-          const { day, time } = formatGame(game.date)
-          return (
-            <div key={game.id} className="schedule-game">
-              <div className="schedule-matchup">
-                <span className="schedule-ha">{game.isHome ? 'vs' : '@'}</span>
-                {game.opponentLogo && (
-                  <img
-                    className="schedule-opp-logo"
-                    src={game.opponentLogo}
-                    alt={game.opponentAbbr}
-                  />
+        {slots.map(({ dateKey, game }) => (
+          <div key={dateKey} className="schedule-game">
+            {game ? (
+              <>
+                <div className="schedule-matchup">
+                  <span className="schedule-ha">{game.isHome ? 'vs' : '@'}</span>
+                  {game.opponentLogo && (
+                    <img
+                      className="schedule-opp-logo"
+                      src={game.opponentLogo}
+                      alt={game.opponentAbbr}
+                    />
+                  )}
+                  <span className="schedule-opp-abbr">{game.opponentAbbr}</span>
+                </div>
+                <span className="schedule-date">{formatDateKey(dateKey)}</span>
+                <span className="schedule-time">{formatTime(game.date)}</span>
+                {(game.metsStarter || game.oppStarter) && (
+                  <span className="schedule-starters">
+                    {game.metsStarter && game.oppStarter
+                      ? `${game.metsStarter} vs ${game.oppStarter}`
+                      : game.metsStarter || game.oppStarter}
+                  </span>
                 )}
-                <span className="schedule-opp-abbr">{game.opponentAbbr}</span>
-              </div>
-              <span className="schedule-date">{day}</span>
-              <span className="schedule-time">{time}</span>
-              {(game.metsStarter || game.oppStarter) && (
-                <span className="schedule-starters">
-                  {game.metsStarter && game.oppStarter
-                    ? `${game.metsStarter} vs ${game.oppStarter}`
-                    : game.metsStarter || game.oppStarter}
-                </span>
-              )}
-              {game.broadcast && (
-                <span className="schedule-tv">{game.broadcast}</span>
-              )}
-            </div>
-          )
-        })}
+                {game.broadcast && (
+                  <span className="schedule-tv">{game.broadcast}</span>
+                )}
+              </>
+            ) : (
+              <>
+                <span className="schedule-off-label">Off Day</span>
+                <span className="schedule-date">{formatDateKey(dateKey)}</span>
+              </>
+            )}
+          </div>
+        ))}
       </div>
     </div>
   )
