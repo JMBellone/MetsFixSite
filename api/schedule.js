@@ -8,7 +8,7 @@ module.exports = async function handler(req, res) {
 
   try {
     const r = await fetch(
-      'https://site.api.espn.com/apis/site/v2/sports/baseball/mlb/teams/21/schedule',
+      'https://site.api.espn.com/apis/site/v2/sports/baseball/mlb/teams/21/schedule?season=2026&seasontype=2',
       {
         headers: {
           'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36',
@@ -19,12 +19,13 @@ module.exports = async function handler(req, res) {
     if (!r.ok) throw new Error(`ESPN API error ${r.status}`);
     const data = await r.json();
 
-    const OPENING_DAY = new Date('2026-03-26T00:00:00-04:00');
+    const OPENING_DAY_KEY = '2026-03-26';
     const events = data.events || [];
     const upcoming = events
       .filter(e => {
         if (e.competitions?.[0]?.status?.type?.state !== 'pre') return false;
-        return new Date(e.date) >= OPENING_DAY;
+        const dateKey = new Date(e.date).toLocaleDateString('en-CA', { timeZone: 'America/New_York' });
+        return dateKey >= OPENING_DAY_KEY;
       })
       .slice(0, 10)
       .map(e => {
