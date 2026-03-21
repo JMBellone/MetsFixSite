@@ -10,7 +10,7 @@ function timeAgo(pubDate) {
   return `${Math.floor(hours / 24)}d ago`
 }
 
-export default function MLBNewsCard() {
+export default function MLBNewsCard({ shownLinks = new Set() }) {
   const [articles, setArticles] = useState([])
   const [loading, setLoading] = useState(true)
 
@@ -26,7 +26,8 @@ export default function MLBNewsCard() {
       <div className="option-dates-skeleton" />
     </div>
   )
-  if (!articles.length) return null
+  const visible = articles.filter(a => !shownLinks.has(a.link))
+  if (!visible.length) return null
 
   return (
     <div className="mlbnews-card">
@@ -40,7 +41,7 @@ export default function MLBNewsCard() {
         <span className="mlbnews-title">MLB News</span>
       </div>
       <div className="mlbnews-list">
-        {articles.map((a, i) => (
+        {visible.map((a, i) => (
           <a
             key={`${a.link}-${i}`}
             href={a.link}

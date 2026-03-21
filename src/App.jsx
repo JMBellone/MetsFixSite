@@ -405,7 +405,7 @@ export default function App() {
         <SNYFeaturedCard />
 
         {/* ── MLB News ─────────────────────────────────────── */}
-        <MLBNewsCard />
+        <MLBNewsCard shownLinks={new Set(articles.map(a => a.link))} />
 
         {/* ── MLB Standings ─────────────────────────────────── */}
         <StandingsCard />
