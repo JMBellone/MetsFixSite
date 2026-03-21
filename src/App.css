@@ -1560,6 +1560,95 @@
   flex-shrink: 0;
 }
 
+/* ── MLB News card ──────────────────────────────────────── */
+.mlbnews-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  overflow: hidden;
+}
+
+.mlbnews-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 14px 7px;
+  background: var(--surface-2);
+  border-bottom: 1px solid var(--border);
+}
+
+.mlbnews-header-favicon {
+  width: 16px;
+  height: 16px;
+  border-radius: 2px;
+  flex-shrink: 0;
+}
+
+.mlbnews-title {
+  font-size: 0.72rem;
+  font-weight: 900;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  color: var(--mets-blue-light);
+}
+
+.mlbnews-list {
+  display: flex;
+  flex-direction: column;
+}
+
+.mlbnews-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 9px 14px;
+  text-decoration: none;
+  border-bottom: 1px solid rgba(255,255,255,0.05);
+  transition: background 0.12s;
+}
+
+.mlbnews-row:last-child {
+  border-bottom: none;
+}
+
+@media (hover: hover) {
+  .mlbnews-row:hover { background: var(--surface-2); }
+}
+
+.mlbnews-row-body {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.mlbnews-row-title {
+  font-size: 0.82rem;
+  font-weight: 600;
+  line-height: 1.3;
+  color: var(--text);
+  transition: color 0.12s;
+}
+
+.mlbnews-row:hover .mlbnews-row-title {
+  color: var(--mets-blue-light);
+}
+
+.mlbnews-row-meta {
+  font-size: 0.65rem;
+  color: var(--text-muted);
+}
+
+.mlbnews-row-thumb {
+  width: 64px;
+  height: 48px;
+  object-fit: cover;
+  border-radius: 4px;
+  flex-shrink: 0;
+  background: var(--surface-2);
+}
+
 /* ── Standings panel layout ─────────────────────────────── */
 .standings-panel-label {
   padding: 5px 12px 4px;

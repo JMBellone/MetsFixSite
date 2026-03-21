@@ -40,7 +40,20 @@ function parseItems(xml) {
       const d = new Date(pubStr.replace(/\bEDT\b/, '-0400').replace(/\bEST\b/, '-0500'))
       if (!isNaN(d.getTime())) pubDate = d.toISOString()
     }
-    items.push({ title, link, pubDate })
+    // Extract image: media:content, media:thumbnail, or enclosure
+    let image = null
+    const mc = /<media:content[^>]+url=["']([^"']+)["'][^>]*/i.exec(block)
+    if (mc) image = mc[1]
+    if (!image) {
+      const mt = /<media:thumbnail[^>]+url=["']([^"']+)["'][^>]*/i.exec(block)
+      if (mt) image = mt[1]
+    }
+    if (!image) {
+      const enc = /<enclosure[^>]+url=["']([^"']+)["'][^>]+type=["']image[^"']*["'][^>]*/i.exec(block)
+        || /<enclosure[^>]+type=["']image[^"']*["'][^>]+url=["']([^"']+)["'][^>]*/i.exec(block)
+      if (enc) image = enc[1]
+    }
+    items.push({ title, link, pubDate, image })
   }
   return items
 }
