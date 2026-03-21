@@ -2287,6 +2287,28 @@
   text-align: left;
 }
 
+.stats-th--sortable {
+  cursor: pointer;
+  user-select: none;
+}
+
+.stats-th--sortable:hover {
+  color: var(--text);
+}
+
+.stats-th--active {
+  color: var(--mets-blue-light);
+}
+
+.stats-sort-icon {
+  font-size: 0.55rem;
+  opacity: 0.5;
+}
+
+.stats-th--active .stats-sort-icon {
+  opacity: 1;
+}
+
 .stats-td {
   padding: 7px 12px;
   text-align: right;
@@ -2296,6 +2318,11 @@
 
 .stats-td--left {
   text-align: left;
+  font-weight: 600;
+}
+
+.stats-td--active {
+  color: var(--mets-blue-light);
   font-weight: 600;
 }
 
