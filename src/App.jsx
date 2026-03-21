@@ -12,6 +12,7 @@ import RedditCard from './components/RedditCard'
 import MLBNewsCard from './components/MLBNewsCard'
 import SNYFeaturedCard from './components/SNYFeaturedCard'
 import LiveScoreCard from './components/LiveScoreCard'
+import MetsVideoCard from './components/MetsVideoCard'
 import './App.css'
 
 function faviconUrl(link) {
@@ -43,7 +44,7 @@ function getBriefingLabel() {
   // 4:00 AM–12:00 PM → Morning (240–720)
   if (mins >= 240 && mins <= 720) return '☀️ Morning Briefing'
   // 12:01 PM–5:00 PM → Afternoon (721–1020)
-  if (mins <= 1020) return 'Afternoon Briefing'
+  if (mins <= 1020) return '🍎 Afternoon Briefing'
   // 5:01 PM–3:59 AM → Evening (1021–1439 and 0–239)
   return '☾ Evening Briefing'
 }
@@ -450,6 +451,9 @@ export default function App() {
               )}
             </div>
 
+            {/* ── Mets YouTube Video ───────────────────────── */}
+            <MetsVideoCard />
+
             {/* ── More on the Mets ─────────────────────────── */}
             {moreNews.length > 0 && (
               <>
@@ -486,7 +490,7 @@ export default function App() {
 
         {/* ── Roster Activity ──────────────────────────────── */}
         <div className="section-header section-header--mets">
-          <span className="section-header-label">🍎 Roster Activity</span>
+          <span className="section-header-label">📝 Roster Activity</span>
           <span className="section-header-line" />
         </div>
 
@@ -498,7 +502,7 @@ export default function App() {
 
         {/* ── Ya Gotta Keep Reading ────────────────────────── */}
         <div className="section-header section-header--mets">
-          <span className="section-header-label">Ya Gotta Keep Reading</span>
+          <span className="section-header-label">📚 Ya Gotta Keep Reading</span>
           <span className="section-header-line" />
         </div>
 
