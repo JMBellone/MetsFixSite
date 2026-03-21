@@ -627,17 +627,21 @@ export default function App() {
         {/* ── Mets Reddit ──────────────────────────────────── */}
         <RedditCard />
 
-        {/* ── Remaining Articles ───────────────────────────── */}
+        {/* ── Stories From Earlier ─────────────────────────── */}
         {!loading && remainingPool.length > 0 && (
           <div className="team-news-card">
             <div className="latest-updates-header">
-              <span className="latest-updates-title">More Mets News</span>
+              <span className="latest-updates-title">Stories From Earlier</span>
             </div>
-            {remainingPool.map((a, idx) => (
-              <div key={a.id}>
-                {idx > 0 && <div className="team-news-divider" />}
 
-                {/* idx 0 — full-width featured image */}
+            {/* Articles 0–7: individual rows */}
+            {remainingPool.slice(0, 8).map((a, idx) => (
+              <div key={a.id}>
+                {idx > 0 && (
+                  <div className={`team-news-divider${idx >= 3 && idx <= 5 ? ' team-news-divider--tall' : ''}`} />
+                )}
+
+                {/* idx 0 — large featured image */}
                 {idx === 0 ? (
                   <div className="team-news-item-wrap">
                     <a href={a.link} target="_blank" rel="noopener noreferrer"
@@ -661,8 +665,8 @@ export default function App() {
                     <button className="item-remove" onClick={() => removeArticle(a.id)} aria-label="Remove">✕</button>
                   </div>
 
-                /* idx 1–5 — secondary with small image */
-                ) : idx < 6 ? (
+                /* idx 1–2 and 6–7 — small image secondary */
+                ) : (idx <= 2 || idx >= 6) ? (
                   <div className="team-news-item-wrap">
                     <a href={a.link} target="_blank" rel="noopener noreferrer"
                       className="team-news-secondary" onClick={() => markRead(a.id)}>
@@ -685,13 +689,13 @@ export default function App() {
                     <button className="item-remove" onClick={() => removeArticle(a.id)} aria-label="Remove">✕</button>
                   </div>
 
-                /* idx 6+ — no image, larger headline-only */
+                /* idx 3–5 — headline only, large text */
                 ) : (
                   <div className="team-news-item-wrap">
                     <a href={a.link} target="_blank" rel="noopener noreferrer"
-                      className="team-news-secondary" onClick={() => markRead(a.id)}>
-                      <div className="team-news-secondary-body">
-                        <span className={`team-news-secondary-title team-news-secondary-title--headline${readIds.has(a.id) ? ' team-news--read' : ''}`}>
+                      className="team-news-headline" onClick={() => markRead(a.id)}>
+                      <div className="team-news-headline-body">
+                        <span className={`team-news-headline-title${readIds.has(a.id) ? ' team-news--read' : ''}`}>
                           {a.title}
                         </span>
                         <span className="team-news-meta">
@@ -707,6 +711,32 @@ export default function App() {
                 )}
               </div>
             ))}
+
+            {/* Articles 8+ — 2-column side-by-side grid */}
+            {remainingPool.length > 8 && (
+              <>
+                <div className="team-news-divider" />
+                <div className="team-news-sidebyside">
+                  {remainingPool.slice(8).map((a) => (
+                    <div key={a.id} className="team-news-sidebyside-item">
+                      <a href={a.link} target="_blank" rel="noopener noreferrer"
+                        className="team-news-sidebyside-link" onClick={() => markRead(a.id)}>
+                        <span className={`team-news-sidebyside-title${readIds.has(a.id) ? ' team-news--read' : ''}`}>
+                          {a.title}
+                        </span>
+                        <span className="team-news-meta">
+                          {timeAgo(a.pubDate)} ·{' '}
+                          <img src={faviconUrl(a.link)} alt="" className="news-meta-favicon"
+                            onError={e => { e.currentTarget.style.display = 'none' }} />
+                          {a.source}{a.paywalled && <SubscriberIcon />}
+                        </span>
+                      </a>
+                      <button className="item-remove item-remove--sm" onClick={() => removeArticle(a.id)} aria-label="Remove">✕</button>
+                    </div>
+                  ))}
+                </div>
+              </>
+            )}
           </div>
         )}
 
