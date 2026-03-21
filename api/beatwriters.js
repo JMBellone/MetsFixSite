@@ -1,8 +1,8 @@
-// api/beatwriters.js — Mets beat coverage from Newsday & NY Daily News
+// api/beatwriters.js — Mets beat coverage from NJ.com & NY Post (Mike Puma)
 
 const FEEDS = [
-  { url: 'https://www.newsday.com/sports/baseball/mets/rss/', source: 'Newsday' },
-  { url: 'https://www.nydailynews.com/sports/baseball/mets/rss/', source: 'NY Daily News' },
+  { url: 'https://www.nj.com/arc/outboundfeeds/rss/category/mets/?outputType=xml', source: 'NJ.com' },
+  { url: 'https://nypost.com/author/mike-puma/feed/', source: 'NY Post' },
 ]
 
 function decode(str) {

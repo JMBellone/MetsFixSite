@@ -42,13 +42,13 @@ export default function BeatWritersCard({ readIds, markRead, removeArticle }) {
     <div className="team-news-card">
       <div className="latest-updates-header">
         <img
-          src="https://www.google.com/s2/favicons?domain=newsday.com&sz=32"
+          src="https://www.google.com/s2/favicons?domain=nj.com&sz=32"
           alt=""
           className="mlbnews-header-favicon"
           onError={e => { e.currentTarget.style.display = 'none' }}
         />
         <img
-          src="https://www.google.com/s2/favicons?domain=nydailynews.com&sz=32"
+          src="https://www.google.com/s2/favicons?domain=nypost.com&sz=32"
           alt=""
           className="mlbnews-header-favicon"
           onError={e => { e.currentTarget.style.display = 'none' }}
