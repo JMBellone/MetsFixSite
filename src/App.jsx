@@ -135,7 +135,7 @@ export default function App() {
     >
       <header className="header">
         <div className="header-inner">
-          <img src="/logo.png" alt="Get Your Mets Fix" className="header-logo-img" />
+          <span className="logo-text">Mets <span>Fix</span></span>
           <span className="header-date">{formatDate()}</span>
         </div>
       </header>
