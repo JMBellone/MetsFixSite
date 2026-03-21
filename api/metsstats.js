@@ -25,8 +25,8 @@ module.exports = async function handler(req, res) {
 
   try {
     const [hitData, pitchData] = await Promise.all([
-      fetchJson(`${BASE}/stats?stats=season&group=hitting&season=${season}&gameType=${gameType}&teamId=${METS_ID}`),
-      fetchJson(`${BASE}/stats?stats=season&group=pitching&season=${season}&gameType=${gameType}&teamId=${METS_ID}`),
+      fetchJson(`${BASE}/stats?stats=season&group=hitting&season=${season}&gameType=${gameType}&teamId=${METS_ID}&playerPool=All`),
+      fetchJson(`${BASE}/stats?stats=season&group=pitching&season=${season}&gameType=${gameType}&teamId=${METS_ID}&playerPool=All`),
     ])
 
     const pitchSplits = pitchData.stats?.[0]?.splits || []
