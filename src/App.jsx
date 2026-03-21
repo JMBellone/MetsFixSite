@@ -57,6 +57,21 @@ function SubscriberIcon() {
   return <span className="subscriber-icon" title="Subscriber Content">$</span>
 }
 
+// Repeating pattern for Stories From Earlier (after idx 0 featured):
+// 2 small-image, 3 big-headline, 2 small-image, 2 side-by-side → repeat (cycle of 9)
+function groupRemainingArticles(articles) {
+  if (!articles.length) return []
+  const groups = [{ type: 'featured', items: [articles[0]] }]
+  for (let i = 1; i < articles.length; i++) {
+    const cp = (i - 1) % 9
+    const type = cp <= 1 ? 'small' : cp <= 4 ? 'headline' : cp <= 6 ? 'small' : 'sidebyside'
+    const last = groups[groups.length - 1]
+    if (last.type === type) last.items.push(articles[i])
+    else groups.push({ type, items: [articles[i]] })
+  }
+  return groups
+}
+
 
 export default function App() {
   const [articles, setArticles] = useState([])
@@ -628,117 +643,125 @@ export default function App() {
         <RedditCard />
 
         {/* ── Stories From Earlier ─────────────────────────── */}
-        {!loading && remainingPool.length > 0 && (
-          <div className="team-news-card">
-            <div className="latest-updates-header">
-              <span className="latest-updates-title">Stories From Earlier</span>
-            </div>
-
-            {/* Articles 0–7: individual rows */}
-            {remainingPool.slice(0, 8).map((a, idx) => (
-              <div key={a.id}>
-                {idx > 0 && (
-                  <div className={`team-news-divider${idx >= 3 && idx <= 5 ? ' team-news-divider--tall' : ''}`} />
-                )}
-
-                {/* idx 0 — large featured image */}
-                {idx === 0 ? (
-                  <div className="team-news-item-wrap">
-                    <a href={a.link} target="_blank" rel="noopener noreferrer"
-                      className="team-news-featured" onClick={() => markRead(a.id)}>
-                      {a.image && (
-                        <img src={a.image} alt="" className="team-news-featured-img"
-                          onError={e => { e.currentTarget.style.display = 'none' }} />
-                      )}
-                      <div className="team-news-featured-body">
-                        <span className={`team-news-featured-title${readIds.has(a.id) ? ' team-news--read' : ''}`}>
-                          {a.title}
-                        </span>
-                        <span className="team-news-meta">
-                          {timeAgo(a.pubDate)} ·{' '}
-                          <img src={faviconUrl(a.link)} alt="" className="news-meta-favicon"
-                            onError={e => { e.currentTarget.style.display = 'none' }} />
-                          {a.source}{a.paywalled && <SubscriberIcon />}
-                        </span>
-                      </div>
-                    </a>
-                    <button className="item-remove" onClick={() => removeArticle(a.id)} aria-label="Remove">✕</button>
-                  </div>
-
-                /* idx 1–2 and 6–7 — small image secondary */
-                ) : (idx <= 2 || idx >= 6) ? (
-                  <div className="team-news-item-wrap">
-                    <a href={a.link} target="_blank" rel="noopener noreferrer"
-                      className="team-news-secondary" onClick={() => markRead(a.id)}>
-                      {a.image && (
-                        <img src={a.image} alt="" className="team-news-secondary-img"
-                          onError={e => { e.currentTarget.style.display = 'none' }} />
-                      )}
-                      <div className="team-news-secondary-body">
-                        <span className={`team-news-secondary-title${readIds.has(a.id) ? ' team-news--read' : ''}`}>
-                          {a.title}
-                        </span>
-                        <span className="team-news-meta">
-                          {timeAgo(a.pubDate)} ·{' '}
-                          <img src={faviconUrl(a.link)} alt="" className="news-meta-favicon"
-                            onError={e => { e.currentTarget.style.display = 'none' }} />
-                          {a.source}{a.paywalled && <SubscriberIcon />}
-                        </span>
-                      </div>
-                    </a>
-                    <button className="item-remove" onClick={() => removeArticle(a.id)} aria-label="Remove">✕</button>
-                  </div>
-
-                /* idx 3–5 — headline only, large text */
-                ) : (
-                  <div className="team-news-item-wrap">
-                    <a href={a.link} target="_blank" rel="noopener noreferrer"
-                      className="team-news-headline" onClick={() => markRead(a.id)}>
-                      <div className="team-news-headline-body">
-                        <span className={`team-news-headline-title${readIds.has(a.id) ? ' team-news--read' : ''}`}>
-                          {a.title}
-                        </span>
-                        <span className="team-news-meta">
-                          {timeAgo(a.pubDate)} ·{' '}
-                          <img src={faviconUrl(a.link)} alt="" className="news-meta-favicon"
-                            onError={e => { e.currentTarget.style.display = 'none' }} />
-                          {a.source}{a.paywalled && <SubscriberIcon />}
-                        </span>
-                      </div>
-                    </a>
-                    <button className="item-remove" onClick={() => removeArticle(a.id)} aria-label="Remove">✕</button>
-                  </div>
-                )}
+        {!loading && remainingPool.length > 0 && (() => {
+          const sfeGroups = groupRemainingArticles(remainingPool)
+          return (
+            <>
+              <div className="section-header section-header--mets">
+                <span className="section-header-label">📰 Stories From Earlier</span>
+                <span className="section-header-line" />
               </div>
-            ))}
+              <div className="team-news-card">
+                {sfeGroups.map((group, gi) => {
+                  const prevType = gi > 0 ? sfeGroups[gi - 1].type : null
+                  const showDivider = gi > 0 && group.type !== 'headline' && prevType !== 'headline'
+                  return (
+                    <div key={gi}>
+                      {showDivider && <div className="team-news-divider" />}
 
-            {/* Articles 8+ — 2-column side-by-side grid */}
-            {remainingPool.length > 8 && (
-              <>
-                <div className="team-news-divider" />
-                <div className="team-news-sidebyside">
-                  {remainingPool.slice(8).map((a) => (
-                    <div key={a.id} className="team-news-sidebyside-item">
-                      <a href={a.link} target="_blank" rel="noopener noreferrer"
-                        className="team-news-sidebyside-link" onClick={() => markRead(a.id)}>
-                        <span className={`team-news-sidebyside-title${readIds.has(a.id) ? ' team-news--read' : ''}`}>
-                          {a.title}
-                        </span>
-                        <span className="team-news-meta">
-                          {timeAgo(a.pubDate)} ·{' '}
-                          <img src={faviconUrl(a.link)} alt="" className="news-meta-favicon"
-                            onError={e => { e.currentTarget.style.display = 'none' }} />
-                          {a.source}{a.paywalled && <SubscriberIcon />}
-                        </span>
-                      </a>
-                      <button className="item-remove item-remove--sm" onClick={() => removeArticle(a.id)} aria-label="Remove">✕</button>
+                      {/* Featured — large image */}
+                      {group.type === 'featured' && group.items.map(a => (
+                        <div key={a.id} className="team-news-item-wrap">
+                          <a href={a.link} target="_blank" rel="noopener noreferrer"
+                            className="team-news-featured" onClick={() => markRead(a.id)}>
+                            {a.image && (
+                              <img src={a.image} alt="" className="team-news-featured-img"
+                                onError={e => { e.currentTarget.style.display = 'none' }} />
+                            )}
+                            <div className="team-news-featured-body">
+                              <span className={`team-news-featured-title${readIds.has(a.id) ? ' team-news--read' : ''}`}>
+                                {a.title}
+                              </span>
+                              <span className="team-news-meta">
+                                {timeAgo(a.pubDate)} ·{' '}
+                                <img src={faviconUrl(a.link)} alt="" className="news-meta-favicon"
+                                  onError={e => { e.currentTarget.style.display = 'none' }} />
+                                {a.source}{a.paywalled && <SubscriberIcon />}
+                              </span>
+                            </div>
+                          </a>
+                          <button className="item-remove" onClick={() => removeArticle(a.id)} aria-label="Remove">✕</button>
+                        </div>
+                      ))}
+
+                      {/* Small — thumbnail + title */}
+                      {group.type === 'small' && group.items.map((a, i) => (
+                        <div key={a.id}>
+                          {i > 0 && <div className="team-news-divider" />}
+                          <div className="team-news-item-wrap">
+                            <a href={a.link} target="_blank" rel="noopener noreferrer"
+                              className="team-news-secondary" onClick={() => markRead(a.id)}>
+                              {a.image && (
+                                <img src={a.image} alt="" className="team-news-secondary-img"
+                                  onError={e => { e.currentTarget.style.display = 'none' }} />
+                              )}
+                              <div className="team-news-secondary-body">
+                                <span className={`team-news-secondary-title${readIds.has(a.id) ? ' team-news--read' : ''}`}>
+                                  {a.title}
+                                </span>
+                                <span className="team-news-meta">
+                                  {timeAgo(a.pubDate)} ·{' '}
+                                  <img src={faviconUrl(a.link)} alt="" className="news-meta-favicon"
+                                    onError={e => { e.currentTarget.style.display = 'none' }} />
+                                  {a.source}{a.paywalled && <SubscriberIcon />}
+                                </span>
+                              </div>
+                            </a>
+                            <button className="item-remove" onClick={() => removeArticle(a.id)} aria-label="Remove">✕</button>
+                          </div>
+                        </div>
+                      ))}
+
+                      {/* Headline — large text, no divider lines, padding only */}
+                      {group.type === 'headline' && group.items.map(a => (
+                        <div key={a.id} className="sfe-headline-article">
+                          <div className="team-news-item-wrap">
+                            <a href={a.link} target="_blank" rel="noopener noreferrer"
+                              className="sfe-headline-link" onClick={() => markRead(a.id)}>
+                              <span className={`sfe-headline-title${readIds.has(a.id) ? ' team-news--read' : ''}`}>
+                                {a.title}
+                              </span>
+                              <span className="team-news-meta">
+                                {timeAgo(a.pubDate)} ·{' '}
+                                <img src={faviconUrl(a.link)} alt="" className="news-meta-favicon"
+                                  onError={e => { e.currentTarget.style.display = 'none' }} />
+                                {a.source}{a.paywalled && <SubscriberIcon />}
+                              </span>
+                            </a>
+                            <button className="item-remove" onClick={() => removeArticle(a.id)} aria-label="Remove">✕</button>
+                          </div>
+                        </div>
+                      ))}
+
+                      {/* Side-by-side — 2-column grid, title only */}
+                      {group.type === 'sidebyside' && (
+                        <div className="team-news-sidebyside">
+                          {group.items.map(a => (
+                            <div key={a.id} className="team-news-sidebyside-item">
+                              <a href={a.link} target="_blank" rel="noopener noreferrer"
+                                className="team-news-sidebyside-link" onClick={() => markRead(a.id)}>
+                                <span className={`team-news-sidebyside-title${readIds.has(a.id) ? ' team-news--read' : ''}`}>
+                                  {a.title}
+                                </span>
+                                <span className="team-news-meta">
+                                  {timeAgo(a.pubDate)} ·{' '}
+                                  <img src={faviconUrl(a.link)} alt="" className="news-meta-favicon"
+                                    onError={e => { e.currentTarget.style.display = 'none' }} />
+                                  {a.source}{a.paywalled && <SubscriberIcon />}
+                                </span>
+                              </a>
+                              <button className="item-remove item-remove--sm" onClick={() => removeArticle(a.id)} aria-label="Remove">✕</button>
+                            </div>
+                          ))}
+                        </div>
+                      )}
                     </div>
-                  ))}
-                </div>
-              </>
-            )}
-          </div>
-        )}
+                  )
+                })}
+              </div>
+            </>
+          )
+        })()}
 
         {!loading && !error && newsPool.length === 0 && !briefingArticle && (
           <div className="empty-state">No articles found.</div>
