@@ -27,6 +27,20 @@ function formatDate() {
   })
 }
 
+function getBriefingLabel() {
+  const et = new Date().toLocaleString('en-US', {
+    timeZone: 'America/New_York', hour: '2-digit', minute: '2-digit', hour12: false,
+  })
+  const [h, m] = et.split(':').map(Number)
+  const mins = h * 60 + m
+  // 4:00 AM–12:00 PM → Morning (240–720)
+  if (mins >= 240 && mins <= 720) return '☀️ Morning Briefing'
+  // 12:01 PM–5:00 PM → Afternoon (721–1020)
+  if (mins <= 1020) return 'Afternoon Briefing'
+  // 5:01 PM–3:59 AM → Evening (1021–1439 and 0–239)
+  return '☾ Evening Briefing'
+}
+
 function SubscriberBadge({ paywalled }) {
   if (!paywalled) return null
   return <span className="subscriber-badge">Subscriber Content</span>
@@ -156,7 +170,7 @@ export default function App() {
         {briefingArticle && (
           <>
             <div className="section-header section-header--mets">
-              <span className="section-header-label">The Latest Briefing</span>
+              <span className="section-header-label">{getBriefingLabel()}</span>
               <span className="section-header-line" />
             </div>
             <div className="briefing-card">
