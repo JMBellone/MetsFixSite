@@ -62,7 +62,7 @@ async function fetchFeed(feed) {
 }
 
 module.exports = async function handler(req, res) {
-  res.setHeader('Cache-Control', 's-maxage=900, stale-while-revalidate=60')
+  res.setHeader('Cache-Control', 's-maxage=900, stale-while-revalidate=86400')
 
   const settled = await Promise.allSettled(FEEDS.map(fetchFeed))
   const all = settled.flatMap(r => r.status === 'fulfilled' ? r.value : [])

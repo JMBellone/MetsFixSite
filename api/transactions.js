@@ -1,6 +1,6 @@
 module.exports = async function handler(req, res) {
   res.setHeader('Access-Control-Allow-Origin', '*')
-  res.setHeader('Cache-Control', 's-maxage=1800, stale-while-revalidate')
+  res.setHeader('Cache-Control', 's-maxage=1800, stale-while-revalidate=86400')
 
   const today = new Date()
   const startDate = new Date(today)

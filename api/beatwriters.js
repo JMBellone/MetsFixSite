@@ -100,7 +100,7 @@ module.exports = async function handler(req, res) {
     return true
   })
 
-  res.setHeader('Cache-Control', 's-maxage=900, stale-while-revalidate=120')
+  res.setHeader('Cache-Control', 's-maxage=900, stale-while-revalidate=86400')
   res.setHeader('Content-Type', 'application/json')
   return res.status(200).json({ articles: deduped.slice(0, 10) })
 }

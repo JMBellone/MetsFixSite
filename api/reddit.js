@@ -42,7 +42,7 @@ function parseAtom(xml) {
 }
 
 module.exports = async function handler(req, res) {
-  res.setHeader('Cache-Control', 's-maxage=900, stale-while-revalidate=60')
+  res.setHeader('Cache-Control', 's-maxage=900, stale-while-revalidate=86400')
 
   const urls = [
     'https://www.reddit.com/r/NewYorkMets/new.rss?limit=15',

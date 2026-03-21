@@ -13,7 +13,7 @@ function decodeEntities(str) {
 }
 
 module.exports = async function handler(req, res) {
-  res.setHeader('Cache-Control', 's-maxage=900, stale-while-revalidate=60')
+  res.setHeader('Cache-Control', 's-maxage=900, stale-while-revalidate=86400')
 
   try {
     const controller = new AbortController()

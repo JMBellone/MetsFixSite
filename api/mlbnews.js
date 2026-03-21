@@ -85,7 +85,7 @@ module.exports = async function handler(req, res) {
     const xml = await r.text()
     const articles = parseItems(xml).slice(0, 7)
 
-    res.setHeader('Cache-Control', 's-maxage=900, stale-while-revalidate=120')
+    res.setHeader('Cache-Control', 's-maxage=900, stale-while-revalidate=86400')
     res.setHeader('Content-Type', 'application/json')
     return res.status(200).json({ articles })
   } catch (err) {
