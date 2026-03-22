@@ -675,7 +675,7 @@
 }
 
 .team-news-secondary-title {
-  font-size: 0.93rem;
+  font-size: 1.07rem;
   font-weight: 700;
   line-height: 1.3;
   color: var(--text);
@@ -714,7 +714,7 @@
 }
 
 .team-news-secondary-title--headline {
-  font-size: 1.15rem;
+  font-size: 1.07rem;
 }
 
 /* Stories From Earlier — big headline tier */
@@ -732,7 +732,7 @@
 }
 
 .sfe-headline-title {
-  font-size: 1.15rem;
+  font-size: 1.07rem;
   font-weight: 700;
   color: var(--text);
   line-height: 1.3;
@@ -771,7 +771,7 @@
 }
 
 .team-news-sidebyside-title {
-  font-size: 0.93rem;
+  font-size: 1.07rem;
   font-weight: 600;
   color: var(--text);
   line-height: 1.35;
@@ -1775,7 +1775,7 @@
 }
 
 .mlbnews-row-title {
-  font-size: 0.93rem;
+  font-size: 1.07rem;
   font-weight: 600;
   line-height: 1.3;
   color: var(--text);
