@@ -1753,32 +1753,23 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 10px;
-  background: #002d72;
-  border: 2px solid #ff6600;
+  background: var(--surface);
+  border: 1px solid var(--mets-orange);
   border-radius: var(--radius);
-  padding: 12px 20px;
+  padding: 13px 20px;
   text-decoration: none;
   transition: background 0.15s;
 }
 
 .mets-chat-banner:hover {
-  background: #003a8c;
-}
-
-.mets-chat-logo {
-  width: 28px;
-  height: 28px;
-  object-fit: contain;
-  border-radius: 4px;
-  flex-shrink: 0;
+  background: var(--surface-2);
 }
 
 .mets-chat-text {
-  font-size: 0.9rem;
+  font-size: 0.85rem;
   font-weight: 700;
-  letter-spacing: 0.07em;
-  color: #ff6600;
+  letter-spacing: 0.1em;
+  color: var(--mets-orange);
   text-transform: uppercase;
 }
 

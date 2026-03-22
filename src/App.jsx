@@ -427,7 +427,6 @@ export default function App() {
           rel="noopener noreferrer"
           className="mets-chat-banner"
         >
-          <img src="/logo.png" alt="Mets Fix" className="mets-chat-logo" />
           <span className="mets-chat-text">JOIN THE METS FIX CHAT</span>
         </a>
 
