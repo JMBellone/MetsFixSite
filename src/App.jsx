@@ -405,17 +405,17 @@ export default function App() {
           </div>
         )}
 
-        {/* ── Upcoming Games ───────────────────────────────── */}
-        <ScheduleCard />
-
         {/* ── Last Game ────────────────────────────────────── */}
         <LastGameCard />
 
-        {/* ── SNY Featured Video ───────────────────────────── */}
-        <SNYFeaturedCard />
+        {/* ── Upcoming Games ───────────────────────────────── */}
+        <ScheduleCard />
 
         {/* ── Know Your Opponent ───────────────────────────── */}
-        <KnowYourOpponentCard articles={opponent.articles} opponent={opponent.opponent} />
+        <KnowYourOpponentCard articles={opponent.articles} opponent={opponent.opponent} opponentAbbr={opponent.opponentAbbr} />
+
+        {/* ── SNY Featured Video ───────────────────────────── */}
+        <SNYFeaturedCard />
 
         {/* ── MLB News ─────────────────────────────────────── */}
         <MLBNewsCard shownLinks={new Set([

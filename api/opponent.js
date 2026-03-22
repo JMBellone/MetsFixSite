@@ -87,14 +87,15 @@ module.exports = async function handler(req, res) {
     const opponentId = opponentTeam.id
     const opponentName = opponentTeam.name
 
-    // Get teamName for MLB.com URL slug (e.g. "Pirates" → "pirates", "Red Sox" → "redsox")
+    // Get teamName + abbreviation for MLB.com URL slug and logo
     const teamRes = await fetch(
-      `https://statsapi.mlb.com/api/v1/teams/${opponentId}?fields=teams,teamName,name`
+      `https://statsapi.mlb.com/api/v1/teams/${opponentId}?fields=teams,teamName,name,abbreviation`
     )
-    if (!teamRes.ok) return res.status(200).json({ articles: [], opponent: opponentName })
+    if (!teamRes.ok) return res.status(200).json({ articles: [], opponent: opponentName, opponentAbbr: null })
     const teamData = await teamRes.json()
     const teamName = teamData.teams?.[0]?.teamName
-    if (!teamName) return res.status(200).json({ articles: [], opponent: opponentName })
+    const opponentAbbr = (teamData.teams?.[0]?.abbreviation || '').toLowerCase()
+    if (!teamName) return res.status(200).json({ articles: [], opponent: opponentName, opponentAbbr })
     const slug = teamName.toLowerCase().replace(/[-\s]/g, '')
 
     // Fetch opponent's MLB.com RSS feed
@@ -108,7 +109,7 @@ module.exports = async function handler(req, res) {
       },
     })
     clearTimeout(timeout)
-    if (!feedRes.ok) return res.status(200).json({ articles: [], opponent: opponentName })
+    if (!feedRes.ok) return res.status(200).json({ articles: [], opponent: opponentName, opponentAbbr })
     const xml = await feedRes.text()
 
     const articles = parseRSS(xml).slice(0, 3).map(a => ({
@@ -118,7 +119,7 @@ module.exports = async function handler(req, res) {
       pubDate: a.pubDate?.toISOString() || null,
     }))
 
-    return res.status(200).json({ articles, opponent: opponentName })
+    return res.status(200).json({ articles, opponent: opponentName, opponentAbbr })
   } catch (e) {
     console.warn('[opponent]', e.message)
     return res.status(200).json({ articles: [], opponent: null })

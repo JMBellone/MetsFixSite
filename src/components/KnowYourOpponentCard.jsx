@@ -8,12 +8,20 @@ function timeAgo(pubDate) {
   return `${Math.floor(hours / 24)}d ago`
 }
 
-export default function KnowYourOpponentCard({ articles, opponent }) {
+export default function KnowYourOpponentCard({ articles, opponent, opponentAbbr }) {
   if (!articles?.length) return null
 
   return (
     <div className="mlbnews-card">
       <div className="mlbnews-header">
+        {opponentAbbr && (
+          <img
+            src={`https://a.espncdn.com/i/teamlogos/mlb/500/${opponentAbbr}.png`}
+            alt={opponent || ''}
+            className="kyo-logo"
+            onError={e => { e.currentTarget.style.display = 'none' }}
+          />
+        )}
         <span className="mlbnews-title">Know Your Opponent</span>
         {opponent && <span className="kyo-opponent">{opponent}</span>}
       </div>
