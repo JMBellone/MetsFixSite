@@ -9,6 +9,7 @@ import LastGameCard from './components/LastGameCard'
 import BlogRollCard from './components/BlogRollCard'
 import RedditCard from './components/RedditCard'
 import MLBNewsCard from './components/MLBNewsCard'
+import KnowYourOpponentCard from './components/KnowYourOpponentCard'
 import SNYFeaturedCard from './components/SNYFeaturedCard'
 import LiveScoreCard from './components/LiveScoreCard'
 import MetsVideoCard from './components/MetsVideoCard'
@@ -81,6 +82,7 @@ export default function App() {
     try { return new Set(JSON.parse(localStorage.getItem('metsReadArticles') || '[]')) }
     catch { return new Set() }
   })
+  const [opponent, setOpponent] = useState({ articles: [], opponent: null })
   const [pullY, setPullY] = useState(0)
   const touchStartY = useRef(0)
 
@@ -106,6 +108,13 @@ export default function App() {
   }, [])
 
   useEffect(() => { fetchFeeds() }, [fetchFeeds])
+
+  useEffect(() => {
+    fetch('/api/opponent')
+      .then(r => r.ok ? r.json() : null)
+      .then(data => { if (data) setOpponent(data) })
+      .catch(() => {})
+  }, [])
 
   const onTouchStart = useCallback((e) => {
     if (window.scrollY === 0) touchStartY.current = e.touches[0].clientY
@@ -405,15 +414,21 @@ export default function App() {
         {/* ── SNY Featured Video ───────────────────────────── */}
         <SNYFeaturedCard />
 
+        {/* ── Know Your Opponent ───────────────────────────── */}
+        <KnowYourOpponentCard articles={opponent.articles} opponent={opponent.opponent} />
+
         {/* ── MLB News ─────────────────────────────────────── */}
-        <MLBNewsCard shownLinks={new Set(articles.flatMap(a => {
-          const links = [a.link]
-          try {
-            const u = new URL(a.link)
-            links.push(u.origin + u.pathname.replace(/^\/[a-z-]+\/news\//, '/news/'))
-          } catch {}
-          return links
-        }))} />
+        <MLBNewsCard shownLinks={new Set([
+          ...articles.flatMap(a => {
+            const links = [a.link]
+            try {
+              const u = new URL(a.link)
+              links.push(u.origin + u.pathname.replace(/^\/[a-z-]+\/news\//, '/news/'))
+            } catch {}
+            return links
+          }),
+          ...opponent.articles.map(a => a.link),
+        ])} />
 
         {/* ── MLB Standings ─────────────────────────────────── */}
         <StandingsCard />

@@ -1743,6 +1743,13 @@
   color: var(--mets-blue-light);
 }
 
+.kyo-opponent {
+  font-size: 0.68rem;
+  font-weight: 600;
+  color: var(--text-muted);
+  margin-left: auto;
+}
+
 .mlbnews-list {
   display: flex;
   flex-direction: column;
