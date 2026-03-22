@@ -1731,6 +1731,10 @@
 }
 
 /* ── MLB News card ──────────────────────────────────────── */
+.mlbnews-card .sfe-headline-title {
+  font-size: 0.93rem;
+}
+
 .mlbnews-card {
   background: var(--surface);
   border: 1px solid var(--border);
