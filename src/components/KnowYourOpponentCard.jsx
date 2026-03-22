@@ -13,17 +13,6 @@ export default function KnowYourOpponentCard({ articles, opponent, opponentAbbr 
 
   return (
     <div className="mlbnews-card">
-      <div className="mlbnews-header">
-        {opponentAbbr && (
-          <img
-            src={`https://a.espncdn.com/i/teamlogos/mlb/500/${opponentAbbr}.png`}
-            alt={opponent || ''}
-            className="kyo-logo"
-            onError={e => { e.currentTarget.style.display = 'none' }}
-          />
-        )}
-        <span className="mlbnews-title">Know Your Opponent</span>
-      </div>
       <div className="mlbnews-list">
         {articles.map((a, i) => (
           <a
