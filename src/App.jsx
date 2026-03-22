@@ -420,6 +420,17 @@ export default function App() {
           <KnowYourOpponentCard articles={opponent.articles} opponent={opponent.opponent} opponentAbbr={opponent.opponentAbbr} />
         </div>
 
+        {/* ── Mets Fix Chat Banner ─────────────────────────── */}
+        <a
+          href="https://substack.com/chat/174126"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="mets-chat-banner"
+        >
+          <img src="/logo.png" alt="Mets Fix" className="mets-chat-logo" />
+          <span className="mets-chat-text">JOIN THE METS FIX CHAT</span>
+        </a>
+
         {/* ── MLB News ─────────────────────────────────────── */}
         <MLBNewsCard shownLinks={new Set([
           ...articles.flatMap(a => {
