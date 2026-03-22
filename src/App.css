@@ -1753,6 +1753,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
+  gap: 10px;
   background: var(--surface);
   border: 1px solid var(--mets-orange);
   border-radius: var(--radius);
@@ -1763,6 +1764,13 @@
 
 .mets-chat-banner:hover {
   background: var(--surface-2);
+}
+
+.mets-chat-logo {
+  width: 30px;
+  height: 30px;
+  object-fit: contain;
+  flex-shrink: 0;
 }
 
 .mets-chat-text {
