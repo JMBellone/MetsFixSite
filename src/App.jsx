@@ -187,7 +187,7 @@ export default function App() {
   const athHeadlines = athleticPool.slice(3, 5)
 
   const allShownIds = new Set([...shownIds, ...sfePriorityAthleticIds, ...athleticPool.map(a => a.id)])
-  const SEVENTY_TWO_H = 72 * 60 * 60 * 1000
+  const SEVENTY_TWO_H = 96 * 60 * 60 * 1000
   const sfeBase = articles
     .filter(a =>
       !allShownIds.has(a.id) &&

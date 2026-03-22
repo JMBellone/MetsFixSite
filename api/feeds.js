@@ -1,7 +1,7 @@
 // api/feeds.js — Mets news aggregator
-// Fetches all Mets RSS sources, filters to last 72h, sorts by recency.
+// Fetches all Mets RSS sources, filters to last 96h, sorts by recency.
 
-const SEVENTY_TWO_HOURS_MS = 72 * 60 * 60 * 1000;
+const SEVENTY_TWO_HOURS_MS = 96 * 60 * 60 * 1000;
 const THIRTY_DAYS_MS = 30 * 24 * 60 * 60 * 1000;
 
 const FEEDS = [
