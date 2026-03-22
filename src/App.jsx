@@ -153,7 +153,7 @@ export default function App() {
   const mlbIds = new Set(mlbArticles.map(a => a.id))
   const topRemainder = newsPool
     .filter(a => (a.source === 'MLB.com' || a.source === 'SNY') && !mlbIds.has(a.id))
-    .slice(0, 3)
+    .slice(0, 5)
   const topPool = [...mlbArticles, ...topRemainder]
     .sort((a, b) => new Date(b.pubDate) - new Date(a.pubDate))
 
