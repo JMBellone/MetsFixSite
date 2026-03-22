@@ -66,7 +66,7 @@ module.exports = async function handler(req, res) {
       const published = (entry.match(/<published>([^<]+)<\/published>/) || [])[1] || ''
       const thumbMatch = entry.match(/<media:thumbnail[^>]+url="([^"]+)"/)
       const thumbnail = thumbMatch ? thumbMatch[1] : `https://i.ytimg.com/vi/${videoId}/hqdefault.jpg`
-      if (videoId && title && isMets(title)) allEntries.push({ videoId, title, published, thumbnail })
+      if (videoId && title && isMets(title) && !title.toLowerCase().includes('uconn')) allEntries.push({ videoId, title, published, thumbnail })
     }
 
     res.status(200).json({ videos: allEntries.slice(0, 6) })
