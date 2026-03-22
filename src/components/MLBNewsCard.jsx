@@ -48,7 +48,6 @@ export default function MLBNewsCard({ shownLinks = new Set() }) {
               <div className="team-news-item-wrap">
                 <a href={a.link} target="_blank" rel="noopener noreferrer" className="sfe-headline-link">
                   <span className="sfe-headline-title">{a.title}</span>
-                  <span className="mlbnews-row-meta">{timeAgo(a.pubDate)}</span>
                 </a>
               </div>
             </div>
