@@ -87,19 +87,20 @@ module.exports = async function handler(req, res) {
     const opponentId = opponentTeam.id
     const opponentName = opponentTeam.name
 
-    // Get fileCode for MLB.com URL slug (e.g. "phillies", "braves")
+    // Get teamName for MLB.com URL slug (e.g. "Pirates" → "pirates", "Red Sox" → "redsox")
     const teamRes = await fetch(
-      `https://statsapi.mlb.com/api/v1/teams/${opponentId}?fields=teams,fileCode,name`
+      `https://statsapi.mlb.com/api/v1/teams/${opponentId}?fields=teams,teamName,name`
     )
     if (!teamRes.ok) return res.status(200).json({ articles: [], opponent: opponentName })
     const teamData = await teamRes.json()
-    const fileCode = teamData.teams?.[0]?.fileCode
-    if (!fileCode) return res.status(200).json({ articles: [], opponent: opponentName })
+    const teamName = teamData.teams?.[0]?.teamName
+    if (!teamName) return res.status(200).json({ articles: [], opponent: opponentName })
+    const slug = teamName.toLowerCase().replace(/[-\s]/g, '')
 
     // Fetch opponent's MLB.com RSS feed
     const controller = new AbortController()
     const timeout = setTimeout(() => controller.abort(), 5000)
-    const feedRes = await fetch(`https://www.mlb.com/${fileCode}/feeds/news/rss.xml`, {
+    const feedRes = await fetch(`https://www.mlb.com/${slug}/feeds/news/rss.xml`, {
       signal: controller.signal,
       headers: {
         'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36',
