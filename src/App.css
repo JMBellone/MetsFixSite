@@ -234,6 +234,25 @@
   font-style: italic;
 }
 
+/* ── Game preview group (Schedule + KYO combined card) ───── */
+.game-preview-group {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  overflow: hidden;
+}
+
+.game-preview-group .schedule-card,
+.game-preview-group .mlbnews-card {
+  background: transparent;
+  border: none;
+  border-radius: 0;
+}
+
+.game-preview-group .schedule-card {
+  border-bottom: 1px solid var(--border);
+}
+
 /* ── Schedule card ──────────────────────────────────────── */
 .schedule-card {
   background: var(--surface);

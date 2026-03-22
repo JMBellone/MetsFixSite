@@ -408,11 +408,14 @@ export default function App() {
         {/* ── Last Game ────────────────────────────────────── */}
         <LastGameCard />
 
-        {/* ── Upcoming Games ───────────────────────────────── */}
-        <ScheduleCard />
+        {/* ── MLB Standings ─────────────────────────────────── */}
+        <StandingsCard />
 
-        {/* ── Know Your Opponent ───────────────────────────── */}
-        <KnowYourOpponentCard articles={opponent.articles} opponent={opponent.opponent} opponentAbbr={opponent.opponentAbbr} />
+        {/* ── Upcoming Schedule + Know Your Opponent ───────── */}
+        <div className="game-preview-group">
+          <ScheduleCard />
+          <KnowYourOpponentCard articles={opponent.articles} opponent={opponent.opponent} opponentAbbr={opponent.opponentAbbr} />
+        </div>
 
         {/* ── SNY Featured Video ───────────────────────────── */}
         <SNYFeaturedCard />
@@ -429,9 +432,6 @@ export default function App() {
           }),
           ...opponent.articles.map(a => a.link),
         ])} />
-
-        {/* ── MLB Standings ─────────────────────────────────── */}
-        <StandingsCard />
 
         {/* ── Dive Into the News ───────────────────────────── */}
         <div className="section-header section-header--mets">
