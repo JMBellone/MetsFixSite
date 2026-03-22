@@ -1755,7 +1755,7 @@
   justify-content: center;
   gap: 10px;
   background: var(--surface);
-  border: 1px solid var(--mets-orange);
+  border: 1px solid var(--border);
   border-radius: var(--radius);
   padding: 13px 20px;
   text-decoration: none;
