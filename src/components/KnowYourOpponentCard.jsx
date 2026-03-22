@@ -23,7 +23,6 @@ export default function KnowYourOpponentCard({ articles, opponent, opponentAbbr 
           />
         )}
         <span className="mlbnews-title">Know Your Opponent</span>
-        {opponent && <span className="kyo-opponent">{opponent}</span>}
       </div>
       <div className="mlbnews-list">
         {articles.map((a, i) => (
