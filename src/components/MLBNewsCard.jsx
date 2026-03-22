@@ -46,7 +46,8 @@ export default function MLBNewsCard({ shownLinks = new Set() }) {
             {i > 0 && <div className="team-news-divider" />}
             <div className="sfe-headline-article">
               <div className="team-news-item-wrap">
-                <a href={a.link} target="_blank" rel="noopener noreferrer" className="sfe-headline-link">
+                <a href={a.link} target="_blank" rel="noopener noreferrer" className="sfe-headline-link mlbnews-headline-row">
+                  <img src="https://www.google.com/s2/favicons?domain=mlb.com&sz=32" alt="" className="mlbnews-article-icon" />
                   <span className="sfe-headline-title">{a.title}</span>
                 </a>
               </div>
