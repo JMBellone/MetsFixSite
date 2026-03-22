@@ -153,7 +153,7 @@ export default function App() {
   const mlbIds = new Set(mlbArticles.map(a => a.id))
   const topRemainder = newsPool
     .filter(a => (a.source === 'MLB.com' || a.source === 'SNY') && !mlbIds.has(a.id))
-    .slice(0, 5)
+    .slice(0, 3)
   const topPool = [...mlbArticles, ...topRemainder]
     .sort((a, b) => new Date(b.pubDate) - new Date(a.pubDate))
 
@@ -162,10 +162,8 @@ export default function App() {
   const topTertiary  = topPool[2]
   const topHeadline1 = topPool[3]
   const topHeadline2 = topPool[4]
-  const topHeadline3 = topPool[5]
-  const topHeadline4 = topPool[6]
 
-  const topIds = new Set(topPool.slice(0, 7).map(a => a.id))
+  const topIds = new Set(topPool.slice(0, 5).map(a => a.id))
 
   // Dive Into the News: force 3 most recent Athletic + 7 others, guarantee Athletic in first 15
   const athleticForDive = articles
@@ -410,52 +408,8 @@ export default function App() {
         {/* ── Last Game ────────────────────────────────────── */}
         <LastGameCard />
 
-        {/* ── Extra top headlines ───────────────────────────── */}
-        {(topHeadline3 || topHeadline4) && (
-          <div className="team-news-card">
-            {topHeadline3 && (
-              <>
-                <div className="sfe-headline-article">
-                  <div className="team-news-item-wrap">
-                    <a href={topHeadline3.link} target="_blank" rel="noopener noreferrer"
-                      className="sfe-headline-link" onClick={() => markRead(topHeadline3.id)}>
-                      <span className={`sfe-headline-title${readIds.has(topHeadline3.id) ? ' team-news--read' : ''}`}>
-                        {topHeadline3.title}
-                      </span>
-                      <span className="team-news-meta">
-                        {timeAgo(topHeadline3.pubDate)} ·{' '}
-                        <img src={faviconUrl(topHeadline3.link)} alt="" className="news-meta-favicon"
-                          onError={e => { e.currentTarget.style.display = 'none' }} />
-                        {topHeadline3.source}{topHeadline3.paywalled && <SubscriberIcon />}
-                      </span>
-                    </a>
-                  </div>
-                </div>
-              </>
-            )}
-            {topHeadline4 && (
-              <>
-                <div className="team-news-divider" />
-                <div className="sfe-headline-article">
-                  <div className="team-news-item-wrap">
-                    <a href={topHeadline4.link} target="_blank" rel="noopener noreferrer"
-                      className="sfe-headline-link" onClick={() => markRead(topHeadline4.id)}>
-                      <span className={`sfe-headline-title${readIds.has(topHeadline4.id) ? ' team-news--read' : ''}`}>
-                        {topHeadline4.title}
-                      </span>
-                      <span className="team-news-meta">
-                        {timeAgo(topHeadline4.pubDate)} ·{' '}
-                        <img src={faviconUrl(topHeadline4.link)} alt="" className="news-meta-favicon"
-                          onError={e => { e.currentTarget.style.display = 'none' }} />
-                        {topHeadline4.source}{topHeadline4.paywalled && <SubscriberIcon />}
-                      </span>
-                    </a>
-                  </div>
-                </div>
-              </>
-            )}
-          </div>
-        )}
+        {/* ── SNY Featured Video ───────────────────────────── */}
+        <SNYFeaturedCard />
 
         {/* ── MLB Standings ─────────────────────────────────── */}
         <StandingsCard />
@@ -465,9 +419,6 @@ export default function App() {
           <ScheduleCard />
           <KnowYourOpponentCard articles={opponent.articles} opponent={opponent.opponent} opponentAbbr={opponent.opponentAbbr} />
         </div>
-
-        {/* ── SNY Featured Video ───────────────────────────── */}
-        <SNYFeaturedCard />
 
         {/* ── MLB News ─────────────────────────────────────── */}
         <MLBNewsCard shownLinks={new Set([

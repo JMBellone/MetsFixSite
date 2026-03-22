@@ -42,26 +42,17 @@ export default function MLBNewsCard({ shownLinks = new Set() }) {
       </div>
       <div className="mlbnews-list">
         {visible.map((a, i) => (
-          <a
-            key={`${a.link}-${i}`}
-            href={a.link}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="mlbnews-row"
-          >
-            {a.image && (
-              <img
-                src={a.image}
-                alt=""
-                className="mlbnews-row-thumb"
-                onError={e => { e.currentTarget.style.display = 'none' }}
-              />
-            )}
-            <div className="mlbnews-row-body">
-              <span className="mlbnews-row-title">{a.title}</span>
-              <span className="mlbnews-row-meta">{timeAgo(a.pubDate)}</span>
+          <div key={`${a.link}-${i}`}>
+            {i > 0 && <div className="team-news-divider" />}
+            <div className="sfe-headline-article">
+              <div className="team-news-item-wrap">
+                <a href={a.link} target="_blank" rel="noopener noreferrer" className="sfe-headline-link">
+                  <span className="sfe-headline-title">{a.title}</span>
+                  <span className="mlbnews-row-meta">{timeAgo(a.pubDate)}</span>
+                </a>
+              </div>
             </div>
-          </a>
+          </div>
         ))}
       </div>
     </div>
