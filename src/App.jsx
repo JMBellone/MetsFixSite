@@ -441,7 +441,14 @@ export default function App() {
             } catch {}
             return links
           }),
-          ...opponent.articles.map(a => a.link),
+          ...opponent.articles.flatMap(a => {
+            const links = [a.link]
+            try {
+              const u = new URL(a.link)
+              links.push(u.origin + u.pathname.replace(/^\/[a-z-]+\/news\//, '/news/'))
+            } catch {}
+            return links
+          }),
         ])} />
 
         {/* ── Dive Into the News ───────────────────────────── */}
