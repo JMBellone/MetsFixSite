@@ -429,7 +429,7 @@ export default function App() {
         {/* ── Clubhouse Pass Promo ─────────────────────────── */}
         <div className="team-news-card clubhouse-pass-card">
           <div className="latest-updates-header">
-            <span className="latest-updates-title">🎙️ Premiere Episode of The Clubhouse Pass</span>
+            <span className="latest-updates-title">🎙️ Premiere Episode of Clubhouse Pass</span>
           </div>
           <div className="clubhouse-pass-body">
             <p className="clubhouse-pass-desc">Andy Martino debuts his new podcast with special guest David Wright.</p>
