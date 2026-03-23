@@ -1652,6 +1652,46 @@
   overflow: hidden;
 }
 
+/* ── Clubhouse Pass promo card ──────────────────────────── */
+.clubhouse-pass-body {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 10px 14px 14px;
+}
+
+.clubhouse-pass-desc {
+  font-size: 0.85rem;
+  color: var(--text-muted);
+  line-height: 1.5;
+}
+
+.clubhouse-pass-link {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--text);
+  text-decoration: none;
+  padding: 8px 12px;
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  transition: background 0.15s;
+}
+
+.clubhouse-pass-link:hover {
+  background: var(--border);
+}
+
+.clubhouse-pass-icon {
+  width: 16px;
+  height: 16px;
+  border-radius: 3px;
+  flex-shrink: 0;
+}
+
 .latest-updates-header {
   display: flex;
   align-items: center;
