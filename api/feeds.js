@@ -2,6 +2,7 @@
 // Fetches all Mets RSS sources, filters to last 96h, sorts by recency.
 
 const SEVENTY_TWO_HOURS_MS = 96 * 60 * 60 * 1000;
+const SEVEN_DAYS_MS = 7 * 24 * 60 * 60 * 1000;
 const THIRTY_DAYS_MS = 30 * 24 * 60 * 60 * 1000;
 
 const FEEDS = [
@@ -21,12 +22,14 @@ const FEEDS = [
     paywalled: false,
     authority: 3,
   },
+  // The Athletic — 7-day window to avoid stale cache gaps
   {
     url: 'https://www.nytimes.com/athletic/rss/tag/new-york-mets/',
     source: 'The Athletic',
     team: 'mets',
     paywalled: true,
     authority: 3,
+    cutoffMs: SEVEN_DAYS_MS,
   },
   {
     url: 'https://sny.tv/mets-feed',
