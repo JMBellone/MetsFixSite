@@ -1713,40 +1713,19 @@
   gap: 12px;
 }
 
-/* ── Re-Live 1986 card ───────────────────────────────── */
-.rewatch-body {
-  display: flex;
-  align-items: flex-start;
-  gap: 12px;
-  padding: 10px 14px 12px;
-}
-
+/* ── 1986 Rewatch card ───────────────────────────────── */
 .rewatch-art {
-  width: 110px;
-  height: 110px;
+  width: 90px;
+  height: 90px;
   object-fit: cover;
   border-radius: 8px;
   flex-shrink: 0;
 }
 
-.rewatch-links {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-}
-
 .rewatch-link {
-  display: block;
-  font-size: 0.82rem;
-  font-weight: 600;
-  color: var(--text);
+  white-space: normal;
   line-height: 1.35;
-  padding: 6px 0;
-  text-decoration: none;
-}
-
-.rewatch-link:hover {
-  color: var(--mets-orange);
+  font-size: 0.82rem;
 }
 
 .clubhouse-pass-art {

@@ -22,19 +22,19 @@ export default function RewatchCard() {
       <div className="latest-updates-header">
         <span className="latest-updates-title">Party like it's 1986</span>
       </div>
-      <p className="prospect-watch-subtext">Rewatch the 1986 season with Mark Simon.</p>
-      <div className="rewatch-body">
-        <img src="/1986-rewatch.avif" alt="Like It Oughta Be" className="rewatch-art"
-          onError={e => { e.currentTarget.style.display = 'none' }} />
-        <div className="rewatch-links">
-          {articles.map((a, i) => (
-            <div key={a.url}>
-              {i > 0 && <div className="team-news-divider" />}
-              <a href={a.url} target="_blank" rel="noopener noreferrer" className="rewatch-link">
+      <div className="clubhouse-pass-body">
+        <p className="clubhouse-pass-desc">Rewatch the 1986 season with Mark Simon.</p>
+        <div className="clubhouse-pass-row">
+          <img src="/1986-rewatch.avif" alt="Like It Oughta Be" className="rewatch-art"
+            onError={e => { e.currentTarget.style.display = 'none' }} />
+          <div className="clubhouse-pass-links">
+            {articles.map(a => (
+              <a key={a.url} href={a.url} target="_blank" rel="noopener noreferrer"
+                className="clubhouse-pass-link rewatch-link">
                 {a.title}
               </a>
-            </div>
-          ))}
+            ))}
+          </div>
         </div>
       </div>
     </div>
