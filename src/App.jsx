@@ -664,9 +664,6 @@ export default function App() {
               )}
             </div>
 
-            {/* ── Re-Live the 1986 Season ──────────────────── */}
-            <RewatchCard />
-
             {/* ── Mets YouTube Video ───────────────────────── */}
             <MetsVideoCard />
 
@@ -850,6 +847,9 @@ export default function App() {
 
         {/* ── Blog Roll ────────────────────────────────────── */}
         <BlogRollCard />
+
+        {/* ── Party like it's 1986 ─────────────────────────── */}
+        <RewatchCard />
 
         {/* ── Mets Reddit ──────────────────────────────────── */}
         <RedditCard />
