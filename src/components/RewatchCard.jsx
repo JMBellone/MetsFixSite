@@ -5,10 +5,6 @@ const INTRO = {
   url: 'https://1986-mets-rewatch.beehiiv.com/p/1986-mets-rewatch-newsletter-an-introduction',
 }
 
-function faviconUrl(link) {
-  try { return `https://www.google.com/s2/favicons?domain=${new URL(link).hostname}&sz=32` } catch { return '' }
-}
-
 export default function RewatchCard() {
   const [latest, setLatest] = useState(null)
 
@@ -24,22 +20,23 @@ export default function RewatchCard() {
   return (
     <div className="team-news-card">
       <div className="latest-updates-header">
-        <span className="latest-updates-title">Re-Live the 1986 Season</span>
+        <span className="latest-updates-title">Party like it's 1986</span>
       </div>
-      {articles.map((a, i) => (
-        <div key={a.url}>
-          {i > 0 && <div className="team-news-divider" />}
-          <div className="sfe-headline-article">
-            <div className="team-news-item-wrap">
-              <a href={a.url} target="_blank" rel="noopener noreferrer" className="sfe-headline-link mlbnews-headline-row">
-                <img src={faviconUrl(a.url)} alt="" className="mlbnews-article-icon"
-                  onError={e => { e.currentTarget.style.display = 'none' }} />
-                <span className="sfe-headline-title">{a.title}</span>
+      <p className="prospect-watch-subtext">Rewatch the 1986 season with Mark Simon.</p>
+      <div className="rewatch-body">
+        <img src="/1986-rewatch.avif" alt="Like It Oughta Be" className="rewatch-art"
+          onError={e => { e.currentTarget.style.display = 'none' }} />
+        <div className="rewatch-links">
+          {articles.map((a, i) => (
+            <div key={a.url}>
+              {i > 0 && <div className="team-news-divider" />}
+              <a href={a.url} target="_blank" rel="noopener noreferrer" className="rewatch-link">
+                {a.title}
               </a>
             </div>
-          </div>
+          ))}
         </div>
-      ))}
+      </div>
     </div>
   )
 }
