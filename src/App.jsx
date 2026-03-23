@@ -11,6 +11,7 @@ import RedditCard from './components/RedditCard'
 import MLBNewsCard from './components/MLBNewsCard'
 import KnowYourOpponentCard from './components/KnowYourOpponentCard'
 import SNYFeaturedCard from './components/SNYFeaturedCard'
+import RewatchCard from './components/RewatchCard'
 import LiveScoreCard from './components/LiveScoreCard'
 import MetsVideoCard from './components/MetsVideoCard'
 import MetsStatsCard from './components/MetsStatsCard'
@@ -662,6 +663,9 @@ export default function App() {
                 </>
               )}
             </div>
+
+            {/* ── Re-Live the 1986 Season ──────────────────── */}
+            <RewatchCard />
 
             {/* ── Mets YouTube Video ───────────────────────── */}
             <MetsVideoCard />
