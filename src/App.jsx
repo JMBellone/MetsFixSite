@@ -113,6 +113,34 @@ export default function App() {
 
   useEffect(() => { fetchFeeds() }, [fetchFeeds])
 
+  // Auto-refresh data every 5 minutes while the app is in the foreground
+  useEffect(() => {
+    const id = setInterval(() => {
+      if (!document.hidden) fetchFeeds()
+    }, 5 * 60 * 1000)
+    return () => clearInterval(id)
+  }, [fetchFeeds])
+
+  // On visibility restore: re-fetch data; full reload if backgrounded 30+ min (picks up new app code)
+  useEffect(() => {
+    let backgroundedAt = null
+    const handleVisibility = () => {
+      if (document.hidden) {
+        backgroundedAt = Date.now()
+      } else {
+        const elapsed = backgroundedAt ? Date.now() - backgroundedAt : 0
+        backgroundedAt = null
+        if (elapsed > 30 * 60 * 1000) {
+          window.location.reload()
+        } else if (elapsed > 0) {
+          fetchFeeds()
+        }
+      }
+    }
+    document.addEventListener('visibilitychange', handleVisibility)
+    return () => document.removeEventListener('visibilitychange', handleVisibility)
+  }, [fetchFeeds])
+
   useEffect(() => {
     fetch('/api/opponent')
       .then(r => r.ok ? r.json() : null)
