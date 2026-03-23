@@ -657,6 +657,7 @@ export default function App() {
           <span className="section-header-label">🌱 Prospect Watch</span>
           <span className="section-header-line" />
         </div>
+        <p className="prospect-watch-subtext">More prospect coverage to come!</p>
         <SyracuseScheduleCard />
         <ProspectArticlesCard />
         <DoveReportCard />

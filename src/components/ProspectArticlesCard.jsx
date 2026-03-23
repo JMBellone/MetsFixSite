@@ -18,6 +18,9 @@ const ARTICLES = [
 export default function ProspectArticlesCard() {
   return (
     <div className="team-news-card">
+      <div className="latest-updates-header">
+        <span className="latest-updates-title">Learn about this year's top prospects</span>
+      </div>
       {ARTICLES.map((a, i) => (
         <div key={a.link}>
           {i > 0 && <div className="team-news-divider" />}

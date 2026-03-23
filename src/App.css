@@ -142,6 +142,13 @@
   background: linear-gradient(to right, rgba(74, 127, 212, 0.5), transparent);
 }
 
+.prospect-watch-subtext {
+  font-size: 0.72rem;
+  color: var(--text-muted);
+  font-style: italic;
+  margin-top: -4px;
+}
+
 /* ── Daily note card ────────────────────────────────────── */
 .daily-card {
   background: var(--surface);
