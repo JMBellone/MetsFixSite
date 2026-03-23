@@ -151,6 +151,7 @@ async function fetchFeed(feedConfig) {
   const results = [];
 
   let xml;
+  let fetchError = null;
   try {
     const controller = new AbortController();
     const timeout = setTimeout(() => controller.abort(), 5000);
@@ -167,16 +168,18 @@ async function fetchFeed(feedConfig) {
     if (!res.ok) throw new Error(`HTTP ${res.status}`);
     xml = await res.text();
   } catch (err) {
+    fetchError = err.message;
     console.warn(`[feeds] Failed to fetch ${source}: ${err.message}`);
-    return results;
+    return { articles: results, error: fetchError, source };
   }
 
   const cutoff = Date.now() - (feedConfig.cutoffMs || SEVENTY_TWO_HOURS_MS);
   const items = parseRSS(xml);
+  let filtered = 0;
 
   for (const item of items) {
     if (!item.pubDate) continue;
-    if (item.pubDate.getTime() < cutoff) continue;
+    if (item.pubDate.getTime() < cutoff) { filtered++; continue; }
     if (item.link && item.link.includes('mets-injuries-and-roster-moves')) continue;
 
     results.push({
@@ -193,7 +196,7 @@ async function fetchFeed(feedConfig) {
     });
   }
 
-  return results;
+  return { articles: results, error: null, source, total: items.length, kept: results.length, filtered };
 }
 
 module.exports = async function handler(req, res) {
@@ -202,7 +205,12 @@ module.exports = async function handler(req, res) {
   }
 
   const settled = await Promise.allSettled(FEEDS.map(fetchFeed));
-  const allArticles = settled.flatMap((r) => (r.status === 'fulfilled' ? r.value : []));
+  const feedResults = settled.map((r) => (r.status === 'fulfilled' ? r.value : { articles: [], error: 'Promise rejected', source: '?' }));
+  const allArticles = feedResults.flatMap((r) => r.articles);
+
+  const feedDiagnostics = feedResults.map(({ source, error, total, kept, filtered }) => ({
+    source, error: error || null, total, kept, filtered,
+  }));
 
   // Deduplicate by title (case-insensitive prefix match)
   const seen = new Set();
@@ -217,5 +225,5 @@ module.exports = async function handler(req, res) {
 
   res.setHeader('Cache-Control', 's-maxage=900, stale-while-revalidate=86400');
   res.setHeader('Content-Type', 'application/json');
-  return res.status(200).json({ articles: deduped });
+  return res.status(200).json({ articles: deduped, feedDiagnostics });
 };
