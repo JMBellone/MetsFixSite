@@ -14,6 +14,9 @@ import SNYFeaturedCard from './components/SNYFeaturedCard'
 import LiveScoreCard from './components/LiveScoreCard'
 import MetsVideoCard from './components/MetsVideoCard'
 import MetsStatsCard from './components/MetsStatsCard'
+import SyracuseScheduleCard from './components/SyracuseScheduleCard'
+import ProspectArticlesCard from './components/ProspectArticlesCard'
+import DoveReportCard from './components/DoveReportCard'
 import './App.css'
 
 function faviconUrl(link) {
@@ -648,6 +651,15 @@ export default function App() {
 
         {/* ── Injured List ─────────────────────────────────── */}
         <InjuredListCard />
+
+        {/* ── Prospect Watch ───────────────────────────────── */}
+        <div className="section-header section-header--mets">
+          <span className="section-header-label">🌱 Prospect Watch</span>
+          <span className="section-header-line" />
+        </div>
+        <SyracuseScheduleCard />
+        <ProspectArticlesCard />
+        <DoveReportCard />
 
         {/* ── Ya Gotta Keep Reading ────────────────────────── */}
         <div className="section-header section-header--mets">
