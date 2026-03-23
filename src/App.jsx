@@ -87,6 +87,7 @@ export default function App() {
   })
   const [opponent, setOpponent] = useState({ articles: [], opponent: null })
   const [pullY, setPullY] = useState(0)
+  const [refreshing, setRefreshing] = useState(false)
   const touchStartY = useRef(0)
 
   const [lastVisitTime] = useState(() => {
@@ -130,7 +131,10 @@ export default function App() {
   }, [])
 
   const onTouchEnd = useCallback(() => {
-    if (pullY >= 60) fetchFeeds()
+    if (pullY >= 60) {
+      setRefreshing(true)
+      fetchFeeds().finally(() => setRefreshing(false))
+    }
     setPullY(0)
     touchStartY.current = 0
   }, [pullY, fetchFeeds])
@@ -231,9 +235,11 @@ export default function App() {
         </div>
       </header>
 
-      {pullY > 10 && (
-        <div className="pull-indicator" style={{ height: Math.min(pullY, 40) }}>
-          {pullY >= 60 ? 'Release to refresh' : 'Pull to refresh'}
+      {(pullY > 10 || refreshing) && (
+        <div className="pull-indicator" style={{ height: refreshing ? 40 : Math.min(pullY, 40) }}>
+          {refreshing ? (
+            <><div className="pull-spinner" />Updating...</>
+          ) : pullY >= 60 ? 'Release to refresh' : 'Pull to refresh'}
         </div>
       )}
 

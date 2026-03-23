@@ -51,14 +51,29 @@
 /* ── Pull to refresh ────────────────────────────────────── */
 .pull-indicator {
   display: flex;
-  align-items: flex-end;
+  align-items: center;
   justify-content: center;
-  padding-bottom: 8px;
+  gap: 8px;
+  padding: 10px 0;
   font-size: 0.72rem;
   font-weight: 600;
   color: var(--text-muted);
   letter-spacing: 0.5px;
   overflow: hidden;
+}
+
+@keyframes ptr-spin {
+  to { transform: rotate(360deg); }
+}
+
+.pull-spinner {
+  width: 18px;
+  height: 18px;
+  border: 2px solid var(--border);
+  border-top-color: var(--mets-orange);
+  border-radius: 50%;
+  animation: ptr-spin 0.7s linear infinite;
+  flex-shrink: 0;
 }
 
 /* ── Main content ───────────────────────────────────────── */
