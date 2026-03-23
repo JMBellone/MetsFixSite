@@ -3,6 +3,7 @@
     { "source": "/api/:path*", "destination": "/api/:path*" },
     { "source": "/(.*)", "destination": "/index.html" }
   ],
+  "installCommand": "npm install --legacy-peer-deps",
   "build": {
     "env": {
       "NODE_VERSION": "22"
