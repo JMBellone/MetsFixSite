@@ -427,24 +427,29 @@ export default function App() {
           </div>
           <div className="clubhouse-pass-body">
             <p className="clubhouse-pass-desc">Andy Martino debuts his new podcast with special guest David Wright.</p>
-            <a
-              href="https://podcasts.apple.com/us/podcast/david-wright-breaks-down-the-2026-mets-wild-clubhouse/id1576915697?i=1000756814405"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="clubhouse-pass-link"
-            >
-              <img src="https://www.google.com/s2/favicons?domain=podcasts.apple.com&sz=32" alt="" className="clubhouse-pass-icon" onError={e => { e.currentTarget.style.display = 'none' }} />
-              Listen on Apple Podcasts
-            </a>
-            <a
-              href="https://open.spotify.com/episode/7jpvUAtzqhw88JWwaTdN5S?si=XwYVzu4oSMua6-RfFK5OrA&nd=1&dlsi=e7492864da2246d8"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="clubhouse-pass-link"
-            >
-              <img src="https://www.google.com/s2/favicons?domain=open.spotify.com&sz=32" alt="" className="clubhouse-pass-icon" onError={e => { e.currentTarget.style.display = 'none' }} />
-              Listen on Spotify
-            </a>
+            <div className="clubhouse-pass-row">
+              <img src="/clubhouse-pass.jpg" alt="The Clubhouse Pass" className="clubhouse-pass-art" />
+              <div className="clubhouse-pass-links">
+                <a
+                  href="https://podcasts.apple.com/us/podcast/david-wright-breaks-down-the-2026-mets-wild-clubhouse/id1576915697?i=1000756814405"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="clubhouse-pass-link"
+                >
+                  <img src="https://www.google.com/s2/favicons?domain=podcasts.apple.com&sz=32" alt="" className="clubhouse-pass-icon" onError={e => { e.currentTarget.style.display = 'none' }} />
+                  Listen on Apple Podcasts
+                </a>
+                <a
+                  href="https://open.spotify.com/episode/7jpvUAtzqhw88JWwaTdN5S?si=XwYVzu4oSMua6-RfFK5OrA&nd=1&dlsi=e7492864da2246d8"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="clubhouse-pass-link"
+                >
+                  <img src="https://www.google.com/s2/favicons?domain=open.spotify.com&sz=32" alt="" className="clubhouse-pass-icon" onError={e => { e.currentTarget.style.display = 'none' }} />
+                  Listen on Spotify
+                </a>
+              </div>
+            </div>
           </div>
         </div>
 

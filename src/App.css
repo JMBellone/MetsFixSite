@@ -1692,6 +1692,27 @@
   flex-shrink: 0;
 }
 
+.clubhouse-pass-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.clubhouse-pass-art {
+  width: 80px;
+  height: 80px;
+  object-fit: cover;
+  border-radius: 8px;
+  flex-shrink: 0;
+}
+
+.clubhouse-pass-links {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  flex: 1;
+}
+
 .latest-updates-header {
   display: flex;
   align-items: center;
