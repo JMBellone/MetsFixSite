@@ -312,7 +312,11 @@ export default function App() {
                   <span className={`team-news-featured-title${readIds.has(topFeatured.id) ? ' team-news--read' : ''}`}>
                     {topFeatured.title}
                   </span>
-                  <span className="team-news-meta">{timeAgo(topFeatured.pubDate)} · {topFeatured.source}{topFeatured.paywalled && <SubscriberIcon />}</span>
+                  <span className="team-news-meta">
+                    {timeAgo(topFeatured.pubDate)} ·{' '}
+                    <img src={faviconUrl(topFeatured.link)} alt="" className="news-meta-favicon" onError={e => { e.currentTarget.style.display = 'none' }} />
+                    {topFeatured.source}{topFeatured.paywalled && <SubscriberIcon />}
+                  </span>
                 </div>
               </a>
             </div>
@@ -331,7 +335,11 @@ export default function App() {
                       <span className={`team-news-secondary-title${readIds.has(topSecondary.id) ? ' team-news--read' : ''}`}>
                         {topSecondary.title}
                       </span>
-                      <span className="team-news-meta">{timeAgo(topSecondary.pubDate)} · {topSecondary.source}{topSecondary.paywalled && <SubscriberIcon />}</span>
+                      <span className="team-news-meta">
+                        {timeAgo(topSecondary.pubDate)} ·{' '}
+                        <img src={faviconUrl(topSecondary.link)} alt="" className="news-meta-favicon" onError={e => { e.currentTarget.style.display = 'none' }} />
+                        {topSecondary.source}{topSecondary.paywalled && <SubscriberIcon />}
+                      </span>
                     </div>
                   </a>
                 </div>
@@ -352,7 +360,11 @@ export default function App() {
                       <span className={`team-news-secondary-title${readIds.has(topTertiary.id) ? ' team-news--read' : ''}`}>
                         {topTertiary.title}
                       </span>
-                      <span className="team-news-meta">{timeAgo(topTertiary.pubDate)} · {topTertiary.source}{topTertiary.paywalled && <SubscriberIcon />}</span>
+                      <span className="team-news-meta">
+                        {timeAgo(topTertiary.pubDate)} ·{' '}
+                        <img src={faviconUrl(topTertiary.link)} alt="" className="news-meta-favicon" onError={e => { e.currentTarget.style.display = 'none' }} />
+                        {topTertiary.source}{topTertiary.paywalled && <SubscriberIcon />}
+                      </span>
                     </div>
                   </a>
                 </div>
@@ -496,7 +508,11 @@ export default function App() {
                     <span className={`team-news-featured-title${readIds.has(featured.id) ? ' team-news--read' : ''}`}>
                       {featured.title}
                     </span>
-                    <span className="team-news-meta">{timeAgo(featured.pubDate)} · {featured.source}{featured.paywalled && <SubscriberIcon />}</span>
+                    <span className="team-news-meta">
+                      {timeAgo(featured.pubDate)} ·{' '}
+                      <img src={faviconUrl(featured.link)} alt="" className="news-meta-favicon" onError={e => { e.currentTarget.style.display = 'none' }} />
+                      {featured.source}{featured.paywalled && <SubscriberIcon />}
+                    </span>
                   </div>
                 </a>
               </div>
@@ -516,7 +532,11 @@ export default function App() {
                         <span className={`team-news-secondary-title${readIds.has(secondary.id) ? ' team-news--read' : ''}`}>
                           {secondary.title}
                         </span>
-                        <span className="team-news-meta">{timeAgo(secondary.pubDate)} · {secondary.source}{secondary.paywalled && <SubscriberIcon />}</span>
+                        <span className="team-news-meta">
+                          {timeAgo(secondary.pubDate)} ·{' '}
+                          <img src={faviconUrl(secondary.link)} alt="" className="news-meta-favicon" onError={e => { e.currentTarget.style.display = 'none' }} />
+                          {secondary.source}{secondary.paywalled && <SubscriberIcon />}
+                        </span>
                       </div>
                     </a>
                   </div>
@@ -538,7 +558,11 @@ export default function App() {
                         <span className={`team-news-secondary-title${readIds.has(tertiary.id) ? ' team-news--read' : ''}`}>
                           {tertiary.title}
                         </span>
-                        <span className="team-news-meta">{timeAgo(tertiary.pubDate)} · {tertiary.source}{tertiary.paywalled && <SubscriberIcon />}</span>
+                        <span className="team-news-meta">
+                          {timeAgo(tertiary.pubDate)} ·{' '}
+                          <img src={faviconUrl(tertiary.link)} alt="" className="news-meta-favicon" onError={e => { e.currentTarget.style.display = 'none' }} />
+                          {tertiary.source}{tertiary.paywalled && <SubscriberIcon />}
+                        </span>
                       </div>
                     </a>
                   </div>
@@ -654,7 +678,11 @@ export default function App() {
                     <span className={`team-news-featured-title${readIds.has(athFeatured.id) ? ' team-news--read' : ''}`}>
                       {athFeatured.title}
                     </span>
-                    <span className="team-news-meta">{timeAgo(athFeatured.pubDate)} · The Athletic{athFeatured.paywalled && <SubscriberIcon />}</span>
+                    <span className="team-news-meta">
+                      {timeAgo(athFeatured.pubDate)} ·{' '}
+                      <img src={faviconUrl(athFeatured.link)} alt="" className="news-meta-favicon" onError={e => { e.currentTarget.style.display = 'none' }} />
+                      The Athletic{athFeatured.paywalled && <SubscriberIcon />}
+                    </span>
                   </div>
                 </a>
               </div>
@@ -673,7 +701,11 @@ export default function App() {
                         <span className={`team-news-secondary-title${readIds.has(athSecondary.id) ? ' team-news--read' : ''}`}>
                           {athSecondary.title}
                         </span>
-                        <span className="team-news-meta">{timeAgo(athSecondary.pubDate)} · The Athletic{athSecondary.paywalled && <SubscriberIcon />}</span>
+                        <span className="team-news-meta">
+                          {timeAgo(athSecondary.pubDate)} ·{' '}
+                          <img src={faviconUrl(athSecondary.link)} alt="" className="news-meta-favicon" onError={e => { e.currentTarget.style.display = 'none' }} />
+                          The Athletic{athSecondary.paywalled && <SubscriberIcon />}
+                        </span>
                       </div>
                     </a>
                   </div>
@@ -694,7 +726,11 @@ export default function App() {
                         <span className={`team-news-secondary-title${readIds.has(athTertiary.id) ? ' team-news--read' : ''}`}>
                           {athTertiary.title}
                         </span>
-                        <span className="team-news-meta">{timeAgo(athTertiary.pubDate)} · The Athletic{athTertiary.paywalled && <SubscriberIcon />}</span>
+                        <span className="team-news-meta">
+                          {timeAgo(athTertiary.pubDate)} ·{' '}
+                          <img src={faviconUrl(athTertiary.link)} alt="" className="news-meta-favicon" onError={e => { e.currentTarget.style.display = 'none' }} />
+                          The Athletic{athTertiary.paywalled && <SubscriberIcon />}
+                        </span>
                       </div>
                     </a>
                   </div>

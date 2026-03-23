@@ -1872,6 +1872,9 @@
 .mlbnews-row-meta {
   font-size: 0.65rem;
   color: var(--text-muted);
+  display: flex;
+  align-items: center;
+  gap: 3px;
 }
 
 .mlbnews-row-thumb {

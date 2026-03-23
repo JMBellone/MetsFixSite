@@ -32,7 +32,11 @@ export default function KnowYourOpponentCard({ articles, opponent, opponentAbbr 
             )}
             <div className="mlbnews-row-body">
               <span className="mlbnews-row-title">{a.title}</span>
-              <span className="mlbnews-row-meta">{timeAgo(a.pubDate)} · MLB.com</span>
+              <span className="mlbnews-row-meta">
+                {timeAgo(a.pubDate)} ·{' '}
+                <img src="https://www.google.com/s2/favicons?domain=mlb.com&sz=32" alt="" className="news-meta-favicon" onError={e => { e.currentTarget.style.display = 'none' }} />
+                MLB.com
+              </span>
             </div>
           </a>
         ))}
