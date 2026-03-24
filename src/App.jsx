@@ -323,6 +323,7 @@ export default function App() {
                     src={briefingArticle.image}
                     alt=""
                     className="briefing-thumb"
+                    loading="lazy"
                     onError={e => { e.currentTarget.style.display = 'none' }}
                   />
                 )}
@@ -386,7 +387,7 @@ export default function App() {
                   <a href={a.link} target="_blank" rel="noopener noreferrer"
                     className="team-news-secondary" onClick={() => markRead(a.id)}>
                     {a.image && (
-                      <img src={a.image} alt="" className="team-news-secondary-img"
+                      <img src={a.image} alt="" className="team-news-secondary-img" loading="lazy" loading="lazy"
                         onError={e => { e.currentTarget.style.display = 'none' }} />
                     )}
                     <div className="team-news-secondary-body">
@@ -539,7 +540,7 @@ export default function App() {
                   onClick={() => markRead(featured.id)}
                 >
                   {featured.image && (
-                    <img src={featured.image} alt="" className="team-news-featured-img"
+                    <img src={featured.image} alt="" className="team-news-featured-img" loading="lazy"
                       onError={e => { e.currentTarget.style.display = 'none' }} />
                   )}
                   <div className="team-news-featured-body">
@@ -563,7 +564,7 @@ export default function App() {
                     <a href={secondary.link} target="_blank" rel="noopener noreferrer"
                       className="team-news-secondary" onClick={() => markRead(secondary.id)}>
                       {secondary.image && (
-                        <img src={secondary.image} alt="" className="team-news-secondary-img"
+                        <img src={secondary.image} alt="" className="team-news-secondary-img" loading="lazy"
                           onError={e => { e.currentTarget.style.display = 'none' }} />
                       )}
                       <div className="team-news-secondary-body">
@@ -589,7 +590,7 @@ export default function App() {
                     <a href={tertiary.link} target="_blank" rel="noopener noreferrer"
                       className="team-news-secondary" onClick={() => markRead(tertiary.id)}>
                       {tertiary.image && (
-                        <img src={tertiary.image} alt="" className="team-news-secondary-img"
+                        <img src={tertiary.image} alt="" className="team-news-secondary-img" loading="lazy"
                           onError={e => { e.currentTarget.style.display = 'none' }} />
                       )}
                       <div className="team-news-secondary-body">
@@ -651,7 +652,7 @@ export default function App() {
                         <a href={a.link} target="_blank" rel="noopener noreferrer"
                           className="team-news-secondary" onClick={() => markRead(a.id)}>
                           {a.image && (
-                            <img src={a.image} alt="" className="team-news-secondary-img"
+                            <img src={a.image} alt="" className="team-news-secondary-img" loading="lazy"
                               onError={e => { e.currentTarget.style.display = 'none' }} />
                           )}
                           <div className="team-news-secondary-body">
@@ -721,7 +722,7 @@ export default function App() {
               <a href={athFeatured.link} target="_blank" rel="noopener noreferrer"
                 className="team-news-featured" onClick={() => markRead(athFeatured.id)}>
                 {athFeatured.image && (
-                  <img src={athFeatured.image} alt="" className="team-news-featured-img"
+                  <img src={athFeatured.image} alt="" className="team-news-featured-img" loading="lazy"
                     onError={e => { e.currentTarget.style.display = 'none' }} />
                 )}
                 <div className="team-news-featured-body">
@@ -745,7 +746,7 @@ export default function App() {
                   <a href={a.link} target="_blank" rel="noopener noreferrer"
                     className="team-news-secondary" onClick={() => markRead(a.id)}>
                     {a.image && (
-                      <img src={a.image} alt="" className="team-news-secondary-img"
+                      <img src={a.image} alt="" className="team-news-secondary-img" loading="lazy"
                         onError={e => { e.currentTarget.style.display = 'none' }} />
                     )}
                     <div className="team-news-secondary-body">
@@ -826,7 +827,7 @@ export default function App() {
                           <a href={a.link} target="_blank" rel="noopener noreferrer"
                             className="team-news-featured" onClick={() => markRead(a.id)}>
                             {a.image && (
-                              <img src={a.image} alt="" className="team-news-featured-img"
+                              <img src={a.image} alt="" className="team-news-featured-img" loading="lazy"
                                 onError={e => { e.currentTarget.style.display = 'none' }} />
                             )}
                             <div className="team-news-featured-body">
@@ -852,7 +853,7 @@ export default function App() {
                             <a href={a.link} target="_blank" rel="noopener noreferrer"
                               className="team-news-secondary" onClick={() => markRead(a.id)}>
                               {a.image && (
-                                <img src={a.image} alt="" className="team-news-secondary-img"
+                                <img src={a.image} alt="" className="team-news-secondary-img" loading="lazy"
                                   onError={e => { e.currentTarget.style.display = 'none' }} />
                               )}
                               <div className="team-news-secondary-body">

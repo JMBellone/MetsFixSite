@@ -363,15 +363,14 @@ module.exports = async function handler(req, res) {
 
   deduped.sort((a, b) => new Date(b.pubDate) - new Date(a.pubDate));
 
-  // Fetch og:image for sources whose feeds don't include images (up to 15, 5 at a time)
-  const needsImage = deduped.filter(a => !a.image && OG_IMAGE_SOURCES.has(a.source)).slice(0, 15);
-  for (let i = 0; i < needsImage.length; i += 5) {
-    const batch = needsImage.slice(i, i + 5);
-    const images = await Promise.all(batch.map(a => fetchOgImage(a.link)));
-    batch.forEach((a, j) => { if (images[j]) a.image = images[j]; });
+  // Fetch og:image for sources whose feeds don't include images (up to 10, all at once)
+  const needsImage = deduped.filter(a => !a.image && OG_IMAGE_SOURCES.has(a.source)).slice(0, 10);
+  if (needsImage.length > 0) {
+    const images = await Promise.all(needsImage.map(a => fetchOgImage(a.link)));
+    needsImage.forEach((a, j) => { if (images[j]) a.image = images[j]; });
   }
 
-  res.setHeader('Cache-Control', 's-maxage=300, stale-while-revalidate=86400');
+  res.setHeader('Cache-Control', 's-maxage=600, stale-while-revalidate=86400');
   res.setHeader('Content-Type', 'application/json');
   return res.status(200).json({ articles: deduped, feedDiagnostics });
 };
