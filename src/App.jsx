@@ -216,12 +216,12 @@ export default function App() {
     .filter(a => a.team === 'mets' && !a.authorFeed)
     .sort((a, b) => new Date(b.pubDate) - new Date(a.pubDate))
 
-  // Top card: MLB.com + SNY + Newsday + The Athletic (max 2) by recency — no ESPN
+  // Top card: MLB.com + SNY + NY Post + Newsday + The Athletic (max 2) by recency — no ESPN
   const topAthletic = newsPool.filter(a => a.source === 'The Athletic').slice(0, 2)
   const topAthleticIds = new Set(topAthletic.map(a => a.id))
   const topPool = [
     ...topAthletic,
-    ...newsPool.filter(a => ['MLB.com', 'SNY', 'Newsday'].includes(a.source) && !topAthleticIds.has(a.id)).slice(0, 6),
+    ...newsPool.filter(a => ['MLB.com', 'SNY', 'NY Post', 'Newsday'].includes(a.source) && !topAthleticIds.has(a.id)).slice(0, 6),
   ].sort((a, b) => new Date(b.pubDate) - new Date(a.pubDate)).slice(0, 6)
 
   const topFeatured  = topPool[0]
@@ -242,7 +242,7 @@ export default function App() {
     .slice(0, 12)
   const divePoolSorted = [...athleticForDive, ...othersForDive]
     .sort((a, b) => new Date(b.pubDate) - new Date(a.pubDate))
-  // ESPN articles may not occupy the first 3 slots (featured/secondary/tertiary)
+  // ESPN articles may not occupy the first 3 slots (featured + 2 small)
   const diveNonEspn = divePoolSorted.filter(a => a.source !== 'ESPN')
   const diveEspn    = divePoolSorted.filter(a => a.source === 'ESPN')
   const divePool = [
@@ -250,11 +250,11 @@ export default function App() {
     ...diveEspn,
     ...diveNonEspn.slice(3),
   ]
-  const featured   = divePool[0]
-  const secondary  = divePool[1]
-  const tertiary   = divePool[2]
-  const headlines  = divePool.slice(3, 5)
-  const moreNews   = divePool.slice(5, 12)
+  const featured        = divePool[0]
+  const diveSmall       = divePool.slice(1, 3)
+  const diveHeadline    = divePool[3]
+  const diveSideBySide  = divePool.slice(4, 6)
+  const moreNews        = divePool.slice(6, 13)
 
   const shownIds = new Set([...topIds, ...divePool.map(a => a.id)])
   // SFE gets the 3 most recent Athletic not already in dive; Athletic card gets the next batch after those
@@ -585,76 +585,73 @@ export default function App() {
                 </a>
               </div>
 
-              {/* Secondary */}
-              {secondary && (
-                <>
+              {/* 2 small featured */}
+              {diveSmall.map(a => (
+                <Fragment key={a.id}>
                   <div className="team-news-divider" />
                   <div className="team-news-item-wrap">
-                    <a href={secondary.link} target="_blank" rel="noopener noreferrer"
-                      className="team-news-secondary" onClick={() => markRead(secondary.id)}>
-                      {secondary.image && (
-                        <img src={secondary.image} alt="" className="team-news-secondary-img" loading="lazy"
+                    <a href={a.link} target="_blank" rel="noopener noreferrer"
+                      className="team-news-secondary" onClick={() => markRead(a.id)}>
+                      {a.image && (
+                        <img src={a.image} alt="" className="team-news-secondary-img" loading="lazy"
                           onError={e => { e.currentTarget.style.display = 'none' }} />
                       )}
                       <div className="team-news-secondary-body">
-                        <span className={`team-news-secondary-title${readIds.has(secondary.id) ? ' team-news--read' : ''}`}>
-                          {secondary.title}
+                        <span className={`team-news-secondary-title${readIds.has(a.id) ? ' team-news--read' : ''}`}>
+                          {a.title}
                         </span>
                         <span className="team-news-meta">
-                          {timeAgo(secondary.pubDate)} ·{' '}
-                          <img src={faviconUrl(secondary.link)} alt="" className="news-meta-favicon" onError={e => { e.currentTarget.style.display = 'none' }} />
-                          {secondary.source}{secondary.paywalled && <SubscriberIcon />}
+                          {timeAgo(a.pubDate)} ·{' '}
+                          <img src={faviconUrl(a.link)} alt="" className="news-meta-favicon" onError={e => { e.currentTarget.style.display = 'none' }} />
+                          {a.source}{a.paywalled && <SubscriberIcon />}
                         </span>
                       </div>
+                    </a>
+                  </div>
+                </Fragment>
+              ))}
+
+              {/* 1 headline-only */}
+              {diveHeadline && (
+                <>
+                  <div className="team-news-divider" />
+                  <div className="team-news-headlines">
+                    <a href={diveHeadline.link} target="_blank" rel="noopener noreferrer"
+                      className={`team-news-headline${readIds.has(diveHeadline.id) ? ' team-news--read' : ''}`}
+                      onClick={() => markRead(diveHeadline.id)}>
+                      <span className="team-news-headline-body">
+                        <span className="team-news-headline-title">{diveHeadline.title}</span>
+                        <span className="team-news-headline-source">
+                          <img src={faviconUrl(diveHeadline.link)} alt="" className="team-news-source-favicon"
+                            onError={e => { e.currentTarget.style.display = 'none' }} />
+                          {diveHeadline.source}{diveHeadline.paywalled && <SubscriberIcon />} · {timeAgo(diveHeadline.pubDate)}
+                        </span>
+                      </span>
                     </a>
                   </div>
                 </>
               )}
 
-              {/* Tertiary */}
-              {tertiary && (
+              {/* 2 side-by-side */}
+              {diveSideBySide.length > 0 && (
                 <>
                   <div className="team-news-divider" />
-                  <div className="team-news-item-wrap">
-                    <a href={tertiary.link} target="_blank" rel="noopener noreferrer"
-                      className="team-news-secondary" onClick={() => markRead(tertiary.id)}>
-                      {tertiary.image && (
-                        <img src={tertiary.image} alt="" className="team-news-secondary-img" loading="lazy"
-                          onError={e => { e.currentTarget.style.display = 'none' }} />
-                      )}
-                      <div className="team-news-secondary-body">
-                        <span className={`team-news-secondary-title${readIds.has(tertiary.id) ? ' team-news--read' : ''}`}>
-                          {tertiary.title}
-                        </span>
-                        <span className="team-news-meta">
-                          {timeAgo(tertiary.pubDate)} ·{' '}
-                          <img src={faviconUrl(tertiary.link)} alt="" className="news-meta-favicon" onError={e => { e.currentTarget.style.display = 'none' }} />
-                          {tertiary.source}{tertiary.paywalled && <SubscriberIcon />}
-                        </span>
-                      </div>
-                    </a>
-                  </div>
-                </>
-              )}
-
-              {/* Headline row */}
-              {headlines.length > 0 && (
-                <>
-                  <div className="team-news-divider" />
-                  <div className="team-news-headlines team-news-headlines--row">
-                    {headlines.map(a => (
-                      <a key={a.id} href={a.link} target="_blank" rel="noopener noreferrer"
-                        className={`team-news-headline${readIds.has(a.id) ? ' team-news--read' : ''}`}
-                        onClick={() => markRead(a.id)}>
-                        <span className="team-news-headline-body">
-                          <span className="team-news-headline-title">{a.title}</span>
-                          <span className="team-news-headline-source">
-                            <img src={faviconUrl(a.link)} alt="" className="team-news-source-favicon"
-                              onError={e => { e.currentTarget.style.display = 'none' }} />
-                            {a.source}{a.paywalled && <SubscriberIcon />} · {timeAgo(a.pubDate)}
+                  <div className="team-news-sidebyside">
+                    {diveSideBySide.map(a => (
+                      <div key={a.id} className="team-news-sidebyside-item">
+                        <a href={a.link} target="_blank" rel="noopener noreferrer"
+                          className="team-news-sidebyside-link" onClick={() => markRead(a.id)}>
+                          <span className={`team-news-sidebyside-title${readIds.has(a.id) ? ' team-news--read' : ''}`}>
+                            {a.title}
                           </span>
-                        </span>
-                      </a>
+                          <span className="team-news-meta">
+                            {timeAgo(a.pubDate)} ·{' '}
+                            <img src={faviconUrl(a.link)} alt="" className="news-meta-favicon"
+                              onError={e => { e.currentTarget.style.display = 'none' }} />
+                            {a.source}{a.paywalled && <SubscriberIcon />}
+                          </span>
+                        </a>
+                      </div>
                     ))}
                   </div>
                 </>
