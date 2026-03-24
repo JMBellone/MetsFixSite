@@ -53,6 +53,25 @@ const FEEDS = [
     authority: 2,
   },
   {
+    url: 'https://www.espn.com/espn/rss/mlb/news',
+    source: 'ESPN',
+    team: 'mets',
+    paywalled: false,
+    authority: 3,
+    // Keep Jeff Passan always; keep Jorge Castillo / David Schoenfield only when Mets are mentioned
+    filterFn: (item) => {
+      const creator = (item.creator || '').toLowerCase()
+      if (creator.includes('jeff passan')) return true
+      const mentionsMets =
+        item.title.toLowerCase().includes('mets') ||
+        (item.description || '').toLowerCase().includes('mets')
+      return mentionsMets && (
+        creator.includes('jorge castillo') ||
+        creator.includes('david schoenfield')
+      )
+    },
+  },
+  {
     url: 'https://www.newsday.com/api/rss/recent',
     source: 'Newsday',
     team: 'mets',
@@ -152,7 +171,8 @@ function parseRSS(xml) {
     else if (mlbImage && isImageUrl(mlbImage[1])) image = mlbImage[1];
     else if (cdataImg && isImageUrl(cdataImg[1])) image = cdataImg[1];
 
-    items.push({ title, link, pubDate, description, image });
+    const creator = get('dc:creator') || get('author') || ''
+    items.push({ title, link, pubDate, description, image, creator });
   }
 
   return items;
@@ -199,6 +219,7 @@ async function fetchFeed(feedConfig) {
       const inLink  = item.link.toLowerCase().includes(kw);
       if (!inTitle && !inLink) continue;
     }
+    if (feedConfig.filterFn && !feedConfig.filterFn(item)) continue;
 
     results.push({
       id: `${source}-${Buffer.from(item.link).toString('base64').replace(/=/g, '')}`,
@@ -211,6 +232,7 @@ async function fetchFeed(feedConfig) {
       image: item.image || null,
       link: item.link,
       pubDate: item.pubDate.toISOString(),
+      creator: item.creator || '',
     });
   }
 
@@ -218,7 +240,7 @@ async function fetchFeed(feedConfig) {
 }
 
 // Sources whose RSS feeds omit images — fetch og:image from the article page as fallback
-const OG_IMAGE_SOURCES = new Set(['Newsday', 'The Athletic'])
+const OG_IMAGE_SOURCES = new Set(['Newsday', 'The Athletic', 'ESPN'])
 
 async function fetchOgImage(url) {
   try {
