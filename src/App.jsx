@@ -228,7 +228,7 @@ export default function App() {
   const secondary  = divePool[1]
   const tertiary   = divePool[2]
   const headlines  = divePool.slice(3, 5)
-  const moreNews   = divePool.slice(5, 10)
+  const moreNews   = divePool.slice(5, 10).filter(a => a.source !== 'The Athletic')
 
   const shownIds = new Set([...topIds, ...divePool.map(a => a.id)])
   // SFE gets the 3 most recent Athletic not already in dive; Athletic card gets the next batch after those
