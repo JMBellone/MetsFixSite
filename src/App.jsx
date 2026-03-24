@@ -62,6 +62,13 @@ function SubscriberIcon() {
   return <span className="subscriber-icon" title="Subscriber Content">$</span>
 }
 
+function normalizeMlbUrl(link) {
+  try {
+    const u = new URL(link)
+    return u.origin + u.pathname.replace(/^\/[a-z-]+\/news\//, '/news/')
+  } catch { return link }
+}
+
 // Repeating pattern for Stories From Earlier (after idx 0 featured):
 // 2 small-image, 3 big-headline, 2 small-image, 2 side-by-side → repeat (cycle of 9)
 function groupRemainingArticles(articles) {
@@ -247,6 +254,15 @@ export default function App() {
   ].sort((a, b) => new Date(b.pubDate) - new Date(a.pubDate))
   const sfePriorityIds = new Set(sfePriority.map(a => a.id))
   const remainingPool = [...sfePriority, ...sfeBase.filter(a => !sfePriorityIds.has(a.id))]
+
+  // Build normalized URL set from all Mets feed articles so opponent card
+  // doesn't repeat articles already shown elsewhere on the page
+  const metsArticleUrls = new Set(
+    articles.flatMap(a => [a.link, normalizeMlbUrl(a.link)])
+  )
+  const filteredOpponentArticles = opponent.articles.filter(
+    a => !metsArticleUrls.has(a.link) && !metsArticleUrls.has(normalizeMlbUrl(a.link))
+  )
 
   return (
     <div
@@ -508,7 +524,7 @@ export default function App() {
           >
             👉 2026 METS STREAMING GUIDE
           </a>
-          <KnowYourOpponentCard articles={opponent.articles} opponent={opponent.opponent} opponentAbbr={opponent.opponentAbbr} />
+          <KnowYourOpponentCard articles={filteredOpponentArticles} opponent={opponent.opponent} opponentAbbr={opponent.opponentAbbr} />
         </div>
 
         {/* ── Mets Fix Chat Banner ─────────────────────────── */}
@@ -524,22 +540,8 @@ export default function App() {
 
         {/* ── MLB News ─────────────────────────────────────── */}
         <MLBNewsCard shownLinks={new Set([
-          ...articles.flatMap(a => {
-            const links = [a.link]
-            try {
-              const u = new URL(a.link)
-              links.push(u.origin + u.pathname.replace(/^\/[a-z-]+\/news\//, '/news/'))
-            } catch {}
-            return links
-          }),
-          ...opponent.articles.flatMap(a => {
-            const links = [a.link]
-            try {
-              const u = new URL(a.link)
-              links.push(u.origin + u.pathname.replace(/^\/[a-z-]+\/news\//, '/news/'))
-            } catch {}
-            return links
-          }),
+          ...articles.flatMap(a => [a.link, normalizeMlbUrl(a.link)]),
+          ...opponent.articles.flatMap(a => [a.link, normalizeMlbUrl(a.link)]),
         ])} />
 
         {/* ── Dive Into the News ───────────────────────────── */}
