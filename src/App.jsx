@@ -191,10 +191,13 @@ export default function App() {
     .filter(a => a.team === 'mets' && !a.authorFeed)
     .sort((a, b) => new Date(b.pubDate) - new Date(a.pubDate))
 
-  // Top card: MLB.com + SNY + Newsday + The Athletic by recency + Passan/McDaniel (ESPN)
-  const topBase = newsPool
-    .filter(a => ['MLB.com', 'SNY', 'Newsday', 'The Athletic'].includes(a.source))
-    .slice(0, 6)
+  // Top card: MLB.com + SNY + Newsday + The Athletic (max 2) by recency + Passan/McDaniel (ESPN)
+  const topAthletic = newsPool.filter(a => a.source === 'The Athletic').slice(0, 2)
+  const topAthleticIds = new Set(topAthletic.map(a => a.id))
+  const topBase = [
+    ...topAthletic,
+    ...newsPool.filter(a => ['MLB.com', 'SNY', 'Newsday'].includes(a.source) && !topAthleticIds.has(a.id)).slice(0, 6),
+  ].sort((a, b) => new Date(b.pubDate) - new Date(a.pubDate)).slice(0, 6)
   const topBaseIds = new Set(topBase.map(a => a.id))
   const passanRecent = newsPool.filter(a =>
     a.source === 'ESPN' &&
