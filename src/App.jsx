@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback, useRef } from 'react'
+import { useState, useEffect, useCallback, useRef, Fragment } from 'react'
 import SkeletonCard from './components/SkeletonCard'
 import ScheduleCard from './components/ScheduleCard'
 import StandingsCard from './components/StandingsCard'
@@ -191,32 +191,27 @@ export default function App() {
     .filter(a => a.team === 'mets')
     .sort((a, b) => new Date(b.pubDate) - new Date(a.pubDate))
 
-  // Top card: MLB.com + SNY + Newsday, guarantee ≥2 MLB articles
-  // Also include Jeff Passan/Kiley McDaniel (ESPN) articles published within the last 16 hours
-  const mlbArticles = newsPool.filter(a => a.source === 'MLB.com').slice(0, 2)
-  const mlbIds = new Set(mlbArticles.map(a => a.id))
-  const topRemainder = newsPool
-    .filter(a => (a.source === 'MLB.com' || a.source === 'SNY' || a.source === 'Newsday') && !mlbIds.has(a.id))
-    .slice(0, 3)
-  const topBaseIds = new Set([...mlbArticles, ...topRemainder].map(a => a.id))
+  // Top card: MLB.com + SNY + Newsday by recency + Passan/McDaniel (ESPN, last 16h)
+  const topBase = newsPool
+    .filter(a => ['MLB.com', 'SNY', 'Newsday'].includes(a.source))
+    .slice(0, 6)
+  const topBaseIds = new Set(topBase.map(a => a.id))
   const passanRecent = newsPool.filter(a =>
     a.source === 'ESPN' &&
     /(jeff passan|kiley mcdaniel)/.test((a.creator || '').toLowerCase()) &&
     Date.now() - new Date(a.pubDate).getTime() < 16 * 60 * 60 * 1000 &&
     !topBaseIds.has(a.id)
   )
-  const topPool = [...mlbArticles, ...topRemainder, ...passanRecent]
+  const topPool = [...topBase, ...passanRecent]
     .sort((a, b) => new Date(b.pubDate) - new Date(a.pubDate))
 
   // Passan/McDaniel (ESPN) articles may not occupy the featured image slot
   const topFeatured  = topPool.find(a => a.source !== 'ESPN') || topPool[0]
   const topRest      = topPool.filter(a => a !== topFeatured)
-  const topSecondary = topRest[0]
-  const topTertiary  = topRest[1]
-  const topHeadline1 = topRest[2]
-  const topHeadline2 = topRest[3]
+  const topSmall     = topRest.slice(0, 3)
+  const topHeadlines = topRest.slice(3, 5)
 
-  const topIds = new Set(topPool.slice(0, 5).map(a => a.id))
+  const topIds = new Set(topPool.slice(0, 6).map(a => a.id))
 
   // Dive Into the News: force 3 most recent Athletic + 7 others, guarantee Athletic in first 15
   const athleticForDive = articles
@@ -384,96 +379,49 @@ export default function App() {
               </a>
             </div>
 
-            {topSecondary && (
-              <>
+            {topSmall.map(a => (
+              <Fragment key={a.id}>
                 <div className="team-news-divider" />
                 <div className="team-news-item-wrap">
-                  <a href={topSecondary.link} target="_blank" rel="noopener noreferrer"
-                    className="team-news-secondary" onClick={() => markRead(topSecondary.id)}>
-                    {topSecondary.image && (
-                      <img src={topSecondary.image} alt="" className="team-news-secondary-img"
+                  <a href={a.link} target="_blank" rel="noopener noreferrer"
+                    className="team-news-secondary" onClick={() => markRead(a.id)}>
+                    {a.image && (
+                      <img src={a.image} alt="" className="team-news-secondary-img"
                         onError={e => { e.currentTarget.style.display = 'none' }} />
                     )}
                     <div className="team-news-secondary-body">
-                      <span className={`team-news-secondary-title${readIds.has(topSecondary.id) ? ' team-news--read' : ''}`}>
-                        {topSecondary.title}
+                      <span className={`team-news-secondary-title${readIds.has(a.id) ? ' team-news--read' : ''}`}>
+                        {a.title}
                       </span>
                       <span className="team-news-meta">
-                        {timeAgo(topSecondary.pubDate)} ·{' '}
-                        <img src={faviconUrl(topSecondary.link)} alt="" className="news-meta-favicon" onError={e => { e.currentTarget.style.display = 'none' }} />
-                        {topSecondary.source}{topSecondary.paywalled && <SubscriberIcon />}
+                        {timeAgo(a.pubDate)} ·{' '}
+                        <img src={faviconUrl(a.link)} alt="" className="news-meta-favicon" onError={e => { e.currentTarget.style.display = 'none' }} />
+                        {a.source}{a.paywalled && <SubscriberIcon />}
                       </span>
                     </div>
                   </a>
                 </div>
-              </>
-            )}
+              </Fragment>
+            ))}
 
-            {topTertiary && (
+            {topHeadlines.length > 0 && (
               <>
                 <div className="team-news-divider" />
-                <div className="team-news-item-wrap">
-                  <a href={topTertiary.link} target="_blank" rel="noopener noreferrer"
-                    className="team-news-secondary" onClick={() => markRead(topTertiary.id)}>
-                    {topTertiary.image && (
-                      <img src={topTertiary.image} alt="" className="team-news-secondary-img"
-                        onError={e => { e.currentTarget.style.display = 'none' }} />
-                    )}
-                    <div className="team-news-secondary-body">
-                      <span className={`team-news-secondary-title${readIds.has(topTertiary.id) ? ' team-news--read' : ''}`}>
-                        {topTertiary.title}
-                      </span>
-                      <span className="team-news-meta">
-                        {timeAgo(topTertiary.pubDate)} ·{' '}
-                        <img src={faviconUrl(topTertiary.link)} alt="" className="news-meta-favicon" onError={e => { e.currentTarget.style.display = 'none' }} />
-                        {topTertiary.source}{topTertiary.paywalled && <SubscriberIcon />}
-                      </span>
-                    </div>
-                  </a>
-                </div>
-              </>
-            )}
-
-            {topHeadline1 && (
-              <>
-                <div className="team-news-divider" />
-                <div className="sfe-headline-article">
-                  <div className="team-news-item-wrap">
-                    <a href={topHeadline1.link} target="_blank" rel="noopener noreferrer"
-                      className="sfe-headline-link" onClick={() => markRead(topHeadline1.id)}>
-                      <span className={`sfe-headline-title${readIds.has(topHeadline1.id) ? ' team-news--read' : ''}`}>
-                        {topHeadline1.title}
-                      </span>
-                      <span className="team-news-meta">
-                        {timeAgo(topHeadline1.pubDate)} ·{' '}
-                        <img src={faviconUrl(topHeadline1.link)} alt="" className="news-meta-favicon"
-                          onError={e => { e.currentTarget.style.display = 'none' }} />
-                        {topHeadline1.source}{topHeadline1.paywalled && <SubscriberIcon />}
+                <div className="team-news-headlines team-news-headlines--row">
+                  {topHeadlines.map(a => (
+                    <a key={a.id} href={a.link} target="_blank" rel="noopener noreferrer"
+                      className={`team-news-headline${readIds.has(a.id) ? ' team-news--read' : ''}`}
+                      onClick={() => markRead(a.id)}>
+                      <span className="team-news-headline-body">
+                        <span className="team-news-headline-title">{a.title}</span>
+                        <span className="team-news-headline-source">
+                          <img src={faviconUrl(a.link)} alt="" className="team-news-source-favicon"
+                            onError={e => { e.currentTarget.style.display = 'none' }} />
+                          {a.source}{a.paywalled && <SubscriberIcon />} · {timeAgo(a.pubDate)}
+                        </span>
                       </span>
                     </a>
-                  </div>
-                </div>
-              </>
-            )}
-
-            {topHeadline2 && (
-              <>
-                <div className="team-news-divider" />
-                <div className="sfe-headline-article">
-                  <div className="team-news-item-wrap">
-                    <a href={topHeadline2.link} target="_blank" rel="noopener noreferrer"
-                      className="sfe-headline-link" onClick={() => markRead(topHeadline2.id)}>
-                      <span className={`sfe-headline-title${readIds.has(topHeadline2.id) ? ' team-news--read' : ''}`}>
-                        {topHeadline2.title}
-                      </span>
-                      <span className="team-news-meta">
-                        {timeAgo(topHeadline2.pubDate)} ·{' '}
-                        <img src={faviconUrl(topHeadline2.link)} alt="" className="news-meta-favicon"
-                          onError={e => { e.currentTarget.style.display = 'none' }} />
-                        {topHeadline2.source}{topHeadline2.paywalled && <SubscriberIcon />}
-                      </span>
-                    </a>
-                  </div>
+                  ))}
                 </div>
               </>
             )}
