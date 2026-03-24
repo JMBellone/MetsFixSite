@@ -55,7 +55,7 @@ function getBriefingTime() {
 function getBriefingLabel() {
   const t = getBriefingTime()
   if (t === 'morning') return '☀️ Morning Briefing'
-  if (t === 'afternoon') return '🍎 Afternoon Briefing'
+  if (t === 'afternoon') return '😎 AFTERNOON BRIEFING'
   return '☾ Evening Briefing'
 }
 

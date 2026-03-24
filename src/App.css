@@ -137,12 +137,8 @@
   background: linear-gradient(to right, rgba(245, 208, 0, 0.4), transparent);
 }
 
-.section-header--briefing-afternoon .section-header-label {
-  color: var(--mets-orange);
-}
-
 .section-header--briefing-afternoon .section-header-line {
-  background: linear-gradient(to right, rgba(255, 89, 16, 0.4), transparent);
+  background: linear-gradient(to right, rgba(245, 208, 0, 0.4), transparent);
 }
 
 .section-header--briefing-evening .section-header-label {
