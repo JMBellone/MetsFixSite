@@ -221,7 +221,7 @@ export default function App() {
   const athleticForDiveIds = new Set(athleticForDive.map(a => a.id))
   const othersForDive = newsPool
     .filter(a => !topIds.has(a.id) && !athleticForDiveIds.has(a.id))
-    .slice(0, 7)
+    .slice(0, 12)
   const divePool = [...athleticForDive, ...othersForDive]
     .sort((a, b) => new Date(b.pubDate) - new Date(a.pubDate))
   const featured   = divePool[0]
