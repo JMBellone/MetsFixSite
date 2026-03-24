@@ -202,6 +202,34 @@ async function fetchFeed(feedConfig) {
   return { articles: results, error: null, source, total: items.length, kept: results.length, filtered };
 }
 
+const STOP_WORDS = new Set([
+  'a', 'an', 'the', 'in', 'on', 'at', 'to', 'for', 'of', 'and', 'or', 'but',
+  'is', 'are', 'was', 'were', 'be', 'been', 'being', 'have', 'has', 'had',
+  'do', 'does', 'did', 'will', 'would', 'could', 'should', 'may', 'might',
+  'that', 'this', 'it', 'its', 'he', 'she', 'they', 'we', 'you', 'i',
+  'his', 'her', 'their', 'our', 'my', 'as', 'with', 'from', 'by', 'about',
+  'into', 'after', 'who', 'which', 'what', 'him', 'hes', 'not', 'up',
+  'out', 'if', 'how', 'all', 'just', 'now', 'more', 'than', 'also', 'off',
+]);
+
+function tokenizeTitle(title) {
+  return new Set(
+    title.toLowerCase()
+      .replace(/[^a-z0-9\s]/g, ' ')
+      .split(/\s+/)
+      .filter(w => w.length > 2 && !STOP_WORDS.has(w))
+  );
+}
+
+function jaccardSimilarity(a, b) {
+  if (!a.size || !b.size) return 0;
+  let intersection = 0;
+  for (const w of a) if (b.has(w)) intersection++;
+  return intersection / (a.size + b.size - intersection);
+}
+
+const SIMILARITY_THRESHOLD = 0.35;
+
 module.exports = async function handler(req, res) {
   if (req.method !== 'GET') {
     return res.status(405).json({ error: 'Method not allowed' });
@@ -215,14 +243,23 @@ module.exports = async function handler(req, res) {
     source, error: error || null, total, kept, filtered,
   }));
 
-  // Deduplicate by title (case-insensitive prefix match)
-  const seen = new Set();
-  const deduped = allArticles.filter(a => {
-    const key = a.title.toLowerCase().slice(0, 60);
-    if (seen.has(key)) return false;
-    seen.add(key);
-    return true;
+  // Deduplicate by semantic title similarity (Jaccard ≥ 0.35 = same story).
+  // Sort by authority DESC first so highest-quality source wins the collision.
+  const sortedForDedup = [...allArticles].sort((a, b) => {
+    if (b.authority !== a.authority) return b.authority - a.authority;
+    return new Date(b.pubDate) - new Date(a.pubDate);
   });
+
+  const keptTokens = [];
+  const deduped = [];
+  for (const article of sortedForDedup) {
+    const tokens = tokenizeTitle(article.title);
+    const isDupe = keptTokens.some(kt => jaccardSimilarity(tokens, kt) >= SIMILARITY_THRESHOLD);
+    if (!isDupe) {
+      deduped.push(article);
+      keptTokens.push(tokens);
+    }
+  }
 
   deduped.sort((a, b) => new Date(b.pubDate) - new Date(a.pubDate));
 
