@@ -266,9 +266,9 @@ export default function App() {
   const metsArticleUrls = new Set(
     articles.flatMap(a => [a.link, normalizeMlbUrl(a.link)])
   )
-  const filteredOpponentArticles = opponent.articles.filter(
-    a => !metsArticleUrls.has(a.link) && !metsArticleUrls.has(normalizeMlbUrl(a.link))
-  )
+  const filteredOpponentArticles = opponent.articles
+    .filter(a => !metsArticleUrls.has(a.link) && !metsArticleUrls.has(normalizeMlbUrl(a.link)))
+    .slice(0, 3)
 
   return (
     <div

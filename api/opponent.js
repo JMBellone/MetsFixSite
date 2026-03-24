@@ -112,12 +112,17 @@ module.exports = async function handler(req, res) {
     if (!feedRes.ok) return res.status(200).json({ articles: [], opponent: opponentName, opponentAbbr })
     const xml = await feedRes.text()
 
-    const articles = parseRSS(xml).slice(0, 3).map(a => ({
-      title: a.title,
-      link: a.link,
-      image: a.image || null,
-      pubDate: a.pubDate?.toISOString() || null,
-    }))
+    const SEVEN_DAYS_MS = 7 * 24 * 60 * 60 * 1000
+    const cutoff = Date.now() - SEVEN_DAYS_MS
+    const articles = parseRSS(xml)
+      .filter(a => a.pubDate && a.pubDate.getTime() >= cutoff)
+      .slice(0, 10)
+      .map(a => ({
+        title: a.title,
+        link: a.link,
+        image: a.image || null,
+        pubDate: a.pubDate?.toISOString() || null,
+      }))
 
     return res.status(200).json({ articles, opponent: opponentName, opponentAbbr })
   } catch (e) {
