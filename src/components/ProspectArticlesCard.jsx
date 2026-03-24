@@ -17,7 +17,7 @@ const ARTICLES = [
 
 export default function ProspectArticlesCard() {
   return (
-    <div className="team-news-card">
+    <div className="team-news-card prospect-articles-card">
       <div className="latest-updates-header">
         <span className="latest-updates-title">Learn about this year's top prospects</span>
       </div>
