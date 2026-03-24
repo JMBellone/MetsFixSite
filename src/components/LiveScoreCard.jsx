@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef, useCallback } from 'react'
+import { broadcastInfo } from '../utils/broadcastInfo'
 
 function logoUrl(abbr) {
   if (!abbr) return ''
@@ -80,7 +81,7 @@ export default function LiveScoreCard() {
 
   if (!game) return null
 
-  const { home, away, inningHalf, inningOrdinal, outs, balls, strikes, runners, batter, pitcher, status } = game
+  const { home, away, inningHalf, inningOrdinal, outs, balls, strikes, runners, batter, pitcher, status, broadcast } = game
   const isTop = inningHalf === 'Top'
 
   const timeStr = lastUpdated
@@ -96,6 +97,25 @@ export default function LiveScoreCard() {
           LIVE
         </div>
         <span className="live-status">{status}</span>
+        {(() => {
+          const bc = broadcastInfo(broadcast)
+          if (!bc) return null
+          const Tag = bc.href ? 'a' : 'span'
+          const linkProps = bc.href ? { href: bc.href, target: '_blank', rel: 'noopener noreferrer' } : {}
+          return (
+            <Tag className="schedule-tv" {...linkProps}>
+              {bc.domain && (
+                <img
+                  src={`https://www.google.com/s2/favicons?domain=${bc.domain}&sz=32`}
+                  alt=""
+                  className="schedule-tv-icon"
+                  onError={e => { e.currentTarget.style.display = 'none' }}
+                />
+              )}
+              {bc.label}
+            </Tag>
+          )
+        })()}
         <button
           className={`live-refresh-btn${refreshing ? ' live-refresh-btn--spinning' : ''}`}
           onClick={fetchGame}

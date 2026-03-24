@@ -7,7 +7,7 @@ module.exports = async function handler(req, res) {
 
   try {
     const schedRes = await fetch(
-      `https://statsapi.mlb.com/api/v1/schedule?teamId=${METS_ID}&sportId=1&gameType=S,R,E&date=${today}`
+      `https://statsapi.mlb.com/api/v1/schedule?teamId=${METS_ID}&sportId=1&gameType=S,R,E&date=${today}&hydrate=broadcasts(all)`
     )
     if (!schedRes.ok) {
       res.setHeader('Cache-Control', 's-maxage=300, stale-while-revalidate=86400')
@@ -30,6 +30,14 @@ module.exports = async function handler(req, res) {
     const gamePk = liveGame.gamePk
     const metsIsHome = liveGame.teams.home.team.id === METS_ID
 
+    // Extract best broadcast: national TV → local TV → streaming (non-MLB.TV) → MLB.TV
+    const bcs = liveGame.broadcasts || []
+    const nationalTV = bcs.find(b => b.type === 'TV' && b.isNational)
+    const localTV    = bcs.find(b => b.type === 'TV' && !b.isNational)
+    const streaming  = bcs.find(b => b.type !== 'TV' && b.name !== 'MLB.TV' && b.name !== 'Radio')
+    const mlbTV      = bcs.find(b => b.name === 'MLB.TV')
+    const broadcast  = (nationalTV || localTV || streaming || mlbTV)?.name || null
+
     // Fetch linescore and boxscore in parallel
     const [lsRes, bsRes] = await Promise.all([
       fetch(`https://statsapi.mlb.com/api/v1/game/${gamePk}/linescore`),
@@ -46,6 +54,7 @@ module.exports = async function handler(req, res) {
 
     return res.status(200).json({
       isLive: true,
+      broadcast,
       status: liveGame.status.detailedState || 'In Progress',
       gamePk,
       metsIsHome,
