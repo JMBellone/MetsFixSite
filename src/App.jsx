@@ -202,7 +202,7 @@ export default function App() {
   const passanRecent = newsPool.filter(a =>
     a.source === 'ESPN' &&
     (a.creator || '').toLowerCase().includes('jeff passan') &&
-    Date.now() - new Date(a.pubDate).getTime() < 12 * 60 * 60 * 1000 &&
+    Date.now() - new Date(a.pubDate).getTime() < 16 * 60 * 60 * 1000 &&
     !topBaseIds.has(a.id)
   )
   const topPool = [...mlbArticles, ...topRemainder, ...passanRecent]
