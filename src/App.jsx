@@ -208,11 +208,13 @@ export default function App() {
   const topPool = [...mlbArticles, ...topRemainder, ...passanRecent]
     .sort((a, b) => new Date(b.pubDate) - new Date(a.pubDate))
 
-  const topFeatured  = topPool[0]
-  const topSecondary = topPool[1]
-  const topTertiary  = topPool[2]
-  const topHeadline1 = topPool[3]
-  const topHeadline2 = topPool[4]
+  // Passan/McDaniel (ESPN) articles may not occupy the featured image slot
+  const topFeatured  = topPool.find(a => a.source !== 'ESPN') || topPool[0]
+  const topRest      = topPool.filter(a => a !== topFeatured)
+  const topSecondary = topRest[0]
+  const topTertiary  = topRest[1]
+  const topHeadline1 = topRest[2]
+  const topHeadline2 = topRest[3]
 
   const topIds = new Set(topPool.slice(0, 5).map(a => a.id))
 
