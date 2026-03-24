@@ -12,7 +12,7 @@ const FEEDS = [
     source: 'The Metropolitan',
     team: 'metropolitan',
     paywalled: false,
-    authority: 3,
+    authority: 4,
     cutoffMs: THIRTY_DAYS_MS,
   },
   {
@@ -20,7 +20,7 @@ const FEEDS = [
     source: 'MLB.com',
     team: 'mets',
     paywalled: false,
-    authority: 3,
+    authority: 4,
   },
   // The Athletic — 7-day window to avoid stale cache gaps
   {
@@ -36,14 +36,14 @@ const FEEDS = [
     source: 'SNY',
     team: 'mets',
     paywalled: false,
-    authority: 2,
+    authority: 4,
   },
   {
     url: 'https://nypost.com/tag/new-york-mets/feed/',
     source: 'NY Post',
     team: 'mets',
     paywalled: false,
-    authority: 1,
+    authority: 2,
   },
   {
     url: 'https://blogs.fangraphs.com/category/teams/mets/feed',
@@ -57,8 +57,8 @@ const FEEDS = [
     source: 'ESPN',
     team: 'mets',
     paywalled: false,
-    authority: 3,
-    // Keep Jeff Passan always; keep Jorge Castillo / David Schoenfield only when Mets are mentioned
+    authority: 2,
+    // Keep Jeff Passan always; keep Castillo / Schoenfield / Gonzalez only when Mets are mentioned
     filterFn: (item) => {
       const creator = (item.creator || '').toLowerCase()
       if (creator.includes('jeff passan')) return true
@@ -67,7 +67,8 @@ const FEEDS = [
         (item.description || '').toLowerCase().includes('mets')
       return mentionsMets && (
         creator.includes('jorge castillo') ||
-        creator.includes('david schoenfield')
+        creator.includes('david schoenfield') ||
+        creator.includes('alden gonzalez')
       )
     },
   },
@@ -76,7 +77,7 @@ const FEEDS = [
     source: 'Newsday',
     team: 'mets',
     paywalled: true,
-    authority: 2,
+    authority: 1,
     // General feed — only keep articles that mention Mets
     requiredKeyword: 'mets',
   },
