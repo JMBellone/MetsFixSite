@@ -188,7 +188,7 @@ export default function App() {
   const briefingArticle = articles.find(a => a.team === 'metropolitan') || null
 
   const newsPool = articles
-    .filter(a => a.team === 'mets')
+    .filter(a => a.team === 'mets' && !a.authorFeed)
     .sort((a, b) => new Date(b.pubDate) - new Date(a.pubDate))
 
   // Top card: MLB.com + SNY + Newsday by recency + Passan/McDaniel (ESPN, last 16h)
@@ -215,7 +215,7 @@ export default function App() {
 
   // Dive Into the News: force 3 most recent Athletic + 7 others, guarantee Athletic in first 15
   const athleticForDive = articles
-    .filter(a => a.source === 'The Athletic' && !topIds.has(a.id))
+    .filter(a => a.source === 'The Athletic' && !a.authorFeed && !topIds.has(a.id))
     .sort((a, b) => new Date(b.pubDate) - new Date(a.pubDate))
     .slice(0, 3)
   const athleticForDiveIds = new Set(athleticForDive.map(a => a.id))
@@ -228,7 +228,7 @@ export default function App() {
   const secondary  = divePool[1]
   const tertiary   = divePool[2]
   const headlines  = divePool.slice(3, 5)
-  const moreNews   = divePool.slice(5, 10).filter(a => a.source !== 'The Athletic')
+  const moreNews   = divePool.slice(5, 10)
 
   const shownIds = new Set([...topIds, ...divePool.map(a => a.id)])
   // SFE gets the 3 most recent Athletic not already in dive; Athletic card gets the next batch after those

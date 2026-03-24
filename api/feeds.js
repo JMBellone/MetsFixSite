@@ -38,6 +38,7 @@ const FEEDS = [
     paywalled: true,
     authority: 3,
     cutoffMs: SEVEN_DAYS_MS,
+    authorFeed: true,
   },
   {
     url: 'https://www.nytimes.com/athletic/rss/author/eno-sarris/',
@@ -46,6 +47,7 @@ const FEEDS = [
     paywalled: true,
     authority: 3,
     cutoffMs: SEVEN_DAYS_MS,
+    authorFeed: true,
   },
   {
     url: 'https://www.nytimes.com/athletic/rss/author/evan-drellich/',
@@ -54,6 +56,7 @@ const FEEDS = [
     paywalled: true,
     authority: 3,
     cutoffMs: SEVEN_DAYS_MS,
+    authorFeed: true,
   },
   {
     url: 'https://www.nytimes.com/athletic/rss/author/ken-rosenthal/',
@@ -62,6 +65,7 @@ const FEEDS = [
     paywalled: true,
     authority: 3,
     cutoffMs: SEVEN_DAYS_MS,
+    authorFeed: true,
   },
   {
     url: 'https://sny.tv/mets-feed',
@@ -260,6 +264,7 @@ async function fetchFeed(feedConfig) {
       source,
       paywalled,
       authority,
+      authorFeed: feedConfig.authorFeed || false,
       title: item.title,
       description: item.description || '',
       image: item.image || null,
