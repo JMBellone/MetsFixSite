@@ -47,7 +47,7 @@ function getBriefingTime() {
   const [h, m] = et.split(':').map(Number)
   const mins = h * 60 + m
   if (mins >= 240 && mins <= 720) return 'morning'
-  if (mins <= 1020) return 'afternoon'
+  if (mins > 720 && mins <= 1020) return 'afternoon'
   return 'evening'
 }
 
