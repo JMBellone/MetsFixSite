@@ -62,7 +62,7 @@ export default function FastCastCard() {
           href={video.link}
           target="_blank"
           rel="noopener noreferrer"
-          className="fastcast-link"
+          className="fastcast-link fastcast-row"
           aria-label={`Watch: ${video.title}`}
         >
           <div className="fastcast-thumb-wrap">
@@ -70,7 +70,7 @@ export default function FastCastCard() {
               <img
                 src={video.thumbnail}
                 alt=""
-                className="sny-thumb"
+                className="fastcast-thumb-img"
                 onError={e => { e.currentTarget.style.display = 'none' }}
               />
             ) : (
@@ -79,7 +79,7 @@ export default function FastCastCard() {
             <div className="sny-play-overlay"><PlayIcon /></div>
           </div>
           <div className="sny-video-info fastcast-info">
-            <span className="sny-video-title sny-video-title--featured">{video.title}</span>
+            <span className="fastcast-title">{video.title}</span>
             <span className="sny-video-meta fastcast-meta">
               <img
                 src="https://www.google.com/s2/favicons?domain=mlb.com&sz=32"
