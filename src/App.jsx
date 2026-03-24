@@ -201,7 +201,7 @@ export default function App() {
   const topBaseIds = new Set([...mlbArticles, ...topRemainder].map(a => a.id))
   const passanRecent = newsPool.filter(a =>
     a.source === 'ESPN' &&
-    (a.creator || '').toLowerCase().includes('jeff passan') &&
+    /(jeff passan|kiley mcdaniel)/.test((a.creator || '').toLowerCase()) &&
     Date.now() - new Date(a.pubDate).getTime() < 16 * 60 * 60 * 1000 &&
     !topBaseIds.has(a.id)
   )

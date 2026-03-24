@@ -61,7 +61,7 @@ const FEEDS = [
     // Keep Jeff Passan always; keep Castillo / Schoenfield / Gonzalez only when Mets are mentioned
     filterFn: (item) => {
       const creator = (item.creator || '').toLowerCase()
-      if (creator.includes('jeff passan')) return true
+      if (creator.includes('jeff passan') || creator.includes('kiley mcdaniel')) return true
       const mentionsMets =
         item.title.toLowerCase().includes('mets') ||
         (item.description || '').toLowerCase().includes('mets')
