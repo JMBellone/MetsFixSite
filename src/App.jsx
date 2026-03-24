@@ -216,25 +216,16 @@ export default function App() {
     .filter(a => a.team === 'mets' && !a.authorFeed)
     .sort((a, b) => new Date(b.pubDate) - new Date(a.pubDate))
 
-  // Top card: MLB.com + SNY + Newsday + The Athletic (max 2) by recency + Passan/McDaniel (ESPN)
+  // Top card: MLB.com + SNY + Newsday + The Athletic (max 2) by recency — no ESPN
   const topAthletic = newsPool.filter(a => a.source === 'The Athletic').slice(0, 2)
   const topAthleticIds = new Set(topAthletic.map(a => a.id))
-  const topBase = [
+  const topPool = [
     ...topAthletic,
     ...newsPool.filter(a => ['MLB.com', 'SNY', 'Newsday'].includes(a.source) && !topAthleticIds.has(a.id)).slice(0, 6),
   ].sort((a, b) => new Date(b.pubDate) - new Date(a.pubDate)).slice(0, 6)
-  const topBaseIds = new Set(topBase.map(a => a.id))
-  const passanRecent = newsPool.filter(a =>
-    a.source === 'ESPN' &&
-    /(jeff passan|kiley mcdaniel)/.test((a.creator || '').toLowerCase()) &&
-    !topBaseIds.has(a.id)
-  )
-  const topPool = [...topBase, ...passanRecent]
-    .sort((a, b) => new Date(b.pubDate) - new Date(a.pubDate))
 
-  // Passan/McDaniel (ESPN) articles may not occupy the featured image slot
-  const topFeatured  = topPool.find(a => a.source !== 'ESPN') || topPool[0]
-  const topRest      = topPool.filter(a => a !== topFeatured)
+  const topFeatured  = topPool[0]
+  const topRest      = topPool.slice(1)
   const topSmall     = topRest.slice(0, 3)
   const topHeadlines = topRest.slice(3, 5)
 
@@ -249,8 +240,16 @@ export default function App() {
   const othersForDive = newsPool
     .filter(a => !topIds.has(a.id) && !athleticForDiveIds.has(a.id))
     .slice(0, 12)
-  const divePool = [...athleticForDive, ...othersForDive]
+  const divePoolSorted = [...athleticForDive, ...othersForDive]
     .sort((a, b) => new Date(b.pubDate) - new Date(a.pubDate))
+  // ESPN articles may not occupy the first 3 slots (featured/secondary/tertiary)
+  const diveNonEspn = divePoolSorted.filter(a => a.source !== 'ESPN')
+  const diveEspn    = divePoolSorted.filter(a => a.source === 'ESPN')
+  const divePool = [
+    ...diveNonEspn.slice(0, 3),
+    ...diveEspn,
+    ...diveNonEspn.slice(3),
+  ]
   const featured   = divePool[0]
   const secondary  = divePool[1]
   const tertiary   = divePool[2]
