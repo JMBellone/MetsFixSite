@@ -52,6 +52,15 @@ const FEEDS = [
     paywalled: false,
     authority: 2,
   },
+  {
+    url: 'https://www.newsday.com/api/rss/recent',
+    source: 'Newsday',
+    team: 'mets',
+    paywalled: true,
+    authority: 2,
+    // General feed — only keep articles that mention Mets
+    requiredKeyword: 'mets',
+  },
 ];
 
 function decodeHtmlEntities(str) {
@@ -184,6 +193,12 @@ async function fetchFeed(feedConfig) {
     if (!item.pubDate) continue;
     if (item.pubDate.getTime() < cutoff) { filtered++; continue; }
     if (item.link && item.link.includes('mets-injuries-and-roster-moves')) continue;
+    if (feedConfig.requiredKeyword) {
+      const kw = feedConfig.requiredKeyword.toLowerCase();
+      const inTitle = item.title.toLowerCase().includes(kw);
+      const inLink  = item.link.toLowerCase().includes(kw);
+      if (!inTitle && !inLink) continue;
+    }
 
     results.push({
       id: `${source}-${Buffer.from(item.link).toString('base64').replace(/=/g, '')}`,
