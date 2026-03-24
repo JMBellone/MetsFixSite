@@ -399,6 +399,7 @@
   background: rgba(0, 45, 114, 0.15);
   color: var(--mets-blue-light);
   width: fit-content;
+  text-decoration: none;
 }
 
 .schedule-tv-icon {

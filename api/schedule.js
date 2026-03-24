@@ -32,7 +32,13 @@ module.exports = async function handler(req, res) {
         const comp = e.competitions[0];
         const ours = comp.competitors.find(c => c.team.abbreviation === 'NYM');
         const opponent = comp.competitors.find(c => c.team.abbreviation !== 'NYM');
-        const broadcast = comp.broadcasts?.[0]?.names?.[0] || null;
+        // Pick best broadcast: national TV → local TV (SNY/WPIX) → streaming (non-MLB.TV) → MLB.TV
+        const bcs = comp.broadcasts || []
+        const nationalTV  = bcs.find(b => b.type?.shortName === 'TV'        && b.market?.type === 'National')
+        const localTV     = bcs.find(b => b.type?.shortName === 'TV'        && b.market?.type !== 'National')
+        const streaming   = bcs.find(b => b.type?.shortName === 'Streaming' && b.media?.shortName !== 'MLB.TV')
+        const mlbTV       = bcs.find(b => b.media?.shortName === 'MLB.TV')
+        const broadcast   = (nationalTV || localTV || streaming || mlbTV)?.media?.shortName || null
         const venue = comp.venue?.fullName || null;
         const opponentTeam = opponent?.team || {};
         const opponentLogo = opponentTeam.logo || opponentTeam.logos?.[0]?.href || null;

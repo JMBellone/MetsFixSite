@@ -47,24 +47,22 @@ function lastName(name) {
 }
 
 const BROADCAST_MAP = {
-  'SNY':         { label: 'SNY',          domain: 'sny.tv' },
-  'WPIX':        { label: 'WPIX (MLB.TV)', domain: 'wpix.com' },
-  'ESPN':        { label: 'ESPN',          domain: 'espn.com' },
-  'ESPN2':       { label: 'ESPN2',         domain: 'espn.com' },
-  'FS1':         { label: 'FS1',           domain: 'foxsports.com' },
-  'TBS':         { label: 'TBS',           domain: 'tbs.com' },
-  'Apple TV+':   { label: 'Apple TV+',     domain: 'tv.apple.com' },
-  'Peacock':     { label: 'Peacock',       domain: 'peacocktv.com' },
-  'MLB Network': { label: 'MLB Network',   domain: 'mlb.com' },
-  'MLB.TV':      { label: 'MLB.TV',        domain: 'mlb.com' },
+  'SNY':         { label: 'SNY',           domain: 'sny.tv',        href: 'https://www.mlb.com/live-stream-games/subscribe' },
+  'WPIX':        { label: 'WPIX (MLB.TV)', domain: 'wpix.com',      href: 'https://www.mlb.com/live-stream-games/subscribe' },
+  'ESPN':        { label: 'ESPN',          domain: 'espn.com',      href: 'https://www.espn.com/watch/' },
+  'ESPN2':       { label: 'ESPN2',         domain: 'espn.com',      href: 'https://www.espn.com/watch/' },
+  'NBC':         { label: 'NBC',           domain: 'nbc.com',       href: 'https://www.nbc.com/live' },
+  'FS1':         { label: 'FS1',           domain: 'foxsports.com', href: 'https://www.foxsports.com/live' },
+  'TBS':         { label: 'TBS',           domain: 'tbs.com',       href: 'https://www.tbs.com/watchtbs' },
+  'Apple TV+':   { label: 'Apple TV+',     domain: 'tv.apple.com',  href: 'https://tv.apple.com' },
+  'Peacock':     { label: 'Peacock',       domain: 'peacocktv.com', href: 'https://www.peacocktv.com' },
+  'MLB Network': { label: 'MLB Network',   domain: 'mlb.com',       href: 'https://www.mlb.com/network' },
+  'MLB.TV':      { label: 'MLB.TV',        domain: 'mlb.com',       href: 'https://www.mlb.com/live-stream-games/subscribe' },
 }
 
 function broadcastInfo(raw) {
   if (!raw) return null
-  const found = BROADCAST_MAP[raw]
-  if (found) return found
-  // Fallback: use the raw string, no favicon
-  return { label: raw, domain: null }
+  return BROADCAST_MAP[raw] || { label: raw, domain: null, href: null }
 }
 
 export default function ScheduleCard() {
@@ -128,8 +126,13 @@ export default function ScheduleCard() {
                 )}
                 {(() => {
                   const bc = broadcastInfo(game.broadcast)
-                  return bc ? (
-                    <span className="schedule-tv">
+                  if (!bc) return null
+                  const Tag = bc.href ? 'a' : 'span'
+                  const linkProps = bc.href
+                    ? { href: bc.href, target: '_blank', rel: 'noopener noreferrer' }
+                    : {}
+                  return (
+                    <Tag className="schedule-tv" {...linkProps}>
                       {bc.domain && (
                         <img
                           src={`https://www.google.com/s2/favicons?domain=${bc.domain}&sz=32`}
@@ -139,8 +142,8 @@ export default function ScheduleCard() {
                         />
                       )}
                       {bc.label}
-                    </span>
-                  ) : null
+                    </Tag>
+                  )
                 })()}
               </>
             ) : (
