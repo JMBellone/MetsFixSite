@@ -1094,6 +1094,40 @@
   color: var(--text-muted);
 }
 
+/* ── FastCast card ──────────────────────────────────────── */
+.fastcast-link {
+  display: block;
+  text-decoration: none;
+  color: inherit;
+}
+
+.fastcast-link:hover .sny-thumb { opacity: 0.75; }
+.fastcast-link:hover .sny-play-icon { transform: scale(1.08); }
+
+.fastcast-thumb-wrap {
+  position: relative;
+  width: 100%;
+  background: #000;
+  line-height: 0;
+}
+
+.fastcast-thumb-placeholder {
+  width: 100%;
+  aspect-ratio: 16/9;
+  background: var(--surface-2);
+}
+
+.fastcast-info {
+  padding: 10px 14px 12px;
+}
+
+.fastcast-meta {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  margin-top: 4px;
+}
+
 /* ── Option Dates card ──────────────────────────────────── */
 .option-dates-card {
   background: var(--surface);

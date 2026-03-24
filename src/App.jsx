@@ -5,6 +5,7 @@ import StandingsCard from './components/StandingsCard'
 import OptionDatesCard from './components/OptionDatesCard'
 import InjuredListCard from './components/InjuredListCard'
 import SNYCard from './components/SNYCard'
+import FastCastCard from './components/FastCastCard'
 import LastGameCard from './components/LastGameCard'
 import BlogRollCard from './components/BlogRollCard'
 import RedditCard from './components/RedditCard'
@@ -812,6 +813,9 @@ export default function App() {
 
         {/* ── See It on SNY ────────────────────────────────── */}
         <SNYCard />
+
+        {/* ── MLB FastCast ──────────────────────────────────── */}
+        <FastCastCard />
 
         {/* ── Blog Roll ────────────────────────────────────── */}
         <BlogRollCard />
