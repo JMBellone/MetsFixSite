@@ -21,7 +21,27 @@ export default function FastCastCard() {
       .finally(() => setLoading(false))
   }, [])
 
-  if (!loading && !video) return null
+  if (!loading && !video) return (
+    <div className="sny-card">
+      <div className="sny-card-header">
+        <img
+          src="https://www.google.com/s2/favicons?domain=mlb.com&sz=64"
+          alt="MLB"
+          className="sny-card-header-logo"
+          onError={e => { e.currentTarget.style.display = 'none' }}
+        />
+        <span className="sny-card-header-label">MLB FastCast</span>
+      </div>
+      <a
+        href="https://www.mlb.com/video/topic/fastcast"
+        target="_blank"
+        rel="noopener noreferrer"
+        className="fastcast-link fastcast-fallback"
+      >
+        <span className="sny-video-title fastcast-fallback-text">Watch the latest FastCast on MLB.com →</span>
+      </a>
+    </div>
+  )
 
   return (
     <div className="sny-card">

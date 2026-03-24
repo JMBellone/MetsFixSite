@@ -1128,6 +1128,15 @@
   margin-top: 4px;
 }
 
+.fastcast-fallback {
+  padding: 12px 14px;
+}
+
+.fastcast-fallback-text {
+  font-size: 0.82rem;
+  color: var(--text-muted);
+}
+
 /* ── Option Dates card ──────────────────────────────────── */
 .option-dates-card {
   background: var(--surface);
