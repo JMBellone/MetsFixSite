@@ -1,5 +1,15 @@
 // api/fastcast.js — Latest MLB FastCast video from mlb.com/video/topic/fastcast
 
+function decodeHtml(str) {
+  return str
+    .replace(/&#x27;/gi, "'")
+    .replace(/&#39;/gi, "'")
+    .replace(/&lt;/gi, '<')
+    .replace(/&gt;/gi, '>')
+    .replace(/&amp;/gi, '&')
+    .replace(/&quot;/gi, '"')
+}
+
 module.exports = async function handler(req, res) {
   res.setHeader('Cache-Control', 's-maxage=900, stale-while-revalidate=3600')
   res.setHeader('Content-Type', 'application/json')
@@ -20,93 +30,41 @@ module.exports = async function handler(req, res) {
     if (!pageRes.ok) return res.status(200).json({ video: null })
     const html = await pageRes.text()
 
-    // Try __NEXT_DATA__ first (Next.js embeds all page data as JSON)
-    const nextDataMatch = /<script id="__NEXT_DATA__"[^>]*>([\s\S]*?)<\/script>/i.exec(html)
-    if (nextDataMatch) {
-      try {
-        const nextData = JSON.parse(nextDataMatch[1])
-        const videos = findVideosInNextData(nextData)
-        if (videos.length > 0) {
-          return res.status(200).json({ video: videos[0] })
-        }
-      } catch (_) {
-        // fall through to HTML scraping
-      }
+    // Find the first href pointing to a fastcast video slug
+    const hrefRe = /href="(\/video\/(fastcast[-a-z0-9]+))"/i
+    const hrefMatch = hrefRe.exec(html)
+    if (!hrefMatch) return res.status(200).json({ video: null })
+
+    const link = `https://www.mlb.com${hrefMatch[1]}`
+    const slug = hrefMatch[2]
+    const hrefPos = hrefMatch.index
+
+    // Scan forward from the href for the next <img tag and extract alt + src
+    const afterHref = html.slice(hrefPos, hrefPos + 5000)
+    const imgRe = /<img\s[^>]*src="(https:\/\/img\.mlbstatic\.com\/[^"]+)"[^>]*>/i
+    const imgAltRe = /<img\s[^>]*alt="([^"]*)"[^>]*src="https:\/\/img\.mlbstatic\.com[^"]*"[^>]*>/i
+
+    let thumbnail = null
+    let title = slug.replace(/^fastcast-/, 'FastCast: ').replace(/-x[a-z0-9]+$/, '').replace(/-/g, ' ')
+
+    const imgMatch = imgRe.exec(afterHref)
+    if (imgMatch) thumbnail = imgMatch[1]
+
+    const altMatch = imgAltRe.exec(afterHref)
+    if (altMatch) title = decodeHtml(altMatch[1])
+
+    // If alt wasn't in the same tag, try grabbing alt= from the img block
+    if (!altMatch && imgMatch) {
+      const imgTagStart = afterHref.lastIndexOf('<img', afterHref.indexOf(imgMatch[1]))
+      const imgTagEnd = afterHref.indexOf('>', imgTagStart)
+      const imgTag = afterHref.slice(imgTagStart, imgTagEnd + 1)
+      const altInTag = /alt="([^"]*)"/.exec(imgTag)
+      if (altInTag) title = decodeHtml(altInTag[1])
     }
 
-    // Fallback: parse HTML links to /video/fastcast-*
-    // Pattern: <a href="/video/{slug}">...<img alt="{title}" src="{thumb}">
-    const videoBlockRe = /<a[^>]+href="(\/video\/(fastcast[^"]+))"[^>]*>([\s\S]{0,1200}?)<\/a>/gi
-    let match
-    while ((match = videoBlockRe.exec(html)) !== null) {
-      const [, link, slug, block] = match
-      const titleMatch = /alt="([^"]+)"/i.exec(block)
-      const thumbMatch = /src="(https:\/\/img\.mlbstatic\.com\/[^"]+)"/i.exec(block)
-      if (titleMatch && thumbMatch) {
-        return res.status(200).json({
-          video: {
-            slug,
-            title: titleMatch[1],
-            thumbnail: thumbMatch[1],
-            link: `https://www.mlb.com${link}`,
-          },
-        })
-      }
-    }
-
-    // Second fallback: look for slug + nearby thumbnail in raw HTML
-    const slugRe = /\/video\/(fastcast[-a-z0-9]+)/i
-    const slugMatch = slugRe.exec(html)
-    if (slugMatch) {
-      const slug = slugMatch[1]
-      const thumbRe = /src="(https:\/\/img\.mlbstatic\.com\/[^"]+)"/i
-      const thumbMatch = thumbRe.exec(html)
-      return res.status(200).json({
-        video: {
-          slug,
-          title: 'MLB FastCast',
-          thumbnail: thumbMatch ? thumbMatch[1] : null,
-          link: `https://www.mlb.com/video/${slug}`,
-        },
-      })
-    }
-
-    return res.status(200).json({ video: null })
+    return res.status(200).json({ video: { slug, title, thumbnail, link } })
   } catch (e) {
     console.warn('[fastcast]', e.message)
     return res.status(200).json({ video: null })
   }
-}
-
-function findVideosInNextData(obj, results = []) {
-  if (!obj || typeof obj !== 'object') return results
-  if (Array.isArray(obj)) {
-    obj.forEach(item => findVideosInNextData(item, results))
-    return results
-  }
-  // Look for video objects with a slug that starts with "fastcast"
-  const slug = obj.slug || obj.videoId || obj.id || ''
-  if (typeof slug === 'string' && slug.startsWith('fastcast')) {
-    const title = obj.title || obj.headline || obj.blurb || 'MLB FastCast'
-    // Find best thumbnail
-    let thumbnail = null
-    const cuts = obj.image?.cuts || obj.thumbnail?.cuts || obj.keywordsAll?.find?.(k => k.type === 'thumbnail')?.cuts
-    if (cuts && typeof cuts === 'object') {
-      const sizes = Object.values(cuts)
-      const best = sizes.find(c => c?.width >= 600) || sizes[0]
-      thumbnail = best?.src || best?.url || null
-    }
-    if (!thumbnail) {
-      thumbnail = obj.image?.src || obj.thumbnail?.src || obj.thumbnailUrl || null
-    }
-    results.push({
-      slug,
-      title: typeof title === 'string' ? title : title?.default || 'MLB FastCast',
-      thumbnail,
-      link: `https://www.mlb.com/video/${slug}`,
-    })
-    return results
-  }
-  Object.values(obj).forEach(val => findVideosInNextData(val, results))
-  return results
 }
