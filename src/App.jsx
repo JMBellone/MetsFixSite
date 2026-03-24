@@ -192,12 +192,20 @@ export default function App() {
     .sort((a, b) => new Date(b.pubDate) - new Date(a.pubDate))
 
   // Top card: MLB.com + SNY only, guarantee ≥2 MLB articles
+  // Also include Jeff Passan (ESPN) articles published within the last 12 hours
   const mlbArticles = newsPool.filter(a => a.source === 'MLB.com').slice(0, 2)
   const mlbIds = new Set(mlbArticles.map(a => a.id))
   const topRemainder = newsPool
     .filter(a => (a.source === 'MLB.com' || a.source === 'SNY') && !mlbIds.has(a.id))
     .slice(0, 3)
-  const topPool = [...mlbArticles, ...topRemainder]
+  const topBaseIds = new Set([...mlbArticles, ...topRemainder].map(a => a.id))
+  const passanRecent = newsPool.filter(a =>
+    a.source === 'ESPN' &&
+    (a.creator || '').toLowerCase().includes('jeff passan') &&
+    Date.now() - new Date(a.pubDate).getTime() < 12 * 60 * 60 * 1000 &&
+    !topBaseIds.has(a.id)
+  )
+  const topPool = [...mlbArticles, ...topRemainder, ...passanRecent]
     .sort((a, b) => new Date(b.pubDate) - new Date(a.pubDate))
 
   const topFeatured  = topPool[0]
