@@ -217,6 +217,31 @@ async function fetchFeed(feedConfig) {
   return { articles: results, error: null, source, total: items.length, kept: results.length, filtered };
 }
 
+// Sources whose RSS feeds omit images — fetch og:image from the article page as fallback
+const OG_IMAGE_SOURCES = new Set(['Newsday', 'The Athletic'])
+
+async function fetchOgImage(url) {
+  try {
+    const controller = new AbortController()
+    const timeout = setTimeout(() => controller.abort(), 3000)
+    const res = await fetch(url, {
+      signal: controller.signal,
+      headers: {
+        'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36',
+      },
+    })
+    clearTimeout(timeout)
+    if (!res.ok) return null
+    const html = await res.text()
+    const match =
+      html.match(/<meta[^>]+property="og:image"[^>]+content="([^"]+)"/) ||
+      html.match(/<meta[^>]+content="([^"]+)"[^>]+property="og:image"/)
+    return match ? match[1] : null
+  } catch {
+    return null
+  }
+}
+
 const STOP_WORDS = new Set([
   'a', 'an', 'the', 'in', 'on', 'at', 'to', 'for', 'of', 'and', 'or', 'but',
   'is', 'are', 'was', 'were', 'be', 'been', 'being', 'have', 'has', 'had',
@@ -277,6 +302,14 @@ module.exports = async function handler(req, res) {
   }
 
   deduped.sort((a, b) => new Date(b.pubDate) - new Date(a.pubDate));
+
+  // Fetch og:image for sources whose feeds don't include images (up to 15, 5 at a time)
+  const needsImage = deduped.filter(a => !a.image && OG_IMAGE_SOURCES.has(a.source)).slice(0, 15);
+  for (let i = 0; i < needsImage.length; i += 5) {
+    const batch = needsImage.slice(i, i + 5);
+    const images = await Promise.all(batch.map(a => fetchOgImage(a.link)));
+    batch.forEach((a, j) => { if (images[j]) a.image = images[j]; });
+  }
 
   res.setHeader('Cache-Control', 's-maxage=300, stale-while-revalidate=86400');
   res.setHeader('Content-Type', 'application/json');
