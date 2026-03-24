@@ -474,6 +474,9 @@ export default function App() {
         {/* ── MLB Standings ─────────────────────────────────── */}
         <StandingsCard />
 
+        {/* ── MLB FastCast ──────────────────────────────────── */}
+        <FastCastCard />
+
         {/* ── Upcoming Schedule + Know Your Opponent ───────── */}
         <div className="game-preview-group">
           <ScheduleCard />
@@ -813,9 +816,6 @@ export default function App() {
 
         {/* ── See It on SNY ────────────────────────────────── */}
         <SNYCard />
-
-        {/* ── MLB FastCast ──────────────────────────────────── */}
-        <FastCastCard />
 
         {/* ── Blog Roll ────────────────────────────────────── */}
         <BlogRollCard />
