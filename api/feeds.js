@@ -6,21 +6,22 @@ const SEVEN_DAYS_MS = 7 * 24 * 60 * 60 * 1000;
 const THIRTY_DAYS_MS = 30 * 24 * 60 * 60 * 1000;
 
 const FEEDS = [
-  // The Metropolitan Substack — 30-day window (newsletters are infrequent)
+  // The Metropolitan Substack — 30-day window (newsletters are infrequent); always shown, never deduped
   {
     url: 'https://themetropolitan.substack.com/feed',
     source: 'The Metropolitan',
     team: 'metropolitan',
     paywalled: false,
-    authority: 4,
+    authority: 0,
     cutoffMs: THIRTY_DAYS_MS,
+    skipDedup: true,
   },
   {
     url: 'https://www.mlb.com/mets/feeds/news/rss.xml',
     source: 'MLB.com',
     team: 'mets',
     paywalled: false,
-    authority: 4,
+    authority: 6,
   },
   // The Athletic — 7-day window to avoid stale cache gaps
   {
@@ -28,7 +29,7 @@ const FEEDS = [
     source: 'The Athletic',
     team: 'mets',
     paywalled: true,
-    authority: 3,
+    authority: 4,
     cutoffMs: SEVEN_DAYS_MS,
   },
   {
@@ -36,7 +37,7 @@ const FEEDS = [
     source: 'The Athletic',
     team: 'mets',
     paywalled: true,
-    authority: 3,
+    authority: 4,
     cutoffMs: SEVEN_DAYS_MS,
     authorFeed: true,
   },
@@ -45,7 +46,7 @@ const FEEDS = [
     source: 'The Athletic',
     team: 'mets',
     paywalled: true,
-    authority: 3,
+    authority: 4,
     cutoffMs: SEVEN_DAYS_MS,
     authorFeed: true,
   },
@@ -54,7 +55,7 @@ const FEEDS = [
     source: 'The Athletic',
     team: 'mets',
     paywalled: true,
-    authority: 3,
+    authority: 4,
     cutoffMs: SEVEN_DAYS_MS,
     authorFeed: true,
   },
@@ -63,7 +64,7 @@ const FEEDS = [
     source: 'The Athletic',
     team: 'mets',
     paywalled: true,
-    authority: 3,
+    authority: 4,
     cutoffMs: SEVEN_DAYS_MS,
     authorFeed: true,
   },
@@ -72,21 +73,22 @@ const FEEDS = [
     source: 'SNY',
     team: 'mets',
     paywalled: false,
-    authority: 4,
+    authority: 5,
   },
   {
     url: 'https://nypost.com/tag/new-york-mets/feed/',
     source: 'NY Post',
     team: 'mets',
     paywalled: false,
-    authority: 2,
+    authority: 3,
   },
   {
     url: 'https://blogs.fangraphs.com/category/teams/mets/feed',
     source: 'FanGraphs',
     team: 'mets',
     paywalled: false,
-    authority: 2,
+    authority: 0,
+    skipDedup: true,
   },
   {
     url: 'https://www.espn.com/espn/rss/mlb/news',
@@ -265,6 +267,7 @@ async function fetchFeed(feedConfig) {
       paywalled,
       authority,
       authorFeed: feedConfig.authorFeed || false,
+      skipDedup: feedConfig.skipDedup || false,
       title: item.title,
       description: item.description || '',
       image: item.image || null,
@@ -329,6 +332,8 @@ function jaccardSimilarity(a, b) {
 }
 
 const SIMILARITY_THRESHOLD = 0.35;
+const TIME_WINDOW_THRESHOLD = 0.25;
+const ONE_HOUR_MS = 60 * 60 * 1000;
 
 module.exports = async function handler(req, res) {
   if (req.method !== 'GET') {
@@ -343,21 +348,36 @@ module.exports = async function handler(req, res) {
     source, error: error || null, total, kept, filtered,
   }));
 
-  // Deduplicate by semantic title similarity (Jaccard ≥ 0.35 = same story).
-  // Sort by authority DESC first so highest-quality source wins the collision.
+  // Deduplicate by semantic title similarity.
+  // Articles with skipDedup:true (The Metropolitan, FanGraphs) always appear and are never
+  // used as comparison targets — they can't cause other articles to be dropped.
+  // For all others, sort by authority DESC so the highest-quality source wins a collision.
+  // Two rules can mark an article as a duplicate:
+  //   1. Jaccard ≥ 0.35 (same story, regardless of publish time)
+  //   2. Jaccard ≥ 0.25 AND published within 1 hour (breaking news covered by multiple outlets)
   const sortedForDedup = [...allArticles].sort((a, b) => {
     if (b.authority !== a.authority) return b.authority - a.authority;
     return new Date(b.pubDate) - new Date(a.pubDate);
   });
 
-  const keptTokens = [];
+  const kept = []; // { tokens, pubDate } — only non-skipDedup articles
   const deduped = [];
   for (const article of sortedForDedup) {
+    if (article.skipDedup) {
+      deduped.push(article);
+      continue;
+    }
     const tokens = tokenizeTitle(article.title);
-    const isDupe = keptTokens.some(kt => jaccardSimilarity(tokens, kt) >= SIMILARITY_THRESHOLD);
+    const pubTime = new Date(article.pubDate).getTime();
+    const isDupe = kept.some(k => {
+      const jacc = jaccardSimilarity(tokens, k.tokens);
+      if (jacc >= SIMILARITY_THRESHOLD) return true;
+      if (jacc >= TIME_WINDOW_THRESHOLD && Math.abs(pubTime - k.pubTime) <= ONE_HOUR_MS) return true;
+      return false;
+    });
     if (!isDupe) {
       deduped.push(article);
-      keptTokens.push(tokens);
+      kept.push({ tokens, pubTime });
     }
   }
 
