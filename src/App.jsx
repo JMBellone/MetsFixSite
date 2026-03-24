@@ -255,7 +255,7 @@ export default function App() {
   const secondary  = divePool[1]
   const tertiary   = divePool[2]
   const headlines  = divePool.slice(3, 5)
-  const moreNews   = divePool.slice(5, 11)
+  const moreNews   = divePool.slice(5, 12)
 
   const shownIds = new Set([...topIds, ...divePool.map(a => a.id)])
   // SFE gets the 3 most recent Athletic not already in dive; Athletic card gets the next batch after those
@@ -700,7 +700,7 @@ export default function App() {
                       </div>
                     </Fragment>
                   ))}
-                  {moreNews.slice(3, 6).map(a => (
+                  {moreNews.slice(3, 5).map(a => (
                     <Fragment key={a.id}>
                       <div className="team-news-divider" />
                       <div className="team-news-headlines">
@@ -719,6 +719,29 @@ export default function App() {
                       </div>
                     </Fragment>
                   ))}
+                  {moreNews.slice(5, 7).length > 0 && (
+                    <>
+                      <div className="team-news-divider" />
+                      <div className="team-news-sidebyside">
+                        {moreNews.slice(5, 7).map(a => (
+                          <div key={a.id} className="team-news-sidebyside-item">
+                            <a href={a.link} target="_blank" rel="noopener noreferrer"
+                              className="team-news-sidebyside-link" onClick={() => markRead(a.id)}>
+                              <span className={`team-news-sidebyside-title${readIds.has(a.id) ? ' team-news--read' : ''}`}>
+                                {a.title}
+                              </span>
+                              <span className="team-news-meta">
+                                {timeAgo(a.pubDate)} ·{' '}
+                                <img src={faviconUrl(a.link)} alt="" className="news-meta-favicon"
+                                  onError={e => { e.currentTarget.style.display = 'none' }} />
+                                {a.source}{a.paywalled && <SubscriberIcon />}
+                              </span>
+                            </a>
+                          </div>
+                        ))}
+                      </div>
+                    </>
+                  )}
                 </div>
               </>
             )}
