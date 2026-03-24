@@ -112,7 +112,31 @@ export default function App() {
       const res = await fetch('/api/feeds')
       if (!res.ok) throw new Error(`Server error ${res.status}`)
       const data = await res.json()
-      setArticles(data.articles || [])
+
+      // Pin each article to its first-seen pubDate so sources that update
+      // pubDate on edits (e.g. ESPN) don't re-sort to the top on refresh.
+      const FIRST_SEEN_KEY = 'metsFirstSeenDates'
+      const CUTOFF = Date.now() - 7 * 24 * 60 * 60 * 1000
+      let firstSeen = {}
+      try { firstSeen = JSON.parse(localStorage.getItem(FIRST_SEEN_KEY) || '{}') } catch { firstSeen = {} }
+
+      const articles = (data.articles || []).map(a => {
+        const stored = firstSeen[a.id]
+        if (!stored) {
+          firstSeen[a.id] = a.pubDate
+          return a
+        }
+        // Use whichever date is earlier (original publish wins over edits)
+        return new Date(stored) < new Date(a.pubDate) ? { ...a, pubDate: stored } : a
+      })
+
+      // Prune entries older than 7 days to keep localStorage tidy
+      for (const id of Object.keys(firstSeen)) {
+        if (new Date(firstSeen[id]).getTime() < CUTOFF) delete firstSeen[id]
+      }
+      try { localStorage.setItem(FIRST_SEEN_KEY, JSON.stringify(firstSeen)) } catch { /* quota */ }
+
+      setArticles(articles)
     } catch (err) {
       setError(err.message)
     } finally {
