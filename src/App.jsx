@@ -242,11 +242,10 @@ export default function App() {
     .sort((a, b) => new Date(b.pubDate) - new Date(a.pubDate))
   const sfePriorityAthletic = athleticAllByDate.slice(0, 3)
   const sfePriorityAthleticIds = new Set(sfePriorityAthletic.map(a => a.id))
-  const athleticPool = athleticAllByDate.filter(a => !sfePriorityAthleticIds.has(a.id)).slice(0, 5)
+  const athleticPool = athleticAllByDate.filter(a => !sfePriorityAthleticIds.has(a.id)).slice(0, 7)
   const athFeatured  = athleticPool[0]
-  const athSecondary = athleticPool[1]
-  const athTertiary  = athleticPool[2]
-  const athHeadlines = athleticPool.slice(3, 5)
+  const athSmall     = athleticPool.slice(1, 5)
+  const athHeadlines = athleticPool.slice(5, 7)
 
   const allShownIds = new Set([...shownIds, ...sfePriorityAthleticIds, ...athleticPool.map(a => a.id)])
   const SEVENTY_TWO_H = 96 * 60 * 60 * 1000
@@ -759,106 +758,85 @@ export default function App() {
         {/* ── The Athletic ─────────────────────────────────── */}
         {athFeatured && (
           <div className="team-news-card">
-              <div className="latest-updates-header">
-                <img
-                  src="https://www.google.com/s2/favicons?domain=theathletic.com&sz=32"
-                  alt=""
-                  className="mlbnews-header-favicon"
-                  onError={e => { e.currentTarget.style.display = 'none' }}
-                />
-                <span className="latest-updates-title">The Athletic</span>
+            <div className="latest-updates-header">
+              <img
+                src="https://www.google.com/s2/favicons?domain=theathletic.com&sz=32"
+                alt=""
+                className="mlbnews-header-favicon"
+                onError={e => { e.currentTarget.style.display = 'none' }}
+              />
+              <span className="latest-updates-title">The Athletic</span>
+            </div>
+
+            {/* Large featured */}
+            <div className="team-news-item-wrap">
+              <a href={athFeatured.link} target="_blank" rel="noopener noreferrer"
+                className="team-news-featured" onClick={() => markRead(athFeatured.id)}>
+                {athFeatured.image && (
+                  <img src={athFeatured.image} alt="" className="team-news-featured-img"
+                    onError={e => { e.currentTarget.style.display = 'none' }} />
+                )}
+                <div className="team-news-featured-body">
+                  <span className={`team-news-featured-title${readIds.has(athFeatured.id) ? ' team-news--read' : ''}`}>
+                    {athFeatured.title}
+                  </span>
+                  <span className="team-news-meta">
+                    {timeAgo(athFeatured.pubDate)} ·{' '}
+                    <img src={faviconUrl(athFeatured.link)} alt="" className="news-meta-favicon" onError={e => { e.currentTarget.style.display = 'none' }} />
+                    The Athletic{athFeatured.creator ? ` · ${athFeatured.creator}` : ''}{athFeatured.paywalled && <SubscriberIcon />}
+                  </span>
+                </div>
+              </a>
+            </div>
+
+            {/* 4 small featured */}
+            {athSmall.map(a => (
+              <div key={a.id}>
+                <div className="team-news-divider" />
+                <div className="team-news-item-wrap">
+                  <a href={a.link} target="_blank" rel="noopener noreferrer"
+                    className="team-news-secondary" onClick={() => markRead(a.id)}>
+                    {a.image && (
+                      <img src={a.image} alt="" className="team-news-secondary-img"
+                        onError={e => { e.currentTarget.style.display = 'none' }} />
+                    )}
+                    <div className="team-news-secondary-body">
+                      <span className={`team-news-secondary-title${readIds.has(a.id) ? ' team-news--read' : ''}`}>
+                        {a.title}
+                      </span>
+                      <span className="team-news-meta">
+                        {timeAgo(a.pubDate)} ·{' '}
+                        <img src={faviconUrl(a.link)} alt="" className="news-meta-favicon" onError={e => { e.currentTarget.style.display = 'none' }} />
+                        The Athletic{a.creator ? ` · ${a.creator}` : ''}{a.paywalled && <SubscriberIcon />}
+                      </span>
+                    </div>
+                  </a>
+                </div>
               </div>
-              <div className="team-news-item-wrap">
-                <a href={athFeatured.link} target="_blank" rel="noopener noreferrer"
-                  className="team-news-featured" onClick={() => markRead(athFeatured.id)}>
-                  {athFeatured.image && (
-                    <img src={athFeatured.image} alt="" className="team-news-featured-img"
-                      onError={e => { e.currentTarget.style.display = 'none' }} />
-                  )}
-                  <div className="team-news-featured-body">
-                    <span className={`team-news-featured-title${readIds.has(athFeatured.id) ? ' team-news--read' : ''}`}>
-                      {athFeatured.title}
-                    </span>
-                    <span className="team-news-meta">
-                      {timeAgo(athFeatured.pubDate)} ·{' '}
-                      <img src={faviconUrl(athFeatured.link)} alt="" className="news-meta-favicon" onError={e => { e.currentTarget.style.display = 'none' }} />
-                      The Athletic{athFeatured.paywalled && <SubscriberIcon />}
-                    </span>
-                  </div>
-                </a>
-              </div>
+            ))}
 
-              {athSecondary && (
-                <>
-                  <div className="team-news-divider" />
-                  <div className="team-news-item-wrap">
-                    <a href={athSecondary.link} target="_blank" rel="noopener noreferrer"
-                      className="team-news-secondary" onClick={() => markRead(athSecondary.id)}>
-                      {athSecondary.image && (
-                        <img src={athSecondary.image} alt="" className="team-news-secondary-img"
-                          onError={e => { e.currentTarget.style.display = 'none' }} />
-                      )}
-                      <div className="team-news-secondary-body">
-                        <span className={`team-news-secondary-title${readIds.has(athSecondary.id) ? ' team-news--read' : ''}`}>
-                          {athSecondary.title}
+            {/* 2 headline-only side-by-side */}
+            {athHeadlines.length > 0 && (
+              <>
+                <div className="team-news-divider" />
+                <div className="team-news-headlines team-news-headlines--row">
+                  {athHeadlines.map(a => (
+                    <a key={a.id} href={a.link} target="_blank" rel="noopener noreferrer"
+                      className={`team-news-headline${readIds.has(a.id) ? ' team-news--read' : ''}`}
+                      onClick={() => markRead(a.id)}>
+                      <span className="team-news-headline-body">
+                        <span className="team-news-headline-title">{a.title}</span>
+                        <span className="team-news-headline-source">
+                          <img src={faviconUrl(a.link)} alt="" className="team-news-source-favicon"
+                            onError={e => { e.currentTarget.style.display = 'none' }} />
+                          The Athletic{a.creator ? ` · ${a.creator}` : ''}{a.paywalled && <SubscriberIcon />} · {timeAgo(a.pubDate)}
                         </span>
-                        <span className="team-news-meta">
-                          {timeAgo(athSecondary.pubDate)} ·{' '}
-                          <img src={faviconUrl(athSecondary.link)} alt="" className="news-meta-favicon" onError={e => { e.currentTarget.style.display = 'none' }} />
-                          The Athletic{athSecondary.paywalled && <SubscriberIcon />}
-                        </span>
-                      </div>
+                      </span>
                     </a>
-                  </div>
-                </>
-              )}
-
-              {athTertiary && (
-                <>
-                  <div className="team-news-divider" />
-                  <div className="team-news-item-wrap">
-                    <a href={athTertiary.link} target="_blank" rel="noopener noreferrer"
-                      className="team-news-secondary" onClick={() => markRead(athTertiary.id)}>
-                      {athTertiary.image && (
-                        <img src={athTertiary.image} alt="" className="team-news-secondary-img"
-                          onError={e => { e.currentTarget.style.display = 'none' }} />
-                      )}
-                      <div className="team-news-secondary-body">
-                        <span className={`team-news-secondary-title${readIds.has(athTertiary.id) ? ' team-news--read' : ''}`}>
-                          {athTertiary.title}
-                        </span>
-                        <span className="team-news-meta">
-                          {timeAgo(athTertiary.pubDate)} ·{' '}
-                          <img src={faviconUrl(athTertiary.link)} alt="" className="news-meta-favicon" onError={e => { e.currentTarget.style.display = 'none' }} />
-                          The Athletic{athTertiary.paywalled && <SubscriberIcon />}
-                        </span>
-                      </div>
-                    </a>
-                  </div>
-                </>
-              )}
-
-              {athHeadlines.length > 0 && (
-                <>
-                  <div className="team-news-divider" />
-                  <div className="team-news-headlines team-news-headlines--row">
-                    {athHeadlines.map(a => (
-                      <a key={a.id} href={a.link} target="_blank" rel="noopener noreferrer"
-                        className={`team-news-headline${readIds.has(a.id) ? ' team-news--read' : ''}`}
-                        onClick={() => markRead(a.id)}>
-                        <span className="team-news-headline-body">
-                          <span className="team-news-headline-title">{a.title}</span>
-                          <span className="team-news-headline-source">
-                            <img src={faviconUrl(a.link)} alt="" className="team-news-source-favicon"
-                              onError={e => { e.currentTarget.style.display = 'none' }} />
-                            The Athletic{a.paywalled && <SubscriberIcon />} · {timeAgo(a.pubDate)}
-                          </span>
-                        </span>
-                      </a>
-                    ))}
-                  </div>
-                </>
-              )}
+                  ))}
+                </div>
+              </>
+            )}
           </div>
         )}
 
