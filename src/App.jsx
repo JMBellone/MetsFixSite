@@ -230,7 +230,7 @@ export default function App() {
   const secondary  = divePool[1]
   const tertiary   = divePool[2]
   const headlines  = divePool.slice(3, 5)
-  const moreNews   = divePool.slice(5, 10)
+  const moreNews   = divePool.slice(5, 11)
 
   const shownIds = new Set([...topIds, ...divePool.map(a => a.id)])
   // SFE gets the 3 most recent Athletic not already in dive; Athletic card gets the next batch after those
@@ -647,8 +647,8 @@ export default function App() {
                   <div className="latest-updates-header">
                     <span className="latest-updates-title">More on the Mets</span>
                   </div>
-                  {moreNews.map((a, idx) => (
-                    <div key={a.id}>
+                  {moreNews.slice(0, 3).map((a, idx) => (
+                    <Fragment key={a.id}>
                       {idx > 0 && <div className="team-news-divider" />}
                       <div className="team-news-item-wrap">
                         <a href={a.link} target="_blank" rel="noopener noreferrer"
@@ -670,7 +670,26 @@ export default function App() {
                           </div>
                         </a>
                       </div>
-                    </div>
+                    </Fragment>
+                  ))}
+                  {moreNews.slice(3, 6).map(a => (
+                    <Fragment key={a.id}>
+                      <div className="team-news-divider" />
+                      <div className="team-news-headlines">
+                        <a href={a.link} target="_blank" rel="noopener noreferrer"
+                          className={`team-news-headline${readIds.has(a.id) ? ' team-news--read' : ''}`}
+                          onClick={() => markRead(a.id)}>
+                          <span className="team-news-headline-body">
+                            <span className="team-news-headline-title">{a.title}</span>
+                            <span className="team-news-headline-source">
+                              <img src={faviconUrl(a.link)} alt="" className="team-news-source-favicon"
+                                onError={e => { e.currentTarget.style.display = 'none' }} />
+                              {a.source}{a.paywalled && <SubscriberIcon />} · {timeAgo(a.pubDate)}
+                            </span>
+                          </span>
+                        </a>
+                      </div>
+                    </Fragment>
                   ))}
                 </div>
               </>
