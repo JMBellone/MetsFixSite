@@ -500,6 +500,14 @@ export default function App() {
         {/* ── Upcoming Schedule + Know Your Opponent ───────── */}
         <div className="game-preview-group">
           <ScheduleCard />
+          <a
+            href="https://metsfix-streaming-guide.netlify.app"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="streaming-guide-banner"
+          >
+            👉 2026 METS STREAMING GUIDE
+          </a>
           <KnowYourOpponentCard articles={opponent.articles} opponent={opponent.opponent} opponentAbbr={opponent.opponentAbbr} />
         </div>
 

@@ -46,6 +46,27 @@ function lastName(name) {
   return name.split(' ').pop()
 }
 
+const BROADCAST_MAP = {
+  'SNY':         { label: 'SNY',          domain: 'sny.tv' },
+  'WPIX':        { label: 'WPIX (MLB.TV)', domain: 'wpix.com' },
+  'ESPN':        { label: 'ESPN',          domain: 'espn.com' },
+  'ESPN2':       { label: 'ESPN2',         domain: 'espn.com' },
+  'FS1':         { label: 'FS1',           domain: 'foxsports.com' },
+  'TBS':         { label: 'TBS',           domain: 'tbs.com' },
+  'Apple TV+':   { label: 'Apple TV+',     domain: 'tv.apple.com' },
+  'Peacock':     { label: 'Peacock',       domain: 'peacocktv.com' },
+  'MLB Network': { label: 'MLB Network',   domain: 'mlb.com' },
+  'MLB.TV':      { label: 'MLB.TV',        domain: 'mlb.com' },
+}
+
+function broadcastInfo(raw) {
+  if (!raw) return null
+  const found = BROADCAST_MAP[raw]
+  if (found) return found
+  // Fallback: use the raw string, no favicon
+  return { label: raw, domain: null }
+}
+
 export default function ScheduleCard() {
   const [games, setGames] = useState([])
   const [loading, setLoading] = useState(true)
@@ -105,9 +126,22 @@ export default function ScheduleCard() {
                       : lastName(game.metsStarter) || lastName(game.oppStarter)}
                   </span>
                 )}
-                {game.broadcast && (
-                  <span className="schedule-tv">{game.broadcast}</span>
-                )}
+                {(() => {
+                  const bc = broadcastInfo(game.broadcast)
+                  return bc ? (
+                    <span className="schedule-tv">
+                      {bc.domain && (
+                        <img
+                          src={`https://www.google.com/s2/favicons?domain=${bc.domain}&sz=32`}
+                          alt=""
+                          className="schedule-tv-icon"
+                          onError={e => { e.currentTarget.style.display = 'none' }}
+                        />
+                      )}
+                      {bc.label}
+                    </span>
+                  ) : null
+                })()}
               </>
             ) : (
               <>

@@ -388,7 +388,9 @@
 }
 
 .schedule-tv {
-  display: inline-block;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
   font-size: 0.62rem;
   font-weight: 700;
   padding: 2px 6px;
@@ -397,6 +399,13 @@
   background: rgba(0, 45, 114, 0.15);
   color: var(--mets-blue-light);
   width: fit-content;
+}
+
+.schedule-tv-icon {
+  width: 11px;
+  height: 11px;
+  border-radius: 2px;
+  flex-shrink: 0;
 }
 
 /* ── Standings card ─────────────────────────────────────── */
@@ -1844,6 +1853,27 @@
   height: 14px;
   border-radius: 2px;
   flex-shrink: 0;
+}
+
+/* ── Streaming Guide Banner ─────────────────────────────── */
+.streaming-guide-banner {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 11px 20px;
+  font-size: 0.8rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  color: var(--mets-orange);
+  text-decoration: none;
+  transition: background 0.15s;
+}
+
+.streaming-guide-banner:hover {
+  background: var(--surface-2);
 }
 
 /* ── Mets Fix Chat Banner ───────────────────────────────── */
