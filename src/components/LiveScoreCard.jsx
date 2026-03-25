@@ -6,10 +6,16 @@ function logoUrl(abbr) {
   return `https://a.espncdn.com/i/teamlogos/mlb/500/${abbr.toLowerCase()}.png`
 }
 
-function shortName(full) {
+function initLast(full) {
   if (!full) return ''
   const parts = full.trim().split(/\s+/)
   if (parts.length < 2) return full
+  return `${parts[0][0]}. ${parts[parts.length - 1]}`
+}
+
+function lastOnly(full) {
+  if (!full) return ''
+  const parts = full.trim().split(/\s+/)
   return parts[parts.length - 1]
 }
 
@@ -26,12 +32,18 @@ function BasesDiamond({ first, second, third }) {
   )
 }
 
-function OutDots({ outs }) {
+function BSORow({ label, filled, total, colorClass }) {
   return (
-    <div className="live-outs">
-      {[0, 1, 2].map(i => (
-        <div key={i} className={`live-out-dot${i < outs ? ' live-out-dot--on' : ''}`} />
-      ))}
+    <div className="live-bso-row">
+      <span className="live-bso-label">{label}</span>
+      <div className="live-bso-dots">
+        {Array.from({ length: total }, (_, i) => (
+          <div
+            key={i}
+            className={`live-bso-dot${i < filled ? ` live-bso-dot--${colorClass}` : ''}`}
+          />
+        ))}
+      </div>
     </div>
   )
 }
@@ -49,18 +61,21 @@ export default function LiveScoreCard() {
   const [game, setGame] = useState(null)
   const [refreshing, setRefreshing] = useState(false)
   const [lastUpdated, setLastUpdated] = useState(null)
+  const [showBoxScore, setShowBoxScore] = useState(false)
+  const [activeTeam, setActiveTeam] = useState('mets')
   const intervalRef = useRef(null)
 
   const scheduleInterval = useCallback((isLive) => {
     clearInterval(intervalRef.current)
-    // Poll every 30s during a live game; every 5 min otherwise (in case a game starts)
     intervalRef.current = setInterval(fetchGame, isLive ? 30000 : 300000)
   }, []) // eslint-disable-line react-hooks/exhaustive-deps
 
   const fetchGame = useCallback(async () => {
     setRefreshing(true)
     try {
-      const res = await fetch('/api/livegame')
+      const debugPk = localStorage.getItem('metsDebugGamePk')
+      const url = debugPk ? `/api/livegame?gamePk=${debugPk}` : '/api/livegame'
+      const res = await fetch(url)
       if (!res.ok) return
       const data = await res.json()
       const live = data.isLive ? data : null
@@ -81,8 +96,24 @@ export default function LiveScoreCard() {
 
   if (!game) return null
 
-  const { home, away, inningHalf, inningOrdinal, outs, balls, strikes, runners, batter, pitcher, status, broadcast } = game
+  const {
+    home, away, inningHalf, inningOrdinal, outs, balls, strikes,
+    runners, batter, pitcher, batterStats, pitcherStats,
+    status, broadcast, metsIsHome, linescore, boxscore,
+  } = game
+
   const isTop = inningHalf === 'Top'
+  const metsSide = metsIsHome ? 'home' : 'away'
+  const oppSide = metsIsHome ? 'away' : 'home'
+  const oppTeam = metsIsHome ? away : home
+  const oppName = oppTeam.teamName || oppTeam.abbr || 'OPP'
+
+  const activeBatters = (activeTeam === 'mets' ? boxscore?.[metsSide] : boxscore?.[oppSide])?.batters || []
+  const activePitchers = (activeTeam === 'mets' ? boxscore?.[metsSide] : boxscore?.[oppSide])?.pitchers || []
+
+  const maxInning = Math.max(9, ...(linescore?.innings?.map(i => i.num) || [9]))
+  const inningNums = Array.from({ length: maxInning }, (_, i) => i + 1)
+  const inningMap = Object.fromEntries((linescore?.innings || []).map(i => [i.num, i]))
 
   const timeStr = lastUpdated
     ? lastUpdated.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit', hour12: true })
@@ -129,7 +160,6 @@ export default function LiveScoreCard() {
 
       {/* Scoreboard */}
       <div className="live-scoreboard">
-        {/* Away team */}
         <div className="live-team">
           <img
             src={logoUrl(away.abbr)}
@@ -146,7 +176,6 @@ export default function LiveScoreCard() {
           <span className={`live-score${home.score > away.score ? ' live-score--lead' : ''}`}>{home.score}</span>
         </div>
 
-        {/* Home team */}
         <div className="live-team live-team--home">
           <img
             src={logoUrl(home.abbr)}
@@ -158,34 +187,153 @@ export default function LiveScoreCard() {
         </div>
       </div>
 
-      {/* Game state row */}
-      <div className="live-state">
-        <div className="live-inning">
-          <span className="live-inning-arrow">{isTop ? '▲' : '▼'}</span>
-          <span className="live-inning-text">{inningOrdinal}</span>
+      {/* Game info: diamond + BSO on left, inning + batter/pitcher on right */}
+      <div className="live-gameinfo">
+        <div className="live-gameinfo-left">
+          <BasesDiamond first={runners.first} second={runners.second} third={runners.third} />
+          <div className="live-bso">
+            <BSORow label="B" filled={balls} total={4} colorClass="ball" />
+            <BSORow label="S" filled={strikes} total={3} colorClass="strike" />
+            <BSORow label="O" filled={outs} total={3} colorClass="out" />
+          </div>
         </div>
-
-        <OutDots outs={outs} />
-
-        <div className="live-count">{balls}–{strikes}</div>
-
-        <BasesDiamond first={runners.first} second={runners.second} third={runners.third} />
-      </div>
-
-      {/* Batter / Pitcher */}
-      {(batter || pitcher) && (
-        <div className="live-matchup">
+        <div className="live-gameinfo-right">
+          <div className="live-inning-row">
+            <span className="live-inning-arrow">{isTop ? '▲' : '▼'}</span>
+            <span className="live-inning-text">{inningOrdinal}</span>
+          </div>
           {batter && (
-            <span className="live-matchup-item">
-              <span className="live-matchup-label">AB</span>
-              {shortName(batter)}
-            </span>
+            <div className="live-player-row">
+              <span className="live-player-label">BAT</span>
+              <span className="live-player-name">{initLast(batter)}</span>
+              {batterStats && (
+                <span className="live-player-stats">{batterStats.h}-{batterStats.ab}</span>
+              )}
+            </div>
           )}
           {pitcher && (
-            <span className="live-matchup-item">
-              <span className="live-matchup-label">P</span>
-              {shortName(pitcher)}
-            </span>
+            <div className="live-player-row">
+              <span className="live-player-label">PIT</span>
+              <span className="live-player-name">{initLast(pitcher)}</span>
+              {pitcherStats && (
+                <span className="live-player-stats">{pitcherStats.ip} IP, {pitcherStats.er} ER, {pitcherStats.h}H, {pitcherStats.k}K</span>
+              )}
+            </div>
+          )}
+        </div>
+      </div>
+
+      {/* Box score toggle */}
+      <div className="live-boxscore-bar">
+        <button className="live-boxscore-toggle" onClick={() => setShowBoxScore(s => !s)}>
+          {showBoxScore ? 'Hide Box Score ▲' : 'Box Score ▼'}
+        </button>
+      </div>
+
+      {/* Box score */}
+      {showBoxScore && (
+        <div className="live-boxscore">
+          {/* Linescore */}
+          <div className="live-linescore-wrap">
+            <table className="live-linescore">
+              <thead>
+                <tr>
+                  <th className="live-ls-team-col"></th>
+                  {inningNums.map(n => <th key={n} className="live-ls-num-col">{n}</th>)}
+                  <th className="live-ls-rhe-col">R</th>
+                  <th className="live-ls-rhe-col">H</th>
+                  <th className="live-ls-rhe-col">E</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td className="live-ls-team-col">{away.abbr}</td>
+                  {inningNums.map(n => (
+                    <td key={n} className="live-ls-num-col">{inningMap[n]?.away ?? ''}</td>
+                  ))}
+                  <td className="live-ls-rhe-col live-ls-rhe">{linescore?.totals?.away?.r ?? 0}</td>
+                  <td className="live-ls-rhe-col">{linescore?.totals?.away?.h ?? 0}</td>
+                  <td className="live-ls-rhe-col">{linescore?.totals?.away?.e ?? 0}</td>
+                </tr>
+                <tr>
+                  <td className="live-ls-team-col">{home.abbr}</td>
+                  {inningNums.map(n => (
+                    <td key={n} className="live-ls-num-col">{inningMap[n]?.home ?? ''}</td>
+                  ))}
+                  <td className="live-ls-rhe-col live-ls-rhe">{linescore?.totals?.home?.r ?? 0}</td>
+                  <td className="live-ls-rhe-col">{linescore?.totals?.home?.h ?? 0}</td>
+                  <td className="live-ls-rhe-col">{linescore?.totals?.home?.e ?? 0}</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          {/* Team tabs */}
+          <div className="live-bs-tabs">
+            <button
+              className={`live-bs-tab${activeTeam === 'mets' ? ' live-bs-tab--active' : ''}`}
+              onClick={() => setActiveTeam('mets')}
+            >
+              Mets
+            </button>
+            <button
+              className={`live-bs-tab${activeTeam === 'opp' ? ' live-bs-tab--active' : ''}`}
+              onClick={() => setActiveTeam('opp')}
+            >
+              {oppName}
+            </button>
+          </div>
+
+          {/* Batting */}
+          {activeBatters.length > 0 && (
+            <>
+              <div className="live-bs-section-label">Batting</div>
+              <div className="live-bs-table-wrap">
+                <table className="live-bs-table">
+                  <thead>
+                    <tr>
+                      <th className="live-bs-name-col">Batter</th>
+                      <th>AB</th><th>R</th><th>H</th><th>RBI</th><th>HR</th><th>BB</th><th>SO</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {activeBatters.map((b, i) => (
+                      <tr key={i}>
+                        <td className="live-bs-name-col">{lastOnly(b.name)}</td>
+                        <td>{b.ab}</td><td>{b.r}</td><td>{b.h}</td>
+                        <td>{b.rbi}</td><td>{b.hr}</td><td>{b.bb}</td><td>{b.so}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            </>
+          )}
+
+          {/* Pitching */}
+          {activePitchers.length > 0 && (
+            <>
+              <div className="live-bs-section-label">Pitching</div>
+              <div className="live-bs-table-wrap">
+                <table className="live-bs-table">
+                  <thead>
+                    <tr>
+                      <th className="live-bs-name-col">Pitcher</th>
+                      <th>IP</th><th>H</th><th>R</th><th>ER</th><th>BB</th><th>SO</th><th>ERA</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {activePitchers.map((p, i) => (
+                      <tr key={i}>
+                        <td className="live-bs-name-col">{lastOnly(p.name)}</td>
+                        <td>{p.ip}</td><td>{p.h}</td><td>{p.r}</td>
+                        <td>{p.er}</td><td>{p.bb}</td><td>{p.so}</td><td>{p.era}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            </>
           )}
         </div>
       )}
