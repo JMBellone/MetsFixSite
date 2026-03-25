@@ -324,7 +324,8 @@ export default function App() {
         <LiveScoreCard />
 
         {/* ── The Latest Briefing ─────────────────────────── */}
-        {briefingArticle && (
+        {loading && <div className="briefing-skeleton"><div className="skeleton briefing-skeleton-bar" /><div className="skeleton briefing-skeleton-bar briefing-skeleton-bar--short" /></div>}
+        {!loading && briefingArticle && (
           <>
             <div className={`section-header section-header--mets section-header--briefing section-header--briefing-${getBriefingTime()}`}>
               <span className="section-header-label">{getBriefingLabel()}</span>
@@ -359,7 +360,7 @@ export default function App() {
         )}
 
         {/* ── Signup CTA ───────────────────────────────────── */}
-        {briefingArticle && (
+        {!loading && briefingArticle && (
           <>
             <a
               href="https://themetropolitan.substack.com/subscribe"

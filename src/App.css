@@ -576,6 +576,24 @@
 .standings-streak--l { color: var(--text-muted); }
 
 /* ── Briefing card (compact) ────────────────────────────── */
+.briefing-skeleton {
+  padding: 10px 0 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.briefing-skeleton-bar {
+  height: 18px;
+  border-radius: 5px;
+  width: 90%;
+}
+
+.briefing-skeleton-bar--short {
+  width: 55%;
+  height: 14px;
+}
+
 .briefing-card {
   background: var(--surface);
   border: 1px solid var(--border);
