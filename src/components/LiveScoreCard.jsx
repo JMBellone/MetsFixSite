@@ -216,7 +216,7 @@ export default function LiveScoreCard() {
               <span className="live-player-label">PIT</span>
               <span className="live-player-name">{initLast(pitcher)}</span>
               {pitcherStats && (
-                <span className="live-player-stats">{pitcherStats.ip} IP, {pitcherStats.er} ER, {pitcherStats.h}H, {pitcherStats.k}K</span>
+                <span className="live-player-stats">{pitcherStats.ip} IP, {pitcherStats.er} ER, {pitcherStats.h}H, {pitcherStats.k}K, {pitcherStats.pc}P</span>
               )}
             </div>
           )}
@@ -319,7 +319,7 @@ export default function LiveScoreCard() {
                   <thead>
                     <tr>
                       <th className="live-bs-name-col">Pitcher</th>
-                      <th>IP</th><th>H</th><th>R</th><th>ER</th><th>BB</th><th>SO</th><th>ERA</th>
+                      <th>IP</th><th>H</th><th>R</th><th>ER</th><th>BB</th><th>SO</th><th>PC</th><th>ERA</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -327,7 +327,7 @@ export default function LiveScoreCard() {
                       <tr key={i}>
                         <td className="live-bs-name-col">{lastOnly(p.name)}</td>
                         <td>{p.ip}</td><td>{p.h}</td><td>{p.r}</td>
-                        <td>{p.er}</td><td>{p.bb}</td><td>{p.so}</td><td>{p.era}</td>
+                        <td>{p.er}</td><td>{p.bb}</td><td>{p.so}</td><td>{p.pc}</td><td>{p.era}</td>
                       </tr>
                     ))}
                   </tbody>

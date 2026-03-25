@@ -38,6 +38,7 @@ function buildPitchers(bsData, side) {
       er: s.earnedRuns ?? 0,
       bb: s.baseOnBalls ?? 0,
       so: s.strikeOuts ?? 0,
+      pc: s.numberOfPitches ?? 0,
       era: p.seasonStats?.pitching?.era ?? '-',
     }
   }).filter(Boolean)
@@ -136,6 +137,7 @@ async function buildGameData(gamePk, metsIsHome, liveGame) {
       h: pitcherRaw.hits ?? 0,
       bb: pitcherRaw.baseOnBalls ?? 0,
       k: pitcherRaw.strikeOuts ?? 0,
+      pc: pitcherRaw.numberOfPitches ?? 0,
     } : null,
     linescore: {
       innings,
