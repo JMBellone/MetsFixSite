@@ -6,12 +6,12 @@ const ESPN_HEADERS = {
   'Accept': 'application/json',
 }
 
-// Fetch broadcast from ESPN (same source/logic as schedule card)
-// seasontype: 2 = regular season, 1 = spring training
-async function fetchEspnBroadcastForDate(dateKey, seasontype = 2) {
-  const year = dateKey.split('-')[0]
+// Fetch broadcast from ESPN for a specific date (same logic as schedule card)
+// Uses dates=YYYYMMDD to return only that day's games — much smaller than full season
+async function fetchEspnBroadcastForDate(dateKey) {
+  const dateParam = dateKey.replace(/-/g, '')
   const r = await fetch(
-    `https://site.api.espn.com/apis/site/v2/sports/baseball/mlb/teams/21/schedule?season=${year}&seasontype=${seasontype}`,
+    `https://site.api.espn.com/apis/site/v2/sports/baseball/mlb/teams/21/schedule?dates=${dateParam}`,
     { headers: ESPN_HEADERS }
   )
   if (!r.ok) return null
@@ -201,8 +201,7 @@ module.exports = async function handler(req, res) {
       const debugGame = (schedPkData.dates || []).flatMap(d => d.games || [])[0] || null
       const metsIsHome = debugGame ? debugGame.teams.home.team.id === METS_ID : null
       const gameDate = debugGame?.officialDate || new Date().toISOString().split('T')[0]
-      const seasontype = debugGame?.gameType === 'S' ? 1 : 2
-      const broadcast = await fetchEspnBroadcastForDate(gameDate, seasontype).catch(() => null)
+      const broadcast = await fetchEspnBroadcastForDate(gameDate).catch(() => null)
         || mlbBroadcastFallback(debugGame?.broadcasts || [])
       const data = await buildGameData(parseInt(debugGamePk, 10), metsIsHome, debugGame, broadcast)
       return res.status(200).json(data)
@@ -236,11 +235,9 @@ module.exports = async function handler(req, res) {
 
     const gamePk = liveGame.gamePk
     const metsIsHome = liveGame.teams.home.team.id === METS_ID
-    const seasontype = liveGame.gameType === 'S' ? 1 : 2
-
     // Fetch ESPN broadcast (same source as schedule card) in parallel with game data
     const [broadcast, data] = await Promise.all([
-      fetchEspnBroadcastForDate(today, seasontype).catch(() => null),
+      fetchEspnBroadcastForDate(today).catch(() => null),
       buildGameData(gamePk, metsIsHome, liveGame, null),
     ])
     data.broadcast = broadcast || mlbBroadcastFallback(liveGame.broadcasts || [])
