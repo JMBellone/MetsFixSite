@@ -1,6 +1,42 @@
 // api/livegame.js — Live Mets game state
 
 const METS_ID = 121
+const ESPN_HEADERS = {
+  'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36',
+  'Accept': 'application/json',
+}
+
+// Fetch broadcast from ESPN (same source/logic as schedule card)
+// seasontype: 2 = regular season, 1 = spring training
+async function fetchEspnBroadcastForDate(dateKey, seasontype = 2) {
+  const year = dateKey.split('-')[0]
+  const r = await fetch(
+    `https://site.api.espn.com/apis/site/v2/sports/baseball/mlb/teams/21/schedule?season=${year}&seasontype=${seasontype}`,
+    { headers: ESPN_HEADERS }
+  )
+  if (!r.ok) return null
+  const data = await r.json()
+  const event = (data.events || []).find(e =>
+    new Date(e.date).toLocaleDateString('en-CA', { timeZone: 'America/New_York' }) === dateKey
+  )
+  if (!event) return null
+  const bcs = event.competitions?.[0]?.broadcasts || []
+  const nationalTV = bcs.find(b => b.type?.shortName === 'TV' && b.market?.type === 'National')
+  const localTV    = bcs.find(b => b.type?.shortName === 'TV' && b.market?.type !== 'National')
+  const streaming  = bcs.find(b => b.type?.shortName === 'Streaming' && b.media?.shortName !== 'MLB.TV')
+  const mlbTV      = bcs.find(b => b.media?.shortName === 'MLB.TV')
+  return (nationalTV || localTV || streaming || mlbTV)?.media?.shortName || null
+}
+
+// MLB Stats API broadcast fallback — filtered to Mets-relevant networks only
+const METS_LOCAL = new Set(['SNY', 'WPIX'])
+function mlbBroadcastFallback(bcs) {
+  const nationalTV  = bcs.find(b => b.type === 'TV' && b.isNational)
+  const metsLocalTV = bcs.find(b => b.type === 'TV' && !b.isNational && METS_LOCAL.has(b.name))
+  const streaming   = bcs.find(b => b.type !== 'TV' && b.name !== 'MLB.TV' && b.name !== 'Radio')
+  const mlbTV       = bcs.find(b => b.name === 'MLB.TV')
+  return (nationalTV || metsLocalTV || streaming || mlbTV)?.name || null
+}
 
 function buildBatters(bsData, side) {
   const team = bsData?.teams?.[side]
@@ -44,7 +80,7 @@ function buildPitchers(bsData, side) {
   }).filter(Boolean)
 }
 
-async function buildGameData(gamePk, metsIsHome, liveGame) {
+async function buildGameData(gamePk, metsIsHome, liveGame, broadcast) {
   const [lsRes, bsRes] = await Promise.all([
     fetch(`https://statsapi.mlb.com/api/v1/game/${gamePk}/linescore`),
     fetch(`https://statsapi.mlb.com/api/v1/game/${gamePk}/boxscore`),
@@ -80,16 +116,6 @@ async function buildGameData(gamePk, metsIsHome, liveGame) {
     away: ing.away?.runs ?? '',
     home: ing.home?.runs ?? '',
   }))
-
-  let broadcast = null
-  if (liveGame) {
-    const bcs = liveGame.broadcasts || []
-    const nationalTV = bcs.find(b => b.type === 'TV' && b.isNational)
-    const localTV    = bcs.find(b => b.type === 'TV' && !b.isNational)
-    const streaming  = bcs.find(b => b.type !== 'TV' && b.name !== 'MLB.TV' && b.name !== 'Radio')
-    const mlbTV      = bcs.find(b => b.name === 'MLB.TV')
-    broadcast = (nationalTV || localTV || streaming || mlbTV)?.name || null
-  }
 
   return {
     isLive: true,
@@ -174,7 +200,11 @@ module.exports = async function handler(req, res) {
       const schedPkData = schedPkRes.ok ? await schedPkRes.json() : {}
       const debugGame = (schedPkData.dates || []).flatMap(d => d.games || [])[0] || null
       const metsIsHome = debugGame ? debugGame.teams.home.team.id === METS_ID : null
-      const data = await buildGameData(parseInt(debugGamePk, 10), metsIsHome, debugGame)
+      const gameDate = debugGame?.officialDate || new Date().toISOString().split('T')[0]
+      const seasontype = debugGame?.gameType === 'S' ? 1 : 2
+      const broadcast = await fetchEspnBroadcastForDate(gameDate, seasontype).catch(() => null)
+        || mlbBroadcastFallback(debugGame?.broadcasts || [])
+      const data = await buildGameData(parseInt(debugGamePk, 10), metsIsHome, debugGame, broadcast)
       return res.status(200).json(data)
     } catch (e) {
       console.warn('[livegame debug]', e.message)
@@ -206,8 +236,15 @@ module.exports = async function handler(req, res) {
 
     const gamePk = liveGame.gamePk
     const metsIsHome = liveGame.teams.home.team.id === METS_ID
+    const seasontype = liveGame.gameType === 'S' ? 1 : 2
 
-    const data = await buildGameData(gamePk, metsIsHome, liveGame)
+    // Fetch ESPN broadcast (same source as schedule card) in parallel with game data
+    const [broadcast, data] = await Promise.all([
+      fetchEspnBroadcastForDate(today, seasontype).catch(() => null),
+      buildGameData(gamePk, metsIsHome, liveGame, null),
+    ])
+    data.broadcast = broadcast || mlbBroadcastFallback(liveGame.broadcasts || [])
+
     return res.status(200).json(data)
   } catch (e) {
     console.warn('[livegame]', e.message)
