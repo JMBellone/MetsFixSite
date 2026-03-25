@@ -95,6 +95,7 @@ async function buildGameData(gamePk, metsIsHome, liveGame) {
     isLive: true,
     broadcast,
     status: liveGame?.status?.detailedState || (lsData.currentInning ? 'In Progress' : 'Final'),
+    venue: liveGame?.venue?.name || null,
     gamePk,
     metsIsHome: resolvedMetsIsHome,
     home: {
@@ -169,7 +170,11 @@ module.exports = async function handler(req, res) {
   if (debugGamePk) {
     res.setHeader('Cache-Control', 'no-store')
     try {
-      const data = await buildGameData(parseInt(debugGamePk, 10), null, null)
+      const schedPkRes = await fetch(`https://statsapi.mlb.com/api/v1/schedule?gamePks=${debugGamePk}&hydrate=broadcasts(all)`)
+      const schedPkData = schedPkRes.ok ? await schedPkRes.json() : {}
+      const debugGame = (schedPkData.dates || []).flatMap(d => d.games || [])[0] || null
+      const metsIsHome = debugGame ? debugGame.teams.home.team.id === METS_ID : null
+      const data = await buildGameData(parseInt(debugGamePk, 10), metsIsHome, debugGame)
       return res.status(200).json(data)
     } catch (e) {
       console.warn('[livegame debug]', e.message)

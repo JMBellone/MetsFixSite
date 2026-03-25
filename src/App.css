@@ -2438,6 +2438,15 @@
   border-radius: 3px;
 }
 
+/* Venue */
+.live-venue {
+  text-align: center;
+  font-size: 0.62rem;
+  color: rgba(255, 255, 255, 0.38);
+  padding: 0 14px 10px;
+  letter-spacing: 0.02em;
+}
+
 /* === Enhanced live game state === */
 .live-gameinfo {
   display: flex;
@@ -2449,7 +2458,7 @@
 
 .live-gameinfo-left {
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
   align-items: center;
   gap: 10px;
 }

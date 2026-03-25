@@ -99,7 +99,7 @@ export default function LiveScoreCard() {
   const {
     home, away, inningHalf, inningOrdinal, outs, balls, strikes,
     runners, batter, pitcher, batterStats, pitcherStats,
-    status, broadcast, metsIsHome, linescore, boxscore,
+    status, broadcast, venue, metsIsHome, linescore, boxscore,
   } = game
 
   const isTop = inningHalf === 'Top'
@@ -186,6 +186,9 @@ export default function LiveScoreCard() {
           <span className="live-team-name">{home.teamName || home.abbr}</span>
         </div>
       </div>
+
+      {/* Venue */}
+      {venue && <div className="live-venue">{venue}</div>}
 
       {/* Game info: diamond + BSO on left, inning + batter/pitcher on right */}
       <div className="live-gameinfo">
