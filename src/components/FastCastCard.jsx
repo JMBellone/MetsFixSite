@@ -9,7 +9,7 @@ function PlayIcon() {
   )
 }
 
-export default function FastCastCard() {
+export default function FastCastCard({ hideHeader }) {
   const [video, setVideo] = useState(null)
   const [loading, setLoading] = useState(true)
 
@@ -24,13 +24,15 @@ export default function FastCastCard() {
   if (!loading && !video) return (
     <div className="sny-card">
       <div className="sny-card-header">
-        <img
-          src="https://www.google.com/s2/favicons?domain=mlb.com&sz=64"
-          alt="MLB"
-          className="sny-card-header-logo"
-          onError={e => { e.currentTarget.style.display = 'none' }}
-        />
-        <span className="sny-card-header-label">MLB FastCast</span>
+        {!hideHeader && (
+          <img
+            src="https://www.google.com/s2/favicons?domain=mlb.com&sz=64"
+            alt="MLB"
+            className="sny-card-header-logo"
+            onError={e => { e.currentTarget.style.display = 'none' }}
+          />
+        )}
+        <span className="sny-card-header-label">{hideHeader ? 'FastCast' : 'MLB FastCast'}</span>
       </div>
       <a
         href="https://www.mlb.com/video/topic/fastcast"
@@ -46,13 +48,15 @@ export default function FastCastCard() {
   return (
     <div className="sny-card">
       <div className="sny-card-header">
-        <img
-          src="https://www.google.com/s2/favicons?domain=mlb.com&sz=64"
-          alt="MLB"
-          className="sny-card-header-logo"
-          onError={e => { e.currentTarget.style.display = 'none' }}
-        />
-        <span className="sny-card-header-label">MLB FastCast</span>
+        {!hideHeader && (
+          <img
+            src="https://www.google.com/s2/favicons?domain=mlb.com&sz=64"
+            alt="MLB"
+            className="sny-card-header-logo"
+            onError={e => { e.currentTarget.style.display = 'none' }}
+          />
+        )}
+        <span className="sny-card-header-label">{hideHeader ? 'FastCast' : 'MLB FastCast'}</span>
       </div>
 
       {loading && <div className="sny-skeleton" />}

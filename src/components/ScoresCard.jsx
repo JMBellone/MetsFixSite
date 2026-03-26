@@ -1,8 +1,6 @@
 import { useState, useEffect, useRef, useCallback } from 'react'
 import './ScoresCard.css'
 
-const MLB_LOGO = 'https://a.espncdn.com/i/teamlogos/leagues/500/mlb.png'
-
 function GameRow({ game }) {
   const { away, home, status, inning, inningHalf, startTime } = game
 
@@ -16,8 +14,7 @@ function GameRow({ game }) {
       </span>
     )
   } else if (status === 'final') {
-    const label = inning && inning > 9 ? `F/${inning}` : 'Final'
-    statusEl = <span className="sc-status sc-status--final">{label}</span>
+    statusEl = <span className="sc-status sc-status--final">{inning && inning > 9 ? `F/${inning}` : 'Final'}</span>
   } else if (status === 'postponed') {
     statusEl = <span className="sc-status sc-status--ppd">PPD</span>
   } else if (status === 'suspended') {
@@ -28,34 +25,24 @@ function GameRow({ game }) {
 
   const awayDim = status === 'final' && !away.win
   const homeDim = status === 'final' && !home.win
+  const showScores = status !== 'preview'
 
   return (
     <div className="sc-row">
-      {/* Away (left) */}
-      <div className="sc-side">
-        <img className="sc-logo" src={away.logo} alt={away.abbr} onError={e => { e.currentTarget.style.display = 'none' }} />
-        <span className={`sc-abbr${awayDim ? ' sc-dim' : ''}`}>{away.abbr}</span>
-        <span className={`sc-score${awayDim ? ' sc-dim' : away.win ? ' sc-score--win' : ''}`}>
-          {status !== 'preview' ? (away.score ?? '') : ''}
-        </span>
-      </div>
+      <img className="sc-logo" src={away.logo} alt={away.name} onError={e => { e.currentTarget.style.display = 'none' }} />
+      <span className={`sc-name${awayDim ? ' sc-dim' : ''}`}>{away.name}</span>
+      <span className={`sc-score sc-score--away${awayDim ? ' sc-dim' : ''}`}>{showScores ? (away.score ?? '') : ''}</span>
 
-      {/* Center status */}
       <div className="sc-mid">{statusEl}</div>
 
-      {/* Home (right) */}
-      <div className="sc-side sc-side--home">
-        <span className={`sc-score${homeDim ? ' sc-dim' : home.win ? ' sc-score--win' : ''}`}>
-          {status !== 'preview' ? (home.score ?? '') : ''}
-        </span>
-        <span className={`sc-abbr${homeDim ? ' sc-dim' : ''}`}>{home.abbr}</span>
-        <img className="sc-logo" src={home.logo} alt={home.abbr} onError={e => { e.currentTarget.style.display = 'none' }} />
-      </div>
+      <span className={`sc-score sc-score--home${homeDim ? ' sc-dim' : ''}`}>{showScores ? (home.score ?? '') : ''}</span>
+      <span className={`sc-name sc-name--home${homeDim ? ' sc-dim' : ''}`}>{home.name}</span>
+      <img className="sc-logo sc-logo--home" src={home.logo} alt={home.name} onError={e => { e.currentTarget.style.display = 'none' }} />
     </div>
   )
 }
 
-export default function ScoresCard() {
+export default function ScoresCard({ hideHeader }) {
   const [data, setData] = useState(null)
   const [loading, setLoading] = useState(true)
   const [showAll, setShowAll] = useState(false)
@@ -94,11 +81,24 @@ export default function ScoresCard() {
 
   return (
     <div className="sc-card">
-      <div className="sc-header">
-        <img src={MLB_LOGO} alt="MLB" className="sc-header-logo" onError={e => { e.currentTarget.style.display = 'none' }} />
-        <span className="sc-header-title">MLB Scores</span>
-        <span className="sc-header-date">{data.displayLabel}</span>
-      </div>
+      {!hideHeader && (
+        <div className="sc-header">
+          <img
+            src="https://a.espncdn.com/i/teamlogos/leagues/500/mlb.png"
+            alt="MLB"
+            className="sc-header-logo"
+            onError={e => { e.currentTarget.style.display = 'none' }}
+          />
+          <span className="sc-header-title">MLB Scores</span>
+          <span className="sc-header-date">{data.displayLabel}</span>
+        </div>
+      )}
+      {hideHeader && (
+        <div className="sc-header sc-header--embedded">
+          <span className="sc-header-title">Scores</span>
+          <span className="sc-header-date">{data.displayLabel}</span>
+        </div>
+      )}
 
       <div className="sc-list">
         {displayGames.map(g => <GameRow key={g.gamePk} game={g} />)}

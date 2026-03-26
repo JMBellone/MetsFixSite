@@ -1,0 +1,64 @@
+/* ── MLB Snapshot Card ────────────────────────────────── */
+
+.snapshot-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  overflow: hidden;
+}
+
+.snapshot-header {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  padding: 10px 14px;
+  background: var(--surface-2);
+  border-bottom: 1px solid var(--border);
+}
+
+.snapshot-logo {
+  width: 22px;
+  height: 22px;
+  object-fit: contain;
+  flex-shrink: 0;
+}
+
+.snapshot-title {
+  font-size: 0.72rem;
+  font-weight: 900;
+  color: var(--mets-blue-light);
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+}
+
+/* Strip outer card styling from nested cards */
+.snapshot-card .standings-card,
+.snapshot-card .sc-card,
+.snapshot-card .sny-card {
+  background: transparent;
+  border: none;
+  border-radius: 0;
+  overflow: visible;
+  border-top: 1px solid var(--border);
+}
+
+/* Section label headers — white text, no logo */
+.snapshot-card .standings-header-title {
+  color: var(--text);
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.3px;
+  text-transform: none;
+}
+
+.snapshot-card .sc-header-title {
+  color: var(--text);
+}
+
+.snapshot-card .sny-card-header-label {
+  color: var(--text);
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.3px;
+  text-transform: none;
+}

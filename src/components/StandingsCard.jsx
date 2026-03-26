@@ -58,7 +58,7 @@ function LeaguePanel({ label, divisions, highlightAbbr, className }) {
   )
 }
 
-export default function StandingsCard() {
+export default function StandingsCard({ hideHeader }) {
   const [standings, setStandings] = useState(null)
   const [league, setLeague] = useState('nl')
   const [showFull, setShowFull] = useState(false)
@@ -81,13 +81,15 @@ export default function StandingsCard() {
   return (
     <div className="standings-card">
       <div className="standings-header">
-        <img
-          src={MLB_LOGO}
-          alt="MLB"
-          className="standings-header-logo"
-          onError={e => { e.currentTarget.style.display = 'none' }}
-        />
-        <span className="standings-header-title">MLB Standings</span>
+        {!hideHeader && (
+          <img
+            src={MLB_LOGO}
+            alt="MLB"
+            className="standings-header-logo"
+            onError={e => { e.currentTarget.style.display = 'none' }}
+          />
+        )}
+        <span className="standings-header-title">{hideHeader ? 'Standings' : 'MLB Standings'}</span>
         {/* Tabs shown on mobile only (hidden on desktop via CSS) */}
         <div className="standings-league-tabs">
           <button

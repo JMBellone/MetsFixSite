@@ -1,11 +1,9 @@
 import { useState, useEffect, useCallback, useRef, Fragment } from 'react'
 import SkeletonCard from './components/SkeletonCard'
 import ScheduleCard from './components/ScheduleCard'
-import StandingsCard from './components/StandingsCard'
 import OptionDatesCard from './components/OptionDatesCard'
 import InjuredListCard from './components/InjuredListCard'
 import SNYCard from './components/SNYCard'
-import FastCastCard from './components/FastCastCard'
 import LastGameCard from './components/LastGameCard'
 import BlogRollCard from './components/BlogRollCard'
 import RedditCard from './components/RedditCard'
@@ -15,7 +13,7 @@ import SNYFeaturedCard from './components/SNYFeaturedCard'
 import RewatchCard from './components/RewatchCard'
 import LiveScoreCard from './components/LiveScoreCard'
 import BullpenCard from './components/BullpenCard'
-import ScoresCard from './components/ScoresCard'
+import MLBSnapshotCard from './components/MLBSnapshotCard'
 import MetsVideoCard from './components/MetsVideoCard'
 import MetsStatsCard from './components/MetsStatsCard'
 import SyracuseScheduleCard from './components/SyracuseScheduleCard'
@@ -502,14 +500,8 @@ export default function App() {
         {/* ── SNY Featured Video ───────────────────────────── */}
         <SNYFeaturedCard />
 
-        {/* ── MLB Standings ─────────────────────────────────── */}
-        <StandingsCard />
-
-        {/* ── MLB Scores ────────────────────────────────────── */}
-        <ScoresCard />
-
-        {/* ── MLB FastCast ──────────────────────────────────── */}
-        <FastCastCard />
+        {/* ── MLB Snapshot (Standings + Scores + FastCast) ──── */}
+        <MLBSnapshotCard />
 
         {/* ── Upcoming Schedule + Know Your Opponent ───────── */}
         <div className="game-preview-group">

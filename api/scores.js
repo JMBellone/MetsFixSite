@@ -3,36 +3,36 @@
 const NL_EAST_IDS = new Set([121, 143, 144, 146, 120]) // NYM, PHI, ATL, MIA, WSH
 
 const TEAM_INFO = {
-  108: { abbr: 'LAA', logo: 'https://a.espncdn.com/i/teamlogos/mlb/500/laa.png' },
-  109: { abbr: 'ARI', logo: 'https://a.espncdn.com/i/teamlogos/mlb/500/ari.png' },
-  110: { abbr: 'BAL', logo: 'https://a.espncdn.com/i/teamlogos/mlb/500/bal.png' },
-  111: { abbr: 'BOS', logo: 'https://a.espncdn.com/i/teamlogos/mlb/500/bos.png' },
-  112: { abbr: 'CHC', logo: 'https://a.espncdn.com/i/teamlogos/mlb/500/chc.png' },
-  113: { abbr: 'CIN', logo: 'https://a.espncdn.com/i/teamlogos/mlb/500/cin.png' },
-  114: { abbr: 'CLE', logo: 'https://a.espncdn.com/i/teamlogos/mlb/500/cle.png' },
-  115: { abbr: 'COL', logo: 'https://a.espncdn.com/i/teamlogos/mlb/500/col.png' },
-  116: { abbr: 'DET', logo: 'https://a.espncdn.com/i/teamlogos/mlb/500/det.png' },
-  117: { abbr: 'HOU', logo: 'https://a.espncdn.com/i/teamlogos/mlb/500/hou.png' },
-  118: { abbr: 'KC',  logo: 'https://a.espncdn.com/i/teamlogos/mlb/500/kc.png' },
-  119: { abbr: 'LAD', logo: 'https://a.espncdn.com/i/teamlogos/mlb/500/lad.png' },
-  120: { abbr: 'WSH', logo: 'https://a.espncdn.com/i/teamlogos/mlb/500/wsh.png' },
-  121: { abbr: 'NYM', logo: 'https://a.espncdn.com/i/teamlogos/mlb/500/nym.png' },
-  133: { abbr: 'OAK', logo: 'https://a.espncdn.com/i/teamlogos/mlb/500/oak.png' },
-  134: { abbr: 'PIT', logo: 'https://a.espncdn.com/i/teamlogos/mlb/500/pit.png' },
-  135: { abbr: 'SD',  logo: 'https://a.espncdn.com/i/teamlogos/mlb/500/sd.png' },
-  136: { abbr: 'SEA', logo: 'https://a.espncdn.com/i/teamlogos/mlb/500/sea.png' },
-  137: { abbr: 'SF',  logo: 'https://a.espncdn.com/i/teamlogos/mlb/500/sf.png' },
-  138: { abbr: 'STL', logo: 'https://a.espncdn.com/i/teamlogos/mlb/500/stl.png' },
-  139: { abbr: 'TB',  logo: 'https://a.espncdn.com/i/teamlogos/mlb/500/tb.png' },
-  140: { abbr: 'TEX', logo: 'https://a.espncdn.com/i/teamlogos/mlb/500/tex.png' },
-  141: { abbr: 'TOR', logo: 'https://a.espncdn.com/i/teamlogos/mlb/500/tor.png' },
-  142: { abbr: 'MIN', logo: 'https://a.espncdn.com/i/teamlogos/mlb/500/min.png' },
-  143: { abbr: 'PHI', logo: 'https://a.espncdn.com/i/teamlogos/mlb/500/phi.png' },
-  144: { abbr: 'ATL', logo: 'https://a.espncdn.com/i/teamlogos/mlb/500/atl.png' },
-  145: { abbr: 'CWS', logo: 'https://a.espncdn.com/i/teamlogos/mlb/500/chw.png' },
-  146: { abbr: 'MIA', logo: 'https://a.espncdn.com/i/teamlogos/mlb/500/mia.png' },
-  147: { abbr: 'NYY', logo: 'https://a.espncdn.com/i/teamlogos/mlb/500/nyy.png' },
-  158: { abbr: 'MIL', logo: 'https://a.espncdn.com/i/teamlogos/mlb/500/mil.png' },
+  108: { name: 'Angels',    logo: 'https://a.espncdn.com/i/teamlogos/mlb/500/laa.png' },
+  109: { name: 'D-backs',   logo: 'https://a.espncdn.com/i/teamlogos/mlb/500/ari.png' },
+  110: { name: 'Orioles',   logo: 'https://a.espncdn.com/i/teamlogos/mlb/500/bal.png' },
+  111: { name: 'Red Sox',   logo: 'https://a.espncdn.com/i/teamlogos/mlb/500/bos.png' },
+  112: { name: 'Cubs',      logo: 'https://a.espncdn.com/i/teamlogos/mlb/500/chc.png' },
+  113: { name: 'Reds',      logo: 'https://a.espncdn.com/i/teamlogos/mlb/500/cin.png' },
+  114: { name: 'Guardians', logo: 'https://a.espncdn.com/i/teamlogos/mlb/500/cle.png' },
+  115: { name: 'Rockies',   logo: 'https://a.espncdn.com/i/teamlogos/mlb/500/col.png' },
+  116: { name: 'Tigers',    logo: 'https://a.espncdn.com/i/teamlogos/mlb/500/det.png' },
+  117: { name: 'Astros',    logo: 'https://a.espncdn.com/i/teamlogos/mlb/500/hou.png' },
+  118: { name: 'Royals',    logo: 'https://a.espncdn.com/i/teamlogos/mlb/500/kc.png' },
+  119: { name: 'Dodgers',   logo: 'https://a.espncdn.com/i/teamlogos/mlb/500/lad.png' },
+  120: { name: 'Nationals', logo: 'https://a.espncdn.com/i/teamlogos/mlb/500/wsh.png' },
+  121: { name: 'Mets',      logo: 'https://a.espncdn.com/i/teamlogos/mlb/500/nym.png' },
+  133: { name: 'Athletics', logo: 'https://a.espncdn.com/i/teamlogos/mlb/500/oak.png' },
+  134: { name: 'Pirates',   logo: 'https://a.espncdn.com/i/teamlogos/mlb/500/pit.png' },
+  135: { name: 'Padres',    logo: 'https://a.espncdn.com/i/teamlogos/mlb/500/sd.png' },
+  136: { name: 'Mariners',  logo: 'https://a.espncdn.com/i/teamlogos/mlb/500/sea.png' },
+  137: { name: 'Giants',    logo: 'https://a.espncdn.com/i/teamlogos/mlb/500/sf.png' },
+  138: { name: 'Cardinals', logo: 'https://a.espncdn.com/i/teamlogos/mlb/500/stl.png' },
+  139: { name: 'Rays',      logo: 'https://a.espncdn.com/i/teamlogos/mlb/500/tb.png' },
+  140: { name: 'Rangers',   logo: 'https://a.espncdn.com/i/teamlogos/mlb/500/tex.png' },
+  141: { name: 'Blue Jays', logo: 'https://a.espncdn.com/i/teamlogos/mlb/500/tor.png' },
+  142: { name: 'Twins',     logo: 'https://a.espncdn.com/i/teamlogos/mlb/500/min.png' },
+  143: { name: 'Phillies',  logo: 'https://a.espncdn.com/i/teamlogos/mlb/500/phi.png' },
+  144: { name: 'Braves',    logo: 'https://a.espncdn.com/i/teamlogos/mlb/500/atl.png' },
+  145: { name: 'White Sox', logo: 'https://a.espncdn.com/i/teamlogos/mlb/500/chw.png' },
+  146: { name: 'Marlins',   logo: 'https://a.espncdn.com/i/teamlogos/mlb/500/mia.png' },
+  147: { name: 'Yankees',   logo: 'https://a.espncdn.com/i/teamlogos/mlb/500/nyy.png' },
+  158: { name: 'Brewers',   logo: 'https://a.espncdn.com/i/teamlogos/mlb/500/mil.png' },
 }
 
 function todayET() {
@@ -71,8 +71,8 @@ async function fetchGames(dateStr) {
     for (const g of (dateEntry.games || [])) {
       const homeId = g.teams?.home?.team?.id
       const awayId = g.teams?.away?.team?.id
-      const homeMeta = TEAM_INFO[homeId] || { abbr: '?', logo: '' }
-      const awayMeta = TEAM_INFO[awayId] || { abbr: '?', logo: '' }
+      const homeMeta = TEAM_INFO[homeId] || { name: '?', logo: '' }
+      const awayMeta = TEAM_INFO[awayId] || { name: '?', logo: '' }
 
       const abstract = g.status?.abstractGameState
       const detailed = g.status?.detailedState || ''
@@ -97,8 +97,8 @@ async function fetchGames(dateStr) {
         inning,
         inningHalf,
         startTime: status === 'preview' ? formatTime(g.gameDate) : null,
-        away: { id: awayId, abbr: awayMeta.abbr, logo: awayMeta.logo, score: awayScore, win: awayWin },
-        home: { id: homeId, abbr: homeMeta.abbr, logo: homeMeta.logo, score: homeScore, win: homeWin },
+        away: { id: awayId, name: awayMeta.name, logo: awayMeta.logo, score: awayScore, win: awayWin },
+        home: { id: homeId, name: homeMeta.name, logo: homeMeta.logo, score: homeScore, win: homeWin },
         isNLEast: NL_EAST_IDS.has(homeId) || NL_EAST_IDS.has(awayId),
       })
     }

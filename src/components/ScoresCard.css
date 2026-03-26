@@ -16,6 +16,10 @@
   border-bottom: 1px solid var(--border);
 }
 
+.sc-header--embedded {
+  background: var(--surface-2);
+}
+
 .sc-header-logo {
   width: 20px;
   height: 20px;
@@ -24,7 +28,7 @@
 }
 
 .sc-header-title {
-  font-size: 0.75rem;
+  font-size: 0.72rem;
   font-weight: 700;
   color: var(--text);
   letter-spacing: 0.3px;
@@ -44,12 +48,13 @@
   flex-direction: column;
 }
 
-/* Game row */
+/* Game row — 7-column grid for perfect score alignment */
 .sc-row {
-  display: flex;
+  display: grid;
+  grid-template-columns: 26px minmax(0, 1fr) 38px 70px 38px minmax(0, 1fr) 26px;
   align-items: center;
-  padding: 11px 14px;
-  gap: 6px;
+  column-gap: 6px;
+  padding: 10px 14px;
   border-bottom: 1px solid rgba(255, 255, 255, 0.05);
 }
 
@@ -57,64 +62,53 @@
   border-bottom: none;
 }
 
-/* Each team half */
-.sc-side {
-  flex: 1;
-  display: flex;
-  align-items: center;
-  gap: 7px;
-  min-width: 0;
-}
-
-/* Home side: reversed — score near center, logo at far right */
-.sc-side--home {
-  justify-content: flex-end;
-}
-
 .sc-logo {
-  width: 26px;
-  height: 26px;
+  width: 24px;
+  height: 24px;
   object-fit: contain;
-  flex-shrink: 0;
 }
 
-.sc-abbr {
-  font-size: 0.72rem;
-  font-weight: 700;
+.sc-logo--home {
+  justify-self: end;
+}
+
+.sc-name {
+  font-size: 0.74rem;
+  font-weight: 600;
   color: var(--text);
   white-space: nowrap;
-  letter-spacing: 0.2px;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
-/* Away score pushed right (toward center) */
-.sc-side:not(.sc-side--home) .sc-score {
-  margin-left: auto;
+.sc-name--home {
+  text-align: right;
 }
 
 .sc-score {
   font-size: 1.5rem;
   font-weight: 700;
   color: var(--text);
-  min-width: 28px;
-  text-align: center;
   line-height: 1;
   font-variant-numeric: tabular-nums;
 }
 
-.sc-score--win {
-  color: #ffffff;
+.sc-score--away {
+  text-align: right;
+}
+
+.sc-score--home {
+  text-align: left;
 }
 
 /* Loser dimming */
 .sc-dim {
   color: var(--text-muted);
-  opacity: 0.6;
+  opacity: 0.55;
 }
 
 /* Center status column */
 .sc-mid {
-  width: 68px;
-  flex-shrink: 0;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -155,8 +149,7 @@
 
 .sc-status--time {
   color: var(--text-muted);
-  font-size: 0.68rem;
-  font-weight: 500;
+  font-size: 0.66rem;
 }
 
 .sc-status--ppd {
@@ -180,7 +173,6 @@
   padding: 10px 14px;
   cursor: pointer;
   transition: color 0.15s, background 0.15s;
-  letter-spacing: 0.1px;
 }
 
 .sc-toggle:hover {
