@@ -67,12 +67,12 @@ function buildBench(bsData, side, handMap) {
   const used = usedSubIds.map(id => {
     const p = team.players?.[`ID${id}`]
     if (!p || p.position?.abbreviation === 'P') return null
-    return { name: p.person?.fullName || '', pos: p.position?.abbreviation || '', bats: handMap[id]?.batSide || '', used: true }
+    return { id, name: p.person?.fullName || '', pos: p.position?.abbreviation || '', bats: handMap[id]?.batSide || '', used: true }
   }).filter(Boolean)
   const available = (team.bench || []).map(id => {
     const p = team.players?.[`ID${id}`]
     if (!p) return null
-    return { name: p.person?.fullName || '', pos: p.position?.abbreviation || '', bats: handMap[id]?.batSide || '', used: false }
+    return { id, name: p.person?.fullName || '', pos: p.position?.abbreviation || '', bats: handMap[id]?.batSide || '', used: false }
   }).filter(Boolean)
   return [...used, ...available]
 }
@@ -83,12 +83,12 @@ function buildManagerPitchers(bsData, side, handMap) {
   const used = (team.pitchers || []).map(id => {
     const p = team.players?.[`ID${id}`]
     if (!p) return null
-    return { name: p.person?.fullName || '', throws: handMap[id]?.pitchHand || '', used: true }
+    return { id, name: p.person?.fullName || '', throws: handMap[id]?.pitchHand || '', used: true }
   }).filter(Boolean)
   const available = (team.bullpen || []).map(id => {
     const p = team.players?.[`ID${id}`]
     if (!p) return null
-    return { name: p.person?.fullName || '', throws: handMap[id]?.pitchHand || '', used: false }
+    return { id, name: p.person?.fullName || '', throws: handMap[id]?.pitchHand || '', used: false }
   }).filter(Boolean)
   return [...used, ...available]
 }

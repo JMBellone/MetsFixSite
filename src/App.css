@@ -2783,6 +2783,34 @@
 .live-mc-l { color: #60a5fa; }
 .live-mc-s { color: #a78bfa; }
 
+.live-mc-loading {
+  text-align: center;
+  font-size: 0.6rem;
+  color: rgba(255, 255, 255, 0.35);
+  padding: 4px 14px 8px;
+}
+
+.live-mc-season {
+  font-weight: 400;
+  opacity: 0.6;
+}
+
+/* Split stat columns */
+.live-mc-table { min-width: 260px; }
+
+.live-mc-sm {
+  text-align: center;
+  width: 26px;
+}
+
+.live-mc-split {
+  text-align: center;
+  width: 42px;
+  font-variant-numeric: tabular-nums;
+  font-size: 0.6rem;
+  color: rgba(255, 255, 255, 0.65);
+}
+
 /* ── Mets Stats card ─────────────────────────────────────── */
 .stats-card {
   background: var(--surface);

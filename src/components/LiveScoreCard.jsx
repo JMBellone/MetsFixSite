@@ -63,6 +63,8 @@ export default function LiveScoreCard({ onLiveChange }) {
   const [lastUpdated, setLastUpdated] = useState(null)
   const [showBoxScore, setShowBoxScore] = useState(false)
   const [showManagerCard, setShowManagerCard] = useState(false)
+  const [managerSplits, setManagerSplits] = useState(null)
+  const [splitsLoading, setSplitsLoading] = useState(false)
   const [activeTeam, setActiveTeam] = useState('mets')
   const intervalRef = useRef(null)
 
@@ -108,6 +110,17 @@ export default function LiveScoreCard({ onLiveChange }) {
     document.addEventListener('visibilitychange', handleVisibility)
     return () => document.removeEventListener('visibilitychange', handleVisibility)
   }, [fetchGame])
+
+  // Fetch split stats once when Manager's Card is first opened
+  useEffect(() => {
+    if (!showManagerCard || managerSplits || splitsLoading || !game?.gamePk) return
+    setSplitsLoading(true)
+    fetch(`/api/managerscard?gamePk=${game.gamePk}`)
+      .then(r => r.ok ? r.json() : null)
+      .then(d => { setManagerSplits(d) })
+      .catch(() => {})
+      .finally(() => setSplitsLoading(false))
+  }, [showManagerCard, game?.gamePk]) // eslint-disable-line react-hooks/exhaustive-deps
 
   if (!game) return null
 
@@ -255,9 +268,15 @@ export default function LiveScoreCard({ onLiveChange }) {
 
       {/* Manager's Card */}
       {showManagerCard && (() => {
-        const mgr = activeTeam === 'mets' ? managers?.[metsSide] : managers?.[oppSide]
+        const activeSide = activeTeam === 'mets' ? metsSide : oppSide
+        const mgr = managers?.[activeSide]
         const bench = mgr?.bench || []
         const bullpen = mgr?.pitchers || []
+        const hitSplits = managerSplits?.[activeSide]?.hitting || {}
+        const pitSplits = managerSplits?.[activeSide]?.pitching || {}
+        const season = managerSplits?.season
+        const splitLabel = season ? `${season}` : ''
+        const fmt = v => v != null ? v : '—'
         return (
           <div className="live-boxscore">
             {/* Team tabs */}
@@ -276,51 +295,71 @@ export default function LiveScoreCard({ onLiveChange }) {
               </button>
             </div>
 
+            {splitsLoading && <div className="live-mc-loading">Loading split stats…</div>}
+
             {/* Bench */}
-            <div className="live-bs-section-label">Bench</div>
+            <div className="live-bs-section-label">
+              Bench{splitLabel && <span className="live-mc-season"> ({splitLabel})</span>}
+            </div>
             <div className="live-bs-table-wrap">
-              <table className="live-bs-table">
+              <table className="live-bs-table live-mc-table">
                 <thead>
                   <tr>
                     <th className="live-bs-name-col">Player</th>
-                    <th>POS</th>
-                    <th>B</th>
+                    <th className="live-mc-sm">POS</th>
+                    <th className="live-mc-sm">B</th>
+                    <th className="live-mc-split">vsLHP</th>
+                    <th className="live-mc-split">vsRHP</th>
                   </tr>
                 </thead>
                 <tbody>
                   {bench.length === 0
-                    ? <tr><td colSpan={3} className="live-mc-empty">—</td></tr>
-                    : bench.map((p, i) => (
-                      <tr key={i} className={p.used ? 'live-mc-used' : ''}>
-                        <td className="live-bs-name-col">{p.name}</td>
-                        <td>{p.pos}</td>
-                        <td className={p.bats === 'L' ? 'live-mc-l' : p.bats === 'S' ? 'live-mc-s' : ''}>{p.bats}</td>
-                      </tr>
-                    ))
+                    ? <tr><td colSpan={5} className="live-mc-empty">—</td></tr>
+                    : bench.map((p, i) => {
+                      const s = hitSplits[p.id] || {}
+                      return (
+                        <tr key={i} className={p.used ? 'live-mc-used' : ''}>
+                          <td className="live-bs-name-col">{p.name}</td>
+                          <td className="live-mc-sm">{p.pos}</td>
+                          <td className={`live-mc-sm${p.bats === 'L' ? ' live-mc-l' : p.bats === 'S' ? ' live-mc-s' : ''}`}>{p.bats}</td>
+                          <td className="live-mc-split">{fmt(s.vl)}</td>
+                          <td className="live-mc-split">{fmt(s.vr)}</td>
+                        </tr>
+                      )
+                    })
                   }
                 </tbody>
               </table>
             </div>
 
             {/* Bullpen */}
-            <div className="live-bs-section-label">Bullpen</div>
+            <div className="live-bs-section-label">
+              Bullpen{splitLabel && <span className="live-mc-season"> ({splitLabel})</span>}
+            </div>
             <div className="live-bs-table-wrap">
-              <table className="live-bs-table">
+              <table className="live-bs-table live-mc-table">
                 <thead>
                   <tr>
                     <th className="live-bs-name-col">Pitcher</th>
-                    <th>THR</th>
+                    <th className="live-mc-sm">THR</th>
+                    <th className="live-mc-split">vsLHH</th>
+                    <th className="live-mc-split">vsRHH</th>
                   </tr>
                 </thead>
                 <tbody>
                   {bullpen.length === 0
-                    ? <tr><td colSpan={2} className="live-mc-empty">—</td></tr>
-                    : bullpen.map((p, i) => (
-                      <tr key={i} className={p.used ? 'live-mc-used' : ''}>
-                        <td className="live-bs-name-col">{p.name}</td>
-                        <td className={p.throws === 'L' ? 'live-mc-l' : ''}>{p.throws}</td>
-                      </tr>
-                    ))
+                    ? <tr><td colSpan={4} className="live-mc-empty">—</td></tr>
+                    : bullpen.map((p, i) => {
+                      const s = pitSplits[p.id] || {}
+                      return (
+                        <tr key={i} className={p.used ? 'live-mc-used' : ''}>
+                          <td className="live-bs-name-col">{p.name}</td>
+                          <td className={`live-mc-sm${p.throws === 'L' ? ' live-mc-l' : ''}`}>{p.throws}</td>
+                          <td className="live-mc-split">{fmt(s.vl)}</td>
+                          <td className="live-mc-split">{fmt(s.vr)}</td>
+                        </tr>
+                      )
+                    })
                   }
                 </tbody>
               </table>
