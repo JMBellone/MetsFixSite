@@ -15,6 +15,7 @@ import SNYFeaturedCard from './components/SNYFeaturedCard'
 import RewatchCard from './components/RewatchCard'
 import LiveScoreCard from './components/LiveScoreCard'
 import BullpenCard from './components/BullpenCard'
+import ScoresCard from './components/ScoresCard'
 import MetsVideoCard from './components/MetsVideoCard'
 import MetsStatsCard from './components/MetsStatsCard'
 import SyracuseScheduleCard from './components/SyracuseScheduleCard'
@@ -503,6 +504,9 @@ export default function App() {
 
         {/* ── MLB Standings ─────────────────────────────────── */}
         <StandingsCard />
+
+        {/* ── MLB Scores ────────────────────────────────────── */}
+        <ScoresCard />
 
         {/* ── MLB FastCast ──────────────────────────────────── */}
         <FastCastCard />
