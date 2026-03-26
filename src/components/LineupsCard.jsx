@@ -1,12 +1,12 @@
 import { useState, useEffect } from 'react'
 import './LineupsCard.css'
 
+// Always render two lines so every row is the same height
 function VsCell({ vs }) {
-  if (!vs || vs.ab === 0) return <span className="lc-vs-none">—</span>
   return (
     <span className="lc-vs">
-      <span className="lc-vs-avg">{vs.avg}</span>
-      <span className="lc-vs-ab">{vs.ab} AB</span>
+      <span className="lc-vs-ops">{vs && vs.ab > 0 ? vs.ops : '—'}</span>
+      <span className="lc-vs-ab">{vs && vs.ab > 0 ? `${vs.ab} AB` : '\u00A0'}</span>
     </span>
   )
 }
@@ -31,8 +31,9 @@ function TeamColumn({ team, vsStarter }) {
             <tr>
               <th className="lc-th lc-th-order">#</th>
               <th className="lc-th lc-th-name">BATTER</th>
+              <th className="lc-th lc-th-bats">B</th>
               <th className="lc-th lc-th-pos">POS</th>
-              <th className="lc-th lc-th-vs">VS SP</th>
+              <th className="lc-th lc-th-vs">OPS vs SP</th>
             </tr>
           </thead>
           <tbody>
@@ -40,6 +41,7 @@ function TeamColumn({ team, vsStarter }) {
               <tr key={p.id}>
                 <td className="lc-td lc-td-order">{p.batOrder}</td>
                 <td className="lc-td lc-td-name">{p.lastName}</td>
+                <td className={`lc-td lc-td-bats${p.bats === 'L' ? ' lc-bats-l' : p.bats === 'S' ? ' lc-bats-s' : ''}`}>{p.bats}</td>
                 <td className="lc-td lc-td-pos">{p.pos}</td>
                 <td className="lc-td lc-td-vs"><VsCell vs={p.vs} /></td>
               </tr>
@@ -68,14 +70,10 @@ export default function LineupsCard() {
   const metsTeam = data.metsHome ? data.home : data.away
   const oppTeam  = data.metsHome ? data.away : data.home
 
-  // Each team's batters face the OTHER team's starter
-  const metsVsPitcher = oppTeam.starter
-  const oppVsPitcher  = metsTeam.starter
-
   return (
     <div className="lc-card">
       <div className="lc-card-header">
-        <span className="lc-card-title">Today's Lineups</span>
+        <span className="lc-card-title">📝 Today's Lineups</span>
       </div>
 
       <div className="lc-mobile-tabs">
@@ -83,24 +81,26 @@ export default function LineupsCard() {
           className={`lc-mobile-tab${activeTeam === 'mets' ? ' lc-mobile-tab--active' : ''}`}
           onClick={() => setActiveTeam('mets')}
         >
-          <img src={metsTeam.logo} alt="" className="lc-tab-logo" />
-          {metsTeam.abbr}
+          <img src={metsTeam.logo} alt="" className="lc-tab-logo"
+            onError={e => { e.currentTarget.style.display = 'none' }} />
+          {metsTeam.shortName}
         </button>
         <button
           className={`lc-mobile-tab${activeTeam === 'opp' ? ' lc-mobile-tab--active' : ''}`}
           onClick={() => setActiveTeam('opp')}
         >
-          <img src={oppTeam.logo} alt="" className="lc-tab-logo" />
-          {oppTeam.abbr}
+          <img src={oppTeam.logo} alt="" className="lc-tab-logo"
+            onError={e => { e.currentTarget.style.display = 'none' }} />
+          {oppTeam.shortName}
         </button>
       </div>
 
       <div className={activeTeam !== 'mets' ? 'lc-team-hidden-mobile' : ''}>
-        <TeamColumn team={metsTeam} vsStarter={metsVsPitcher} />
+        <TeamColumn team={metsTeam} vsStarter={oppTeam.starter} />
       </div>
       <div className="lc-divider lc-divider--desktop" />
       <div className={activeTeam !== 'opp' ? 'lc-team-hidden-mobile' : ''}>
-        <TeamColumn team={oppTeam} vsStarter={oppVsPitcher} />
+        <TeamColumn team={oppTeam} vsStarter={metsTeam.starter} />
       </div>
     </div>
   )

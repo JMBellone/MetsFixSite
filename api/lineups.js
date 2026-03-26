@@ -8,6 +8,9 @@ const ESPN_LOGO = abbr => {
   return `https://a.espncdn.com/i/teamlogos/mlb/500/${m[abbr] || abbr.toLowerCase()}.png`
 }
 
+// Short display name: last word of team name ("New York Mets" → "Mets")
+const shortName = name => (name || '').split(' ').pop()
+
 async function vsPlayer(batterId, pitcherId) {
   if (!batterId || !pitcherId) return null
   try {
@@ -17,8 +20,18 @@ async function vsPlayer(batterId, pitcherId) {
     const d = await r.json()
     const s = d.stats?.[0]?.splits?.[0]?.stat
     if (!s || !s.atBats) return null
-    return { avg: s.avg || '.000', ab: s.atBats || 0, h: s.hits || 0, hr: s.homeRuns || 0, rbi: s.rbi || 0 }
+    return { ops: s.ops || '.000', ab: s.atBats || 0, h: s.hits || 0, hr: s.homeRuns || 0 }
   } catch { return null }
+}
+
+async function fetchBatSides(ids) {
+  try {
+    const url = `https://statsapi.mlb.com/api/v1/people?personIds=${ids.join(',')}&fields=people,id,batSide,code`
+    const r = await fetch(url, { signal: AbortSignal.timeout(4000) })
+    if (!r.ok) return {}
+    const d = await r.json()
+    return Object.fromEntries((d.people || []).map(p => [p.id, p.batSide?.code || '']))
+  } catch { return {} }
 }
 
 function todayET() {
@@ -90,7 +103,7 @@ module.exports = async function handler(req, res) {
       return res.status(200).json({ posted: false, reason: 'not_posted' })
     }
 
-    // Starting pitcher: use boxscore pitchers[0] if available, else probable pitcher
+    // Starting pitcher: use live feed pitchers[0] if available, else probable pitcher
     const awayStarterId = awayData?.pitchers?.[0] || probableAway?.id
     const homeStarterId = homeData?.pitchers?.[0] || probableHome?.id
 
@@ -106,19 +119,23 @@ module.exports = async function handler(req, res) {
     const awayLineup = buildLineup(awayData, awayOrder)
     const homeLineup = buildLineup(homeData, homeOrder)
 
-    // vsPlayer stats: away batters vs home starter, home batters vs away starter
-    const [awayVs, homeVs] = await Promise.all([
+    // Fetch bats (R/L/S) for all batters + vsPlayer stats — all in parallel
+    const allBatterIds = [...awayLineup, ...homeLineup].map(p => p.id)
+    const [batSides, awayVs, homeVs] = await Promise.all([
+      fetchBatSides(allBatterIds),
       Promise.all(awayLineup.map(p => vsPlayer(p.id, homeStarterId))),
       Promise.all(homeLineup.map(p => vsPlayer(p.id, awayStarterId))),
     ])
 
-    const attachVs = (lineup, vsArr) => lineup.map((p, i) => ({ ...p, vs: vsArr[i] }))
+    const attachVs = (lineup, vsArr) =>
+      lineup.map((p, i) => ({ ...p, bats: batSides[p.id] || '', vs: vsArr[i] }))
 
     const metsHome = homeData?.team?.id === 121
 
     const teamInfo = (teamData) => ({
       id: teamData?.team?.id,
       name: teamData?.team?.name || '',
+      shortName: shortName(teamData?.team?.name || ''),
       abbr: teamData?.team?.abbreviation || '',
       logo: ESPN_LOGO(teamData?.team?.abbreviation || ''),
     })

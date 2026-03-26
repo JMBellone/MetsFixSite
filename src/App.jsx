@@ -335,7 +335,7 @@ export default function App() {
 
         {/* ── Live Score ───────────────────────────────────── */}
         <LiveScoreCard onLiveChange={setIsLive} />
-        {isLive && <><LineupsCard /><BullpenCard /></>}
+        {isLive && <BullpenCard />}
 
         {/* ── The Latest Briefing ─────────────────────────── */}
         {loading && <div className="briefing-skeleton"><div className="skeleton briefing-skeleton-bar" /><div className="skeleton briefing-skeleton-bar briefing-skeleton-bar--short" /></div>}
