@@ -16,18 +16,18 @@ const TEAM_ABBR = {
 // Opening Day 2026 starting rotations
 const FIXED_STARTERS = {
   [METS_ID]: [
-    { name: 'Kodai Senga',    throws: 'RHP' },
-    { name: 'David Peterson', throws: 'LHP' },
-    { name: 'Tylor Megill',   throws: 'RHP' },
-    { name: 'José Quintana',  throws: 'LHP' },
-    { name: 'José Butto',     throws: 'RHP' },
+    { name: 'Freddy Peralta',   throws: 'RHP' },
+    { name: 'David Peterson',   throws: 'LHP' },
+    { name: 'Nolan McLean',     throws: 'RHP' },
+    { name: 'Clay Holmes',      throws: 'RHP' },
+    { name: 'Kodai Senga',      throws: 'RHP' },
   ],
   [PIRATES_ID]: [
-    { name: 'Paul Skenes',      throws: 'RHP' },
-    { name: 'Mitch Keller',     throws: 'RHP' },
-    { name: 'Jared Jones',      throws: 'RHP' },
-    { name: 'Bailey Falter',    throws: 'LHP' },
-    { name: 'Marco Gonzales',   throws: 'LHP' },
+    { name: 'Paul Skenes',        throws: 'RHP' },
+    { name: 'Mitch Keller',       throws: 'RHP' },
+    { name: 'Carmen Mlodzinski',  throws: 'RHP' },
+    { name: 'Braxton Ashcraft',   throws: 'RHP' },
+    { name: 'Bubba Chandler',     throws: 'RHP' },
   ],
 }
 
@@ -193,11 +193,17 @@ async function fetchTeamData(teamId) {
     return { dateStr: ds, dayAbbr: dayLabel(ds, todayStr) }
   })
 
+  // Who starts today?
+  const todayStarter = starters.find(s => s.schedule?.some(sc => sc.dateStr === todayStr)) || null
+
   return {
     starters,
     bullpen,
     upcomingDates: upcomingDates.slice(0, 5),
     recentDates,
+    todayStarter: todayStarter
+      ? { id: todayStarter.id, name: todayStarter.name, throws: todayStarter.throws }
+      : null,
   }
 }
 

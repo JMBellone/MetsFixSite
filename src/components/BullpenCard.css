@@ -1,14 +1,5 @@
 /* ── Bullpen Chart Card ──────────────────────────────────── */
 
-.bc-title {
-  font-size: 11px;
-  font-weight: 700;
-  letter-spacing: 0.8px;
-  color: var(--text-muted);
-  margin-bottom: 6px;
-  padding-left: 2px;
-}
-
 .bc-card {
   background: var(--surface);
   border: 1px solid var(--border);
@@ -27,14 +18,60 @@
   min-width: 0;
 }
 
-/* Team logo */
+/* Team logo + Today's Starter row */
 .bc-logo-row {
-  margin-bottom: 8px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 10px;
 }
 
 .bc-logo {
   height: 34px;
   width: auto;
+  flex-shrink: 0;
+}
+
+.bc-today {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  min-width: 0;
+}
+
+.bc-today-headshot {
+  height: 44px;
+  width: 44px;
+  border-radius: 50%;
+  object-fit: cover;
+  object-position: top center;
+  background: var(--surface-2);
+  flex-shrink: 0;
+}
+
+.bc-today-text {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.bc-today-label {
+  font-size: 8px;
+  font-weight: 600;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.4px;
+  line-height: 1.2;
+}
+
+.bc-today-name {
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--text);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  line-height: 1.3;
 }
 
 /* Scrollable table wrapper */

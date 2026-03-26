@@ -6,7 +6,6 @@ const TEAM_LOGOS = {
   PIT: 'https://a.espncdn.com/i/teamlogos/mlb/500/pit.png',
 }
 
-// Opponent chip colors (team primary colors)
 const OPP_COLORS = {
   NYM: '#002D72', NYY: '#003087', BOS: '#BD3039', TOR: '#134A8E',
   BAL: '#DF4601', TB: '#092C5C', CLE: '#E31937', CWS: '#27251F',
@@ -18,6 +17,11 @@ const OPP_COLORS = {
   SD: '#2F241D', SF: '#FD5A1E',
 }
 
+function headshotUrl(id) {
+  if (!id) return null
+  return `https://img.mlbstatic.com/mlb-photos/image/upload/d_people:generic:headshot:67:current.png/w_180,q_auto:best/v1/people/${id}/headshot/67/current`
+}
+
 function pcClass(n) {
   if (n >= 35) return 'bc-pc-high'
   if (n >= 20) return 'bc-pc-mid'
@@ -26,12 +30,29 @@ function pcClass(n) {
 
 function TeamSection({ data, abbr }) {
   if (!data) return null
-  const { starters, bullpen, upcomingDates, recentDates } = data
+  const { starters, bullpen, upcomingDates, recentDates, todayStarter } = data
+  const hs = todayStarter?.id ? headshotUrl(todayStarter.id) : null
 
   return (
     <div className="bc-team">
       <div className="bc-logo-row">
         <img src={TEAM_LOGOS[abbr]} alt={abbr} className="bc-logo" />
+        {todayStarter && (
+          <div className="bc-today">
+            {hs && (
+              <img
+                src={hs}
+                alt={todayStarter.name}
+                className="bc-today-headshot"
+                onError={e => { e.currentTarget.style.display = 'none' }}
+              />
+            )}
+            <div className="bc-today-text">
+              <span className="bc-today-label">Today's Starter</span>
+              <span className="bc-today-name">{todayStarter.name}</span>
+            </div>
+          </div>
+        )}
       </div>
 
       {/* Starters */}
@@ -47,11 +68,8 @@ function TeamSection({ data, abbr }) {
             </tr>
           </thead>
           <tbody>
-            {starters.length === 0 && (
-              <tr><td className="bc-td-name bc-td-empty" colSpan={2 + upcomingDates.length}>No data</td></tr>
-            )}
-            {starters.map(p => (
-              <tr key={p.id}>
+            {starters.map((p, i) => (
+              <tr key={p.id ?? i}>
                 <td className="bc-td bc-td-name">{p.name}</td>
                 <td className={`bc-td bc-td-arm${p.throws === 'LHP' ? ' bc-lhp' : ''}`}>{p.throws}</td>
                 {upcomingDates.map(d => {
@@ -59,10 +77,7 @@ function TeamSection({ data, abbr }) {
                   return (
                     <td key={d.dateStr} className="bc-td bc-td-day bc-cell-empty">
                       {start && (
-                        <span
-                          className="bc-opp-chip"
-                          style={{ background: OPP_COLORS[start.opp] || '#444' }}
-                        >
+                        <span className="bc-opp-chip" style={{ background: OPP_COLORS[start.opp] || '#444' }}>
                           {start.opp}
                         </span>
                       )}
@@ -90,11 +105,8 @@ function TeamSection({ data, abbr }) {
             </tr>
           </thead>
           <tbody>
-            {bullpen.length === 0 && (
-              <tr><td className="bc-td-name bc-td-empty" colSpan={2 + recentDates.length}>No data</td></tr>
-            )}
-            {bullpen.map(p => (
-              <tr key={p.id}>
+            {bullpen.map((p, i) => (
+              <tr key={p.id ?? i}>
                 <td className="bc-td bc-td-name">{p.name}</td>
                 <td className={`bc-td bc-td-arm${p.throws === 'LHP' ? ' bc-lhp' : ''}`}>{p.throws}</td>
                 {recentDates.map(d => {
@@ -129,13 +141,13 @@ export default function BullpenCard() {
     return (
       <div className="bc-card">
         <div className="bc-team">
-          <div className="skeleton" style={{ height: 36, width: 60, marginBottom: 10 }} />
+          <div className="skeleton" style={{ height: 44, marginBottom: 10, borderRadius: 6 }} />
           <div className="skeleton" style={{ height: 120, borderRadius: 6 }} />
           <div className="skeleton" style={{ height: 180, borderRadius: 6, marginTop: 12 }} />
         </div>
         <div className="bc-divider" />
         <div className="bc-team">
-          <div className="skeleton" style={{ height: 36, width: 60, marginBottom: 10 }} />
+          <div className="skeleton" style={{ height: 44, marginBottom: 10, borderRadius: 6 }} />
           <div className="skeleton" style={{ height: 120, borderRadius: 6 }} />
           <div className="skeleton" style={{ height: 180, borderRadius: 6, marginTop: 12 }} />
         </div>
@@ -146,13 +158,10 @@ export default function BullpenCard() {
   if (!data || data.error) return null
 
   return (
-    <>
-      <div className="bc-title">⚾️ BULLPEN CHART</div>
-      <div className="bc-card">
-        <TeamSection data={data.mets}    abbr="NYM" />
-        <div className="bc-divider" />
-        <TeamSection data={data.pirates} abbr="PIT" />
-      </div>
-    </>
+    <div className="bc-card">
+      <TeamSection data={data.mets}    abbr="NYM" />
+      <div className="bc-divider" />
+      <TeamSection data={data.pirates} abbr="PIT" />
+    </div>
   )
 }
