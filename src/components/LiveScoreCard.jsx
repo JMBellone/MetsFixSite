@@ -274,9 +274,11 @@ export default function LiveScoreCard({ onLiveChange }) {
         const bullpen = mgr?.pitchers || []
         const hitSplits = managerSplits?.[activeSide]?.hitting || {}
         const pitSplits = managerSplits?.[activeSide]?.pitching || {}
+        const rotation = new Set(managerSplits?.[activeSide]?.rotation || [])
         const season = managerSplits?.season
-        const splitLabel = season ? `${season}` : ''
+        const splitLabel = season ? `${season} Stats` : ''
         const fmt = v => v != null ? v : '—'
+        const bullpenFiltered = bullpen.filter(p => !rotation.has(p.id))
         return (
           <div className="live-boxscore">
             {/* Team tabs */}
@@ -347,9 +349,9 @@ export default function LiveScoreCard({ onLiveChange }) {
                   </tr>
                 </thead>
                 <tbody>
-                  {bullpen.length === 0
+                  {bullpenFiltered.length === 0
                     ? <tr><td colSpan={4} className="live-mc-empty">—</td></tr>
-                    : bullpen.map((p, i) => {
+                    : bullpenFiltered.map((p, i) => {
                       const s = pitSplits[p.id] || {}
                       return (
                         <tr key={i} className={p.used ? 'live-mc-used' : ''}>
