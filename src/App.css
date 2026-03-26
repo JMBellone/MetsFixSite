@@ -2215,6 +2215,8 @@
     column-gap: 4px;
   }
 
+  .standings-pct { padding-left: 8px; }
+
   .standings-panel--nl {
     border-right: 1px solid var(--border);
   }
