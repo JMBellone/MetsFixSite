@@ -631,32 +631,6 @@ export default function App() {
                 </a>
               </div>
 
-              {/* 2 small featured */}
-              {diveSmall.map(a => (
-                <Fragment key={a.id}>
-                  <div className="team-news-divider" />
-                  <div className="team-news-item-wrap">
-                    <a href={a.link} target="_blank" rel="noopener noreferrer"
-                      className="team-news-secondary" onClick={() => markRead(a.id)}>
-                      {a.image && (
-                        <img src={a.image} alt="" className="team-news-secondary-img" loading="lazy"
-                          onError={e => { e.currentTarget.style.display = 'none' }} />
-                      )}
-                      <div className="team-news-secondary-body">
-                        <span className={`team-news-secondary-title${readIds.has(a.id) ? ' team-news--read' : ''}`}>
-                          {a.title}
-                        </span>
-                        <span className="team-news-meta">
-                          {timeAgo(a.pubDate)} ·{' '}
-                          <img src={faviconUrl(a.link)} alt="" className="news-meta-favicon" onError={e => { e.currentTarget.style.display = 'none' }} />
-                          {a.source}{a.paywalled && <SubscriberIcon />}
-                        </span>
-                      </div>
-                    </a>
-                  </div>
-                </Fragment>
-              ))}
-
               {/* 1 headline-only */}
               {diveHeadline && (
                 <>
