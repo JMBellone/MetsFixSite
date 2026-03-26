@@ -523,6 +523,9 @@ export default function App() {
         {/* ── Last Game ────────────────────────────────────── */}
         <LastGameCard />
 
+        {/* ── Mets YouTube Video ───────────────────────────── */}
+        <MetsVideoCard />
+
         {/* ── Today's Lineups + Bullpen Chart ──────────────── */}
         {!isLive && !gameEnded && (
           <>
@@ -530,9 +533,6 @@ export default function App() {
             {bullpenVisible && <BullpenCard />}
           </>
         )}
-
-        {/* ── SNY Featured Video ───────────────────────────── */}
-        <SNYFeaturedCard />
 
         {/* ── MLB Snapshot (Standings + Scores + FastCast) ──── */}
         <MLBSnapshotCard />
@@ -728,8 +728,8 @@ export default function App() {
               )}
             </div>
 
-            {/* ── See It on SNY ────────────────────────────── */}
-            <SNYCard />
+            {/* ── On SNY ───────────────────────────────────── */}
+            <SNYFeaturedCard />
 
             {/* ── Mets Stats ───────────────────────────────── */}
             <MetsStatsCard />
@@ -927,8 +927,8 @@ export default function App() {
           </div>
         )}
 
-        {/* ── Mets YouTube Video ───────────────────────────── */}
-        <MetsVideoCard />
+        {/* ── See It on SNY ────────────────────────────────── */}
+        <SNYCard />
 
         {/* ── Blog Roll ────────────────────────────────────── */}
         <BlogRollCard />

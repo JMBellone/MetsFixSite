@@ -103,15 +103,33 @@ export default function MetsVideoCard() {
       </div>
 
       {videos.length > 1 && (
-        <div className="mvc-dots">
-          {videos.map((_, i) => (
-            <button
-              key={i}
-              className={`mvc-dot${i === currentIndex ? ' mvc-dot--active' : ''}`}
-              onClick={() => goTo(i)}
-              aria-label={`Video ${i + 1}`}
-            />
-          ))}
+        <div className="mvc-nav">
+          <button
+            className="mvc-arrow mvc-arrow--prev"
+            onClick={() => goTo(currentIndex - 1)}
+            disabled={currentIndex === 0}
+            aria-label="Previous video"
+          >
+            <svg viewBox="0 0 24 24" fill="none"><polyline points="15,6 9,12 15,18" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/></svg>
+          </button>
+          <div className="mvc-dots">
+            {videos.map((_, i) => (
+              <button
+                key={i}
+                className={`mvc-dot${i === currentIndex ? ' mvc-dot--active' : ''}`}
+                onClick={() => goTo(i)}
+                aria-label={`Video ${i + 1}`}
+              />
+            ))}
+          </div>
+          <button
+            className="mvc-arrow mvc-arrow--next"
+            onClick={() => goTo(currentIndex + 1)}
+            disabled={currentIndex === videos.length - 1}
+            aria-label="Next video"
+          >
+            <svg viewBox="0 0 24 24" fill="none"><polyline points="9,6 15,12 9,18" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/></svg>
+          </button>
         </div>
       )}
     </div>

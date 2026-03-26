@@ -1135,13 +1135,42 @@
   color: var(--text-muted);
 }
 
-/* ── MetsVideoCard carousel dots ────────────────────────── */
+/* ── MetsVideoCard carousel ──────────────────────────────── */
 .mvc-card { user-select: none; }
+.mvc-nav {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  padding: 8px 0 10px;
+}
+.mvc-arrow {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.10);
+  border: none;
+  cursor: pointer;
+  color: rgba(255, 255, 255, 0.75);
+  transition: background 0.2s, color 0.2s;
+  flex-shrink: 0;
+}
+.mvc-arrow svg { width: 16px; height: 16px; }
+.mvc-arrow:hover:not(:disabled) {
+  background: rgba(255, 255, 255, 0.20);
+  color: #fff;
+}
+.mvc-arrow:disabled {
+  opacity: 0.25;
+  cursor: default;
+}
 .mvc-dots {
   display: flex;
-  justify-content: center;
+  align-items: center;
   gap: 6px;
-  padding: 8px 0 10px;
 }
 .mvc-dot {
   width: 7px;
