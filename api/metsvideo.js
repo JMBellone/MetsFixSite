@@ -1,4 +1,4 @@
-// api/metsvideo.js — Latest non-Short video from the Mets YouTube channel
+// api/metsvideo.js — Latest 3 non-Short videos from the Mets YouTube channel
 
 const CHANNEL_ID = 'UCgIMbGazP0uBDy9JVCqBUaA'
 
@@ -27,8 +27,9 @@ module.exports = async function handler(req, res) {
     const xml = await feedRes.text()
 
     const entryRe = /<entry>([\s\S]*?)<\/entry>/g
+    const videos = []
     let m
-    while ((m = entryRe.exec(xml)) !== null) {
+    while ((m = entryRe.exec(xml)) !== null && videos.length < 3) {
       const entry = m[1]
       const videoId = (entry.match(/<yt:videoId>([^<]+)<\/yt:videoId>/) || [])[1]
       const rawTitle = (entry.match(/<media:title[^>]*>([^<]+)<\/media:title>/) || entry.match(/<title>([^<]+)<\/title>/) || [])[1]
@@ -45,12 +46,12 @@ module.exports = async function handler(req, res) {
       if (!videoId || !title) continue
       if (videoLink.includes('/shorts/')) continue
 
-      return res.status(200).json({ video: { videoId, title, published, thumbnail } })
+      videos.push({ videoId, title, published, thumbnail })
     }
 
-    return res.status(200).json({ video: null })
+    return res.status(200).json({ videos })
   } catch (e) {
     console.warn('[metsvideo]', e.message)
-    return res.status(200).json({ video: null })
+    return res.status(200).json({ videos: [] })
   }
 }

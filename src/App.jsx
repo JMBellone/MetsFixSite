@@ -728,8 +728,8 @@ export default function App() {
               )}
             </div>
 
-            {/* ── Mets YouTube Video ───────────────────────── */}
-            <MetsVideoCard />
+            {/* ── See It on SNY ────────────────────────────── */}
+            <SNYCard />
 
             {/* ── Mets Stats ───────────────────────────────── */}
             <MetsStatsCard />
@@ -927,8 +927,8 @@ export default function App() {
           </div>
         )}
 
-        {/* ── See It on SNY ────────────────────────────────── */}
-        <SNYCard />
+        {/* ── Mets YouTube Video ───────────────────────────── */}
+        <MetsVideoCard />
 
         {/* ── Blog Roll ────────────────────────────────────── */}
         <BlogRollCard />

@@ -1135,6 +1135,28 @@
   color: var(--text-muted);
 }
 
+/* ── MetsVideoCard carousel dots ────────────────────────── */
+.mvc-card { user-select: none; }
+.mvc-dots {
+  display: flex;
+  justify-content: center;
+  gap: 6px;
+  padding: 8px 0 10px;
+}
+.mvc-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.25);
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+.mvc-dot--active {
+  background: rgba(255, 255, 255, 0.80);
+}
+
 /* ── FastCast card ──────────────────────────────────────── */
 .fastcast-link {
   display: block;

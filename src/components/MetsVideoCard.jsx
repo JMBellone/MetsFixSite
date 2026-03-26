@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 
 function timeAgo(dateStr) {
   if (!dateStr) return ''
@@ -20,14 +20,18 @@ function PlayIcon() {
 }
 
 export default function MetsVideoCard() {
-  const [video, setVideo] = useState(null)
+  const [videos, setVideos] = useState([])
   const [loading, setLoading] = useState(true)
-  const [playing, setPlaying] = useState(false)
+  const [currentIndex, setCurrentIndex] = useState(0)
+  const [playingIndex, setPlayingIndex] = useState(null)
+
+  // Touch swipe state
+  const touchStartX = useRef(null)
 
   useEffect(() => {
     fetch('/api/metsvideo')
       .then(r => r.ok ? r.json() : Promise.reject())
-      .then(data => { setVideo(data.video || null) })
+      .then(data => { setVideos(data.videos || []) })
       .catch(() => {})
       .finally(() => setLoading(false))
   }, [])
@@ -37,10 +41,35 @@ export default function MetsVideoCard() {
       <div className="sny-skeleton" />
     </div>
   )
-  if (!video) return null
+  if (!videos.length) return null
+
+  const video = videos[currentIndex]
+
+  function goTo(idx) {
+    if (idx === currentIndex) return
+    setPlayingIndex(null)
+    setCurrentIndex(idx)
+  }
+
+  function handleTouchStart(e) {
+    touchStartX.current = e.touches[0].clientX
+  }
+
+  function handleTouchEnd(e) {
+    if (touchStartX.current === null) return
+    const dx = e.changedTouches[0].clientX - touchStartX.current
+    touchStartX.current = null
+    if (Math.abs(dx) < 40) return
+    if (dx < 0 && currentIndex < videos.length - 1) goTo(currentIndex + 1)
+    if (dx > 0 && currentIndex > 0) goTo(currentIndex - 1)
+  }
 
   return (
-    <div className="sny-card">
+    <div
+      className="sny-card mvc-card"
+      onTouchStart={handleTouchStart}
+      onTouchEnd={handleTouchEnd}
+    >
       <div className="sny-card-header">
         <img
           src="https://www.google.com/s2/favicons?domain=youtube.com&sz=64"
@@ -51,7 +80,7 @@ export default function MetsVideoCard() {
         <span className="sny-card-header-label">Mets on YouTube</span>
       </div>
 
-      {playing ? (
+      {playingIndex === currentIndex ? (
         <div className="sny-embed-wrap">
           <iframe
             className="sny-embed"
@@ -62,7 +91,7 @@ export default function MetsVideoCard() {
           />
         </div>
       ) : (
-        <button className="sny-thumb-btn" onClick={() => setPlaying(true)} aria-label={`Play: ${video.title}`}>
+        <button className="sny-thumb-btn" onClick={() => setPlayingIndex(currentIndex)} aria-label={`Play: ${video.title}`}>
           <img src={video.thumbnail} alt="" className="sny-thumb sny-thumb--featured" />
           <div className="sny-play-overlay"><PlayIcon /></div>
         </button>
@@ -72,6 +101,19 @@ export default function MetsVideoCard() {
         <span className="sny-video-title sny-video-title--featured">{video.title}</span>
         <span className="sny-video-meta">{timeAgo(video.published)}</span>
       </div>
+
+      {videos.length > 1 && (
+        <div className="mvc-dots">
+          {videos.map((_, i) => (
+            <button
+              key={i}
+              className={`mvc-dot${i === currentIndex ? ' mvc-dot--active' : ''}`}
+              onClick={() => goTo(i)}
+              aria-label={`Video ${i + 1}`}
+            />
+          ))}
+        </div>
+      )}
     </div>
   )
 }
