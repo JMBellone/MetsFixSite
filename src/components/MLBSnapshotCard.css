@@ -39,26 +39,26 @@
   border: none;
   border-radius: 0;
   overflow: visible;
+}
+
+/* Space between sections */
+.snapshot-card .sc-card,
+.snapshot-card .sny-card {
+  margin-top: 10px;
   border-top: 1px solid var(--border);
 }
 
-/* Section label headers — white text, no logo */
-.snapshot-card .standings-header-title {
-  color: var(--text);
-  font-size: 0.72rem;
-  font-weight: 700;
-  letter-spacing: 0.3px;
-  text-transform: none;
+.snapshot-card .standings-card {
+  border-top: 1px solid var(--border);
 }
 
-.snapshot-card .sc-header-title {
-  color: var(--text);
-}
-
+/* Section label headers — white, all caps, slightly larger */
+.snapshot-card .standings-header-title,
+.snapshot-card .sc-header-title,
 .snapshot-card .sny-card-header-label {
   color: var(--text);
-  font-size: 0.72rem;
-  font-weight: 700;
-  letter-spacing: 0.3px;
-  text-transform: none;
+  font-size: 0.78rem;
+  font-weight: 800;
+  letter-spacing: 0.8px;
+  text-transform: uppercase;
 }
