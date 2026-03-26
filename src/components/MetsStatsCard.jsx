@@ -113,12 +113,8 @@ export default function MetsStatsCard() {
     }
   }
 
-  if (loading) return (
-    <div className="stats-card">
-      <div className="option-dates-skeleton" />
-    </div>
-  )
-  if (!data) return null
+  if (loading) return null
+  if (!data || data.isSpring) return null
 
   const baseRows = tab === 'Hitters' ? data.hitters : tab === 'Starters' ? data.starters : data.relievers
   const cols = tab === 'Hitters' ? HITTER_COLS : tab === 'Starters' ? STARTER_COLS : RELIEVER_COLS
