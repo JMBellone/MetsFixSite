@@ -112,6 +112,7 @@ function PitchingTable({ team, pitchers }) {
 export default function LastGameCard() {
   const [data, setData] = useState(null)
   const [loading, setLoading] = useState(true)
+  const [showScoringPlays, setShowScoringPlays] = useState(false)
   const [showBoxScore, setShowBoxScore] = useState(false)
   const [metsTab, setMetsTab] = useState(true) // mobile: true=Mets, false=opponent
 
@@ -131,7 +132,7 @@ export default function LastGameCard() {
   // Hide until Opening Day game completes (don't show spring training results)
   if (data.game.date < '2026-03-26') return null
 
-  const { game, linescore, boxscore } = data
+  const { game, linescore, scoringPlays, boxscore } = data
   const metsWon = game.metsIsHome
     ? game.home.score > game.away.score
     : game.away.score > game.home.score
@@ -238,6 +239,33 @@ export default function LastGameCard() {
           </tbody>
         </table>
       </div>
+
+      {/* Scoring Plays toggle */}
+      <button className="lg-boxscore-toggle" onClick={() => setShowScoringPlays(s => !s)}>
+        {showScoringPlays ? 'Hide Scoring Plays' : 'Scoring Plays'}
+        <svg viewBox="0 0 24 24" fill="none" className={`lg-toggle-chevron${showScoringPlays ? ' lg-toggle-chevron--open' : ''}`}>
+          <polyline points="6,9 12,15 18,9" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"/>
+        </svg>
+      </button>
+
+      {showScoringPlays && (
+        <div className="live-sp-list">
+          {(!scoringPlays || scoringPlays.length === 0) ? (
+            <div className="live-sp-empty">No scoring plays</div>
+          ) : scoringPlays.map((sp, i) => {
+            const metsScored = game.metsIsHome ? sp.half === 'bottom' : sp.half === 'top'
+            const metsS = game.metsIsHome ? sp.homeScore : sp.awayScore
+            const oppS  = game.metsIsHome ? sp.awayScore : sp.homeScore
+            return (
+              <div key={i} className={`live-sp-row${metsScored ? ' live-sp-row--mets' : ' live-sp-row--opp'}`}>
+                <span className="live-sp-inning">{sp.half === 'top' ? '▲' : '▼'}{sp.inning}</span>
+                <span className="live-sp-desc">{sp.desc}</span>
+                <span className="live-sp-score">{metsAbbr} {metsS}, {oppAbbr} {oppS}</span>
+              </div>
+            )
+          })}
+        </div>
+      )}
 
       {/* Box score toggle */}
       <button className="lg-boxscore-toggle" onClick={() => setShowBoxScore(s => !s)}>

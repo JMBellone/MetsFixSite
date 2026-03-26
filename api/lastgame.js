@@ -2,6 +2,27 @@
 
 const METS_ID = 121
 
+async function fetchScoringPlays(gamePk) {
+  try {
+    const r = await fetch(
+      `https://statsapi.mlb.com/api/v1/game/${gamePk}/playByPlay?fields=allPlays,about,isScoringPlay,inning,halfInning,result,description,rbi,awayScore,homeScore`,
+      { signal: AbortSignal.timeout(4000) }
+    )
+    if (!r.ok) return []
+    const d = await r.json()
+    return (d.allPlays || [])
+      .filter(p => p.about?.isScoringPlay)
+      .map(p => ({
+        inning: p.about.inning,
+        half: p.about.halfInning,
+        desc: p.result?.description || '',
+        rbi: p.result?.rbi ?? 0,
+        awayScore: p.result?.awayScore ?? 0,
+        homeScore: p.result?.homeScore ?? 0,
+      }))
+  } catch { return [] }
+}
+
 module.exports = async function handler(req, res) {
   res.setHeader('Cache-Control', 's-maxage=300, stale-while-revalidate=60')
 
@@ -26,10 +47,11 @@ module.exports = async function handler(req, res) {
     const gamePk = last.gamePk
     const metsIsHome = last.teams.home.team.id === METS_ID
 
-    // Fetch linescore + boxscore in parallel
-    const [lsRes, bsRes] = await Promise.all([
+    // Fetch linescore + boxscore + scoring plays in parallel
+    const [lsRes, bsRes, scoringPlays] = await Promise.all([
       fetch(`https://statsapi.mlb.com/api/v1/game/${gamePk}/linescore`),
       fetch(`https://statsapi.mlb.com/api/v1/game/${gamePk}/boxscore`),
+      fetchScoringPlays(gamePk),
     ])
     const [lsData, bsData] = await Promise.all([lsRes.json(), bsRes.json()])
 
@@ -133,6 +155,7 @@ module.exports = async function handler(req, res) {
           errors: lsData.teams?.away?.errors ?? 0,
         },
       },
+      scoringPlays,
       boxscore: {
         home: {
           batters: getBatters(bsData.teams.home),
