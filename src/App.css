@@ -483,8 +483,17 @@
 .standings-col-header {
   border-bottom: 1px solid var(--border);
   background: var(--surface-2);
-  padding-top: 4px;
-  padding-bottom: 4px;
+  padding-top: 5px;
+  padding-bottom: 5px;
+}
+
+.standings-col-div-label {
+  text-align: left !important;
+  font-size: 0.65rem;
+  font-weight: 800;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  color: var(--text-muted);
 }
 
 .standings-col-label {

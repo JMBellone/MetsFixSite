@@ -2,12 +2,14 @@ import { useState, useEffect } from 'react'
 
 const MLB_LOGO = 'https://a.espncdn.com/i/teamlogos/leagues/500/mlb.png'
 
-function Division({ division, highlightAbbr }) {
+function Division({ division, highlightAbbr, showDivHeader }) {
   return (
     <>
-      <div className="standings-div-header">
-        <span className="standings-div-name">{division.name}</span>
-      </div>
+      {showDivHeader && (
+        <div className="standings-div-header">
+          <span className="standings-div-name">{division.name}</span>
+        </div>
+      )}
       {division.teams.map(team => {
         const isMets = team.abbreviation === highlightAbbr
         const streakClass = team.streak?.startsWith('W') ? 'standings-streak--w' : 'standings-streak--l'
@@ -30,28 +32,22 @@ function Division({ division, highlightAbbr }) {
   )
 }
 
-function ColHeader() {
-  return (
-    <div className="standings-col-header">
-      <span />
-      <span className="standings-col-label" style={{ textAlign: 'left' }}>Team</span>
-      <span className="standings-col-label">W</span>
-      <span className="standings-col-label">L</span>
-      <span className="standings-col-label">PCT</span>
-      <span className="standings-col-label">GB</span>
-      <span className="standings-col-label">WCGB</span>
-    </div>
-  )
-}
-
 function LeaguePanel({ label, divisions, highlightAbbr, className }) {
+  const showDivHeaders = divisions.length > 1
   return (
     <div className={`standings-panel${className ? ` ${className}` : ''}`}>
-      <div className="standings-panel-label">{label}</div>
-      <ColHeader />
+      <div className="standings-col-header">
+        <span />
+        <span className="standings-col-label standings-col-div-label">{label}</span>
+        <span className="standings-col-label">W</span>
+        <span className="standings-col-label">L</span>
+        <span className="standings-col-label">PCT</span>
+        <span className="standings-col-label">GB</span>
+        <span className="standings-col-label">WCGB</span>
+      </div>
       <div className="standings-list">
         {divisions.map(div => (
-          <Division key={div.name} division={div} highlightAbbr={highlightAbbr} />
+          <Division key={div.name} division={div} highlightAbbr={highlightAbbr} showDivHeader={showDivHeaders} />
         ))}
       </div>
     </div>
