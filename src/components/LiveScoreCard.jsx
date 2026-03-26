@@ -241,11 +241,13 @@ export default function LiveScoreCard({ onLiveChange }) {
         </div>
       </div>
 
-      {/* Toggles row */}
-      <div className="live-boxscore-bar live-toggle-row">
+      {/* Toggles */}
+      <div className="live-boxscore-bar">
         <button className="live-boxscore-toggle" onClick={() => setShowBoxScore(s => !s)}>
           {showBoxScore ? 'Hide Box Score ▲' : 'Box Score ▼'}
         </button>
+      </div>
+      <div className="live-boxscore-bar live-boxscore-bar--tight">
         <button className="live-boxscore-toggle" onClick={() => setShowManagerCard(s => !s)}>
           {showManagerCard ? "Hide Manager's Card ▲" : "Manager's Card ▼"}
         </button>

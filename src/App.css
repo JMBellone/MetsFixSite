@@ -2763,14 +2763,9 @@
   min-width: 58px;
 }
 
-/* Toggle buttons row (Box Score + Manager's Card) */
-.live-toggle-row {
-  display: flex;
-  gap: 8px;
-}
-
-.live-toggle-row .live-boxscore-toggle {
-  flex: 1;
+/* Manager's Card toggle sits flush below Box Score toggle */
+.live-boxscore-bar--tight {
+  padding-top: 0;
 }
 
 /* Manager's Card */
