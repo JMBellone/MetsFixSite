@@ -280,12 +280,13 @@ export default function LiveScoreCard({ onLiveChange }) {
           ) : (
             <div className="live-sp-list">
               {scoringPlays.map((sp, i) => {
+                const metsScored = metsIsHome ? sp.half === 'bottom' : sp.half === 'top'
                 const metsS = metsIsHome ? sp.homeScore : sp.awayScore
                 const oppS  = metsIsHome ? sp.awayScore : sp.homeScore
                 const metsAbbr = (metsIsHome ? home : away).abbr
                 const oppAbbr  = (metsIsHome ? away : home).abbr
                 return (
-                  <div key={i} className="live-sp-row">
+                  <div key={i} className={`live-sp-row${metsScored ? ' live-sp-row--mets' : ' live-sp-row--opp'}`}>
                     <span className="live-sp-inning">
                       {sp.half === 'top' ? '▲' : '▼'}{sp.inning}
                     </span>
