@@ -8,16 +8,15 @@
 }
 
 .header-bunting {
-  height: 14px;
+  height: 10px;
   margin: 6px 0 0;
+  border-top: 2px solid #999;
   background:
-    radial-gradient(circle at 7px 0, #B22234 7px, transparent 7px),
-    radial-gradient(circle at 21px 0, #f0f0f0 7px, transparent 7px),
-    radial-gradient(circle at 35px 0, #002868 7px, transparent 7px);
-  background-size: 42px 14px;
+    radial-gradient(circle at 10px 0, #B22234 10px, transparent 10px),
+    radial-gradient(circle at 30px 0, #f0f0f0 10px, transparent 10px),
+    radial-gradient(circle at 50px 0, #002868 10px, transparent 10px);
+  background-size: 60px 10px;
   background-repeat: repeat-x;
-  background-position: 0 0;
-  border-top: 1.5px solid #888;
 }
 
 .header-inner {
