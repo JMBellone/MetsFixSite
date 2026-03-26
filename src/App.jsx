@@ -253,7 +253,7 @@ export default function App() {
     .slice(0, 12)
   const divePoolSorted = [...athleticForDive, ...othersForDive]
     .sort((a, b) => new Date(b.pubDate) - new Date(a.pubDate))
-  // ESPN articles may not occupy the first 3 slots (featured + 2 small)
+  // ESPN articles may not occupy the first 3 slots (2 small + 1 large featured)
   const diveNonEspn = divePoolSorted.filter(a => a.source !== 'ESPN')
   const diveEspn    = divePoolSorted.filter(a => a.source === 'ESPN')
   const divePool = [
@@ -261,11 +261,11 @@ export default function App() {
     ...diveEspn,
     ...diveNonEspn.slice(3),
   ]
-  const featured        = divePool[0]
-  const diveSmall       = divePool.slice(1, 3)
-  const diveHeadline    = divePool[3]
-  const diveSideBySide  = divePool.slice(4, 6)
-  const moreNews        = divePool.slice(6, 13)
+  const diveSmall       = divePool.slice(0, 2)      // What to Read Next
+  const featured        = divePool[2]               // Dive Into the News: large featured
+  const diveThreeSmall  = divePool.slice(3, 6)      // Dive Into the News: 3 small
+  const diveSideBySide  = divePool.slice(6, 8)      // Dive Into the News: 2 side-by-side
+  const moreNews        = divePool.slice(8, 15)
 
   const shownIds = new Set([...topIds, ...divePool.map(a => a.id)])
   // SFE gets the 3 most recent Athletic not already in dive; Athletic card gets the next batch after those
@@ -631,26 +631,31 @@ export default function App() {
                 </a>
               </div>
 
-              {/* 1 headline-only */}
-              {diveHeadline && (
-                <>
+              {/* 3 small featured */}
+              {diveThreeSmall.map(a => (
+                <Fragment key={a.id}>
                   <div className="team-news-divider" />
-                  <div className="team-news-headlines">
-                    <a href={diveHeadline.link} target="_blank" rel="noopener noreferrer"
-                      className={`team-news-headline${readIds.has(diveHeadline.id) ? ' team-news--read' : ''}`}
-                      onClick={() => markRead(diveHeadline.id)}>
-                      <span className="team-news-headline-body">
-                        <span className="team-news-headline-title">{diveHeadline.title}</span>
-                        <span className="team-news-headline-source">
-                          <img src={faviconUrl(diveHeadline.link)} alt="" className="team-news-source-favicon"
-                            onError={e => { e.currentTarget.style.display = 'none' }} />
-                          {diveHeadline.source}{diveHeadline.paywalled && <SubscriberIcon />} · {timeAgo(diveHeadline.pubDate)}
+                  <div className="team-news-item-wrap">
+                    <a href={a.link} target="_blank" rel="noopener noreferrer"
+                      className="team-news-secondary" onClick={() => markRead(a.id)}>
+                      {a.image && (
+                        <img src={a.image} alt="" className="team-news-secondary-img" loading="lazy"
+                          onError={e => { e.currentTarget.style.display = 'none' }} />
+                      )}
+                      <div className="team-news-secondary-body">
+                        <span className={`team-news-secondary-title${readIds.has(a.id) ? ' team-news--read' : ''}`}>
+                          {a.title}
                         </span>
-                      </span>
+                        <span className="team-news-meta">
+                          {timeAgo(a.pubDate)} ·{' '}
+                          <img src={faviconUrl(a.link)} alt="" className="news-meta-favicon" onError={e => { e.currentTarget.style.display = 'none' }} />
+                          {a.source}{a.paywalled && <SubscriberIcon />}
+                        </span>
+                      </div>
                     </a>
                   </div>
-                </>
-              )}
+                </Fragment>
+              ))}
 
               {/* 2 side-by-side */}
               {diveSideBySide.length > 0 && (
