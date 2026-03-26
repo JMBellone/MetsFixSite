@@ -221,6 +221,12 @@
   color: #fca5a5;
 }
 
+/* Ensure last column has right breathing room */
+.bc-th:last-child,
+.bc-td:last-child {
+  padding-right: 8px;
+}
+
 /* Mobile: show one team at a time with toggle */
 @media (max-width: 500px) {
   .bc-card {
