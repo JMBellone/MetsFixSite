@@ -135,7 +135,7 @@
 
 .bc-th-day {
   text-align: center;
-  width: 30px;
+  width: 36px;
 }
 
 .bc-th-ago {
@@ -219,12 +219,6 @@
 .bc-pc-high {
   background: rgba(248, 113, 113, 0.22);
   color: #fca5a5;
-}
-
-/* Ensure last column has right breathing room */
-.bc-th:last-child,
-.bc-td:last-child {
-  padding-right: 8px;
 }
 
 /* Mobile: show one team at a time with toggle */
