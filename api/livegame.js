@@ -132,10 +132,32 @@ async function fetchHandMap(ids) {
   } catch { return {} }
 }
 
+async function fetchScoringPlays(gamePk) {
+  try {
+    const r = await fetch(
+      `https://statsapi.mlb.com/api/v1/game/${gamePk}/playByPlay?fields=allPlays,about,isScoringPlay,inning,halfInning,result,description,rbi,awayScore,homeScore`,
+      { signal: AbortSignal.timeout(4000) }
+    )
+    if (!r.ok) return []
+    const d = await r.json()
+    return (d.allPlays || [])
+      .filter(p => p.about?.isScoringPlay)
+      .map(p => ({
+        inning: p.about.inning,
+        half: p.about.halfInning, // 'top' | 'bottom'
+        desc: p.result?.description || '',
+        rbi: p.result?.rbi ?? 0,
+        awayScore: p.result?.awayScore ?? 0,
+        homeScore: p.result?.homeScore ?? 0,
+      }))
+  } catch { return [] }
+}
+
 async function buildGameData(gamePk, metsIsHome, liveGame, broadcast) {
-  const [lsRes, bsRes] = await Promise.all([
+  const [lsRes, bsRes, scoringPlays] = await Promise.all([
     fetch(`https://statsapi.mlb.com/api/v1/game/${gamePk}/linescore`),
     fetch(`https://statsapi.mlb.com/api/v1/game/${gamePk}/boxscore`),
+    fetchScoringPlays(gamePk),
   ])
   const lsData = lsRes.ok ? await lsRes.json() : {}
   const bsData = bsRes.ok ? await bsRes.json() : null
@@ -246,6 +268,7 @@ async function buildGameData(gamePk, metsIsHome, liveGame, broadcast) {
         },
       },
     },
+    scoringPlays,
     boxscore: {
       home: { batters: buildBatters(bsData, 'home'), pitchers: buildPitchers(bsData, 'home') },
       away: { batters: buildBatters(bsData, 'away'), pitchers: buildPitchers(bsData, 'away') },

@@ -61,6 +61,7 @@ export default function LiveScoreCard({ onLiveChange }) {
   const [game, setGame] = useState(null)
   const [refreshing, setRefreshing] = useState(false)
   const [lastUpdated, setLastUpdated] = useState(null)
+  const [showScoringPlays, setShowScoringPlays] = useState(false)
   const [showBoxScore, setShowBoxScore] = useState(false)
   const [showManagerCard, setShowManagerCard] = useState(false)
   const [managerSplits, setManagerSplits] = useState(null)
@@ -127,7 +128,7 @@ export default function LiveScoreCard({ onLiveChange }) {
   const {
     home, away, inningHalf, inningOrdinal, outs, balls, strikes,
     runners, batter, pitcher, batterStats, pitcherStats,
-    status, broadcast, venue, metsIsHome, linescore, boxscore, managers,
+    status, broadcast, venue, metsIsHome, linescore, scoringPlays, boxscore, managers,
   } = game
 
   const isTop = inningHalf === 'Top'
@@ -256,6 +257,11 @@ export default function LiveScoreCard({ onLiveChange }) {
 
       {/* Toggles */}
       <div className="live-boxscore-bar">
+        <button className="live-boxscore-toggle" onClick={() => setShowScoringPlays(s => !s)}>
+          {showScoringPlays ? 'Hide Scoring Plays ▲' : 'Scoring Plays ▼'}
+        </button>
+      </div>
+      <div className="live-boxscore-bar live-boxscore-bar--tight">
         <button className="live-boxscore-toggle" onClick={() => setShowBoxScore(s => !s)}>
           {showBoxScore ? 'Hide Box Score ▲' : 'Box Score ▼'}
         </button>
@@ -265,6 +271,35 @@ export default function LiveScoreCard({ onLiveChange }) {
           {showManagerCard ? "Hide Manager's Card ▲" : "Manager's Card ▼"}
         </button>
       </div>
+
+      {/* Scoring Plays */}
+      {showScoringPlays && (
+        <div className="live-boxscore">
+          {(!scoringPlays || scoringPlays.length === 0) ? (
+            <div className="live-sp-empty">No scoring plays yet</div>
+          ) : (
+            <div className="live-sp-list">
+              {scoringPlays.map((sp, i) => {
+                const metsS = metsIsHome ? sp.homeScore : sp.awayScore
+                const oppS  = metsIsHome ? sp.awayScore : sp.homeScore
+                const metsAbbr = (metsIsHome ? home : away).abbr
+                const oppAbbr  = (metsIsHome ? away : home).abbr
+                return (
+                  <div key={i} className="live-sp-row">
+                    <span className="live-sp-inning">
+                      {sp.half === 'top' ? '▲' : '▼'}{sp.inning}
+                    </span>
+                    <span className="live-sp-desc">{sp.desc}</span>
+                    <span className="live-sp-score">
+                      {metsAbbr} {metsS}, {oppAbbr} {oppS}
+                    </span>
+                  </div>
+                )
+              })}
+            </div>
+          )}
+        </div>
+      )}
 
       {/* Box score */}
       {showBoxScore && (
