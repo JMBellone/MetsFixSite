@@ -266,110 +266,6 @@ export default function LiveScoreCard({ onLiveChange }) {
         </button>
       </div>
 
-      {/* Manager's Card */}
-      {showManagerCard && (() => {
-        const activeSide = activeTeam === 'mets' ? metsSide : oppSide
-        const mgr = managers?.[activeSide]
-        const bench = mgr?.bench || []
-        const bullpen = mgr?.pitchers || []
-        const hitSplits = managerSplits?.[activeSide]?.hitting || {}
-        const pitSplits = managerSplits?.[activeSide]?.pitching || {}
-        const rotation = new Set(managerSplits?.[activeSide]?.rotation || [])
-        const season = managerSplits?.season
-        const splitLabel = season ? `${season} Stats` : ''
-        const fmt = v => v != null ? v : '—'
-        const bullpenFiltered = bullpen.filter(p => !rotation.has(p.id))
-        return (
-          <div className="live-boxscore">
-            {/* Team tabs */}
-            <div className="live-bs-tabs">
-              <button
-                className={`live-bs-tab${activeTeam === 'mets' ? ' live-bs-tab--active' : ''}`}
-                onClick={() => setActiveTeam('mets')}
-              >
-                Mets
-              </button>
-              <button
-                className={`live-bs-tab${activeTeam === 'opp' ? ' live-bs-tab--active' : ''}`}
-                onClick={() => setActiveTeam('opp')}
-              >
-                {oppName}
-              </button>
-            </div>
-
-            {splitsLoading && <div className="live-mc-loading">Loading split stats…</div>}
-
-            {/* Bench */}
-            <div className="live-bs-section-label">
-              Bench{splitLabel && <span className="live-mc-season"> ({splitLabel})</span>}
-            </div>
-            <div className="live-bs-table-wrap">
-              <table className="live-bs-table live-mc-table">
-                <thead>
-                  <tr>
-                    <th className="live-bs-name-col">Player</th>
-                    <th className="live-mc-sm">POS</th>
-                    <th className="live-mc-sm">B</th>
-                    <th className="live-mc-split">vsLHP</th>
-                    <th className="live-mc-split">vsRHP</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {bench.length === 0
-                    ? <tr><td colSpan={5} className="live-mc-empty">—</td></tr>
-                    : bench.map((p, i) => {
-                      const s = hitSplits[p.id] || {}
-                      return (
-                        <tr key={i} className={p.used ? 'live-mc-used' : ''}>
-                          <td className="live-bs-name-col">{p.name}</td>
-                          <td className="live-mc-sm">{p.pos}</td>
-                          <td className={`live-mc-sm${p.bats === 'L' ? ' live-mc-l' : p.bats === 'S' ? ' live-mc-s' : ''}`}>{p.bats}</td>
-                          <td className="live-mc-split">{fmt(s.vl)}</td>
-                          <td className="live-mc-split">{fmt(s.vr)}</td>
-                        </tr>
-                      )
-                    })
-                  }
-                </tbody>
-              </table>
-            </div>
-
-            {/* Bullpen */}
-            <div className="live-bs-section-label">
-              Bullpen{splitLabel && <span className="live-mc-season"> ({splitLabel})</span>}
-            </div>
-            <div className="live-bs-table-wrap">
-              <table className="live-bs-table live-mc-table">
-                <thead>
-                  <tr>
-                    <th className="live-bs-name-col">Pitcher</th>
-                    <th className="live-mc-sm">THR</th>
-                    <th className="live-mc-split">vsLHH</th>
-                    <th className="live-mc-split">vsRHH</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {bullpenFiltered.length === 0
-                    ? <tr><td colSpan={4} className="live-mc-empty">—</td></tr>
-                    : bullpenFiltered.map((p, i) => {
-                      const s = pitSplits[p.id] || {}
-                      return (
-                        <tr key={i} className={p.used ? 'live-mc-used' : ''}>
-                          <td className="live-bs-name-col">{p.name}</td>
-                          <td className={`live-mc-sm${p.throws === 'L' ? ' live-mc-l' : ''}`}>{p.throws}</td>
-                          <td className="live-mc-split">{fmt(s.vl)}</td>
-                          <td className="live-mc-split">{fmt(s.vr)}</td>
-                        </tr>
-                      )
-                    })
-                  }
-                </tbody>
-              </table>
-            </div>
-          </div>
-        )
-      })()}
-
       {/* Box score */}
       {showBoxScore && (
         <div className="live-boxscore">
@@ -477,6 +373,110 @@ export default function LiveScoreCard({ onLiveChange }) {
           )}
         </div>
       )}
+
+      {/* Manager's Card */}
+      {showManagerCard && (() => {
+        const activeSide = activeTeam === 'mets' ? metsSide : oppSide
+        const mgr = managers?.[activeSide]
+        const bench = mgr?.bench || []
+        const bullpen = mgr?.pitchers || []
+        const hitSplits = managerSplits?.[activeSide]?.hitting || {}
+        const pitSplits = managerSplits?.[activeSide]?.pitching || {}
+        const rotation = new Set(managerSplits?.[activeSide]?.rotation || [])
+        const season = managerSplits?.season
+        const splitLabel = season ? `${season} Stats` : ''
+        const fmt = v => v != null ? v : '—'
+        const bullpenFiltered = bullpen.filter(p => !rotation.has(p.id))
+        return (
+          <div className="live-boxscore">
+            {/* Team tabs */}
+            <div className="live-bs-tabs">
+              <button
+                className={`live-bs-tab${activeTeam === 'mets' ? ' live-bs-tab--active' : ''}`}
+                onClick={() => setActiveTeam('mets')}
+              >
+                Mets
+              </button>
+              <button
+                className={`live-bs-tab${activeTeam === 'opp' ? ' live-bs-tab--active' : ''}`}
+                onClick={() => setActiveTeam('opp')}
+              >
+                {oppName}
+              </button>
+            </div>
+
+            {splitsLoading && <div className="live-mc-loading">Loading split stats…</div>}
+
+            {/* Bench */}
+            <div className="live-bs-section-label">
+              Bench{splitLabel && <span className="live-mc-season"> ({splitLabel})</span>}
+            </div>
+            <div className="live-bs-table-wrap">
+              <table className="live-bs-table live-mc-table">
+                <thead>
+                  <tr>
+                    <th className="live-bs-name-col">Player</th>
+                    <th className="live-mc-sm">POS</th>
+                    <th className="live-mc-sm">B</th>
+                    <th className="live-mc-split">vsLHP</th>
+                    <th className="live-mc-split">vsRHP</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {bench.length === 0
+                    ? <tr><td colSpan={5} className="live-mc-empty">—</td></tr>
+                    : bench.map((p, i) => {
+                      const s = hitSplits[p.id] || {}
+                      return (
+                        <tr key={i} className={p.used ? 'live-mc-used' : ''}>
+                          <td className="live-bs-name-col">{p.name}</td>
+                          <td className="live-mc-sm">{p.pos}</td>
+                          <td className={`live-mc-sm${p.bats === 'L' ? ' live-mc-l' : p.bats === 'S' ? ' live-mc-s' : ''}`}>{p.bats}</td>
+                          <td className="live-mc-split">{fmt(s.vl)}</td>
+                          <td className="live-mc-split">{fmt(s.vr)}</td>
+                        </tr>
+                      )
+                    })
+                  }
+                </tbody>
+              </table>
+            </div>
+
+            {/* Bullpen */}
+            <div className="live-bs-section-label">
+              Bullpen{splitLabel && <span className="live-mc-season"> ({splitLabel})</span>}
+            </div>
+            <div className="live-bs-table-wrap">
+              <table className="live-bs-table live-mc-table">
+                <thead>
+                  <tr>
+                    <th className="live-bs-name-col">Pitcher</th>
+                    <th className="live-mc-sm">THR</th>
+                    <th className="live-mc-split">vsLHH</th>
+                    <th className="live-mc-split">vsRHH</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {bullpenFiltered.length === 0
+                    ? <tr><td colSpan={4} className="live-mc-empty">—</td></tr>
+                    : bullpenFiltered.map((p, i) => {
+                      const s = pitSplits[p.id] || {}
+                      return (
+                        <tr key={i} className={p.used ? 'live-mc-used' : ''}>
+                          <td className="live-bs-name-col">{p.name}</td>
+                          <td className={`live-mc-sm${p.throws === 'L' ? ' live-mc-l' : ''}`}>{p.throws}</td>
+                          <td className="live-mc-split">{fmt(s.vl)}</td>
+                          <td className="live-mc-split">{fmt(s.vr)}</td>
+                        </tr>
+                      )
+                    })
+                  }
+                </tbody>
+              </table>
+            </div>
+          </div>
+        )
+      })()}
     </div>
   )
 }
