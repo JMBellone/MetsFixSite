@@ -2787,7 +2787,7 @@
 .live-sp-row:last-child { border-bottom: none; }
 
 .live-sp-row--mets  { background: rgba(74, 127, 212, 0.10); }
-.live-sp-row--opp   { background: rgba(255, 255, 255, 0.03); }
+.live-sp-row--opp   { background: rgba(255, 255, 255, 0.09); }
 
 .live-sp-inning {
   font-size: 0.6rem;
