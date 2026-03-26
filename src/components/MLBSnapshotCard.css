@@ -54,11 +54,15 @@
 
 /* Section label headers — white, all caps, slightly larger */
 .snapshot-card .standings-header-title,
-.snapshot-card .sc-header-title,
-.snapshot-card .sny-card-header-label {
+.snapshot-card .sc-header-title {
   color: var(--text);
   font-size: 0.78rem;
   font-weight: 800;
   letter-spacing: 0.8px;
   text-transform: uppercase;
+}
+
+/* Hide the FastCast title row inside the snapshot card */
+.snapshot-card .sny-card-header {
+  display: none;
 }
