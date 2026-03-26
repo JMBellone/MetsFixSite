@@ -14,6 +14,7 @@ import KnowYourOpponentCard from './components/KnowYourOpponentCard'
 import SNYFeaturedCard from './components/SNYFeaturedCard'
 import RewatchCard from './components/RewatchCard'
 import LiveScoreCard from './components/LiveScoreCard'
+import BullpenCard from './components/BullpenCard'
 import MetsVideoCard from './components/MetsVideoCard'
 import MetsStatsCard from './components/MetsStatsCard'
 import SyracuseScheduleCard from './components/SyracuseScheduleCard'
@@ -491,6 +492,9 @@ export default function App() {
 
         {/* ── Last Game ────────────────────────────────────── */}
         <LastGameCard />
+
+        {/* ── Bullpen Chart ────────────────────────────────── */}
+        <BullpenCard />
 
         {/* ── SNY Featured Video ───────────────────────────── */}
         <SNYFeaturedCard />
