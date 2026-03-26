@@ -203,6 +203,53 @@
   white-space: nowrap;
 }
 
+/* Pitch mix chart */
+.bc-pitch-mix {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  min-width: 90px;
+  align-self: center;
+}
+
+.bc-pitch-row {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.bc-pitch-code {
+  font-size: 8px;
+  font-weight: 700;
+  color: var(--text-muted);
+  width: 18px;
+  text-align: right;
+  flex-shrink: 0;
+  letter-spacing: 0.2px;
+}
+
+.bc-pitch-bar-track {
+  flex: 1;
+  height: 5px;
+  background: rgba(255,255,255,0.08);
+  border-radius: 3px;
+  overflow: hidden;
+}
+
+.bc-pitch-bar-fill {
+  height: 100%;
+  border-radius: 3px;
+  transition: width 0.3s ease;
+}
+
+.bc-pitch-pct {
+  font-size: 8px;
+  color: var(--text-muted);
+  width: 24px;
+  flex-shrink: 0;
+  text-align: right;
+}
+
 /* Pitch count cell colors */
 .bc-pc-low {
   background: rgba(74, 222, 128, 0.12);

@@ -24,6 +24,38 @@ function headshotUrl(id) {
   return `https://img.mlbstatic.com/mlb-photos/image/upload/d_people:generic:headshot:67:current.png/h_100,q_auto:best/v1/people/${id}/headshot/67/current`
 }
 
+const PITCH_COLORS = {
+  FF: '#ef4444', SI: '#f97316', FC: '#f59e0b',
+  SL: '#3b82f6', ST: '#6366f1', SV: '#8b5cf6',
+  CU: '#a855f7', KC: '#7c3aed', CS: '#9333ea',
+  CH: '#10b981', FS: '#14b8a6', FO: '#06b6d4',
+  default: '#6b7280',
+}
+
+function pitchColor(code) {
+  return PITCH_COLORS[code] || PITCH_COLORS.default
+}
+
+function PitchMixChart({ pitchMix }) {
+  if (!pitchMix?.length) return null
+  return (
+    <div className="bc-pitch-mix">
+      {pitchMix.map(p => (
+        <div key={p.code} className="bc-pitch-row">
+          <span className="bc-pitch-code">{p.code}</span>
+          <div className="bc-pitch-bar-track">
+            <div
+              className="bc-pitch-bar-fill"
+              style={{ width: `${Math.round(p.pct * 100)}%`, background: pitchColor(p.code) }}
+            />
+          </div>
+          <span className="bc-pitch-pct">{Math.round(p.pct * 100)}%</span>
+        </div>
+      ))}
+    </div>
+  )
+}
+
 function pcClass(n) {
   if (n >= 35) return 'bc-pc-high'
   if (n >= 20) return 'bc-pc-mid'
@@ -58,6 +90,7 @@ function TeamSection({ data, abbr }) {
                 {todayStarter.era && todayStarter.era !== '-' ? todayStarter.era : '--'} ERA
               </span>
             </div>
+            <PitchMixChart pitchMix={todayStarter.pitchMix} />
           </div>
         )}
       </div>
