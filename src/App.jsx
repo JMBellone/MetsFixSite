@@ -211,7 +211,22 @@ export default function App() {
     })
   }, [])
 
-  const briefingArticle = articles.find(a => a.team === 'metropolitan') || null
+  const metropolitanArticles = articles
+    .filter(a => a.team === 'metropolitan')
+    .sort((a, b) => new Date(b.pubDate) - new Date(a.pubDate))
+
+  const briefingArticle = (() => {
+    if (!metropolitanArticles.length) return null
+    // Between 5:00 AM and 9:00 AM ET, prefer an article with "Mets" in the title
+    const et = new Date().toLocaleString('en-US', {
+      timeZone: 'America/New_York', hour: '2-digit', minute: '2-digit', hour12: false,
+    })
+    const [h] = et.split(':').map(Number)
+    if (h >= 5 && h < 9) {
+      return metropolitanArticles.find(a => /mets/i.test(a.title)) || metropolitanArticles[0]
+    }
+    return metropolitanArticles[0]
+  })()
 
   const newsPool = articles
     .filter(a => a.team === 'mets' && !a.authorFeed)
