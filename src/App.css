@@ -1,11 +1,23 @@
 /* ── Header ─────────────────────────────────────────────── */
 .header {
   background: #0a0a0f;
-  padding: calc(14px + env(safe-area-inset-top, 0px)) 16px 14px;
-  border-bottom: 1px solid var(--border);
+  padding: calc(14px + env(safe-area-inset-top, 0px)) 16px 0;
   position: sticky;
   top: 0;
   z-index: 20;
+}
+
+.header-bunting {
+  height: 14px;
+  margin: 6px 0 0;
+  background:
+    radial-gradient(circle at 7px 0, #B22234 7px, transparent 7px),
+    radial-gradient(circle at 21px 0, #f0f0f0 7px, transparent 7px),
+    radial-gradient(circle at 35px 0, #002868 7px, transparent 7px);
+  background-size: 42px 14px;
+  background-repeat: repeat-x;
+  background-position: 0 0;
+  border-top: 1.5px solid #888;
 }
 
 .header-inner {
