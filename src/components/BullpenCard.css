@@ -220,6 +220,14 @@
   color: #fca5a5;
 }
 
+/* Desktop: tighter fixed columns so name column has room */
+@media (min-width: 501px) {
+  .bc-th-arm,
+  .bc-th-day {
+    width: 28px;
+  }
+}
+
 /* Mobile: show one team at a time with toggle */
 @media (max-width: 500px) {
   .bc-card {
