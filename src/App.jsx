@@ -107,6 +107,15 @@ export default function App() {
     if (!live && wasLiveRef.current) setGameEnded(true)
     setIsLive(live)
   }, [])
+
+  // Hide bullpen between midnight and 5 AM ET (post-game overnight reset window)
+  const bullpenVisible = (() => {
+    const etHour = parseInt(
+      new Date().toLocaleString('en-US', { timeZone: 'America/New_York', hour: 'numeric', hour12: false }),
+      10
+    )
+    return etHour >= 5
+  })()
   const touchStartY = useRef(0)
 
   const [lastVisitTime] = useState(() => {
@@ -343,7 +352,7 @@ export default function App() {
 
         {/* ── Live Score ───────────────────────────────────── */}
         <LiveScoreCard onLiveChange={handleLiveChange} />
-        {isLive && <BullpenCard />}
+        {isLive && bullpenVisible && <BullpenCard />}
 
         {/* ── The Latest Briefing ─────────────────────────── */}
         {loading && <div className="briefing-skeleton"><div className="skeleton briefing-skeleton-bar" /><div className="skeleton briefing-skeleton-bar briefing-skeleton-bar--short" /></div>}
@@ -515,7 +524,12 @@ export default function App() {
         <LastGameCard />
 
         {/* ── Today's Lineups + Bullpen Chart ──────────────── */}
-        {!isLive && !gameEnded && <><LineupsCard /><BullpenCard /></>}
+        {!isLive && !gameEnded && (
+          <>
+            <LineupsCard />
+            {bullpenVisible && <BullpenCard />}
+          </>
+        )}
 
         {/* ── SNY Featured Video ───────────────────────────── */}
         <SNYFeaturedCard />
