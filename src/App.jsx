@@ -99,6 +99,14 @@ export default function App() {
   const [pullY, setPullY] = useState(0)
   const [refreshing, setRefreshing] = useState(false)
   const [isLive, setIsLive] = useState(false)
+  const [gameEnded, setGameEnded] = useState(false)
+  const wasLiveRef = useRef(false)
+
+  const handleLiveChange = useCallback((live) => {
+    if (live) wasLiveRef.current = true
+    if (!live && wasLiveRef.current) setGameEnded(true)
+    setIsLive(live)
+  }, [])
   const touchStartY = useRef(0)
 
   const [lastVisitTime] = useState(() => {
@@ -334,7 +342,7 @@ export default function App() {
       <main className="main">
 
         {/* ── Live Score ───────────────────────────────────── */}
-        <LiveScoreCard onLiveChange={setIsLive} />
+        <LiveScoreCard onLiveChange={handleLiveChange} />
         {isLive && <BullpenCard />}
 
         {/* ── The Latest Briefing ─────────────────────────── */}
@@ -507,7 +515,7 @@ export default function App() {
         <LastGameCard />
 
         {/* ── Today's Lineups + Bullpen Chart ──────────────── */}
-        {!isLive && <><LineupsCard /><BullpenCard /></>}
+        {!isLive && !gameEnded && <><LineupsCard /><BullpenCard /></>}
 
         {/* ── SNY Featured Video ───────────────────────────── */}
         <SNYFeaturedCard />
