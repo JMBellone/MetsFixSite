@@ -115,6 +115,8 @@ export default function MetsStatsCard() {
 
   if (loading) return null
   if (!data || data.isSpring) return null
+  // Hide until at least one regular season game has been played
+  if (!data.hitters?.some(h => h.g > 0)) return null
 
   const baseRows = tab === 'Hitters' ? data.hitters : tab === 'Starters' ? data.starters : data.relievers
   const cols = tab === 'Hitters' ? HITTER_COLS : tab === 'Starters' ? STARTER_COLS : RELIEVER_COLS
