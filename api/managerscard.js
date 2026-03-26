@@ -11,7 +11,7 @@ function getSeason() {
 
 async function fetchSplits(playerId, group, season) {
   try {
-    const url = `https://statsapi.mlb.com/api/v1/people/${playerId}/stats?stats=statSplits&group=${group}&season=${season}&sportId=1`
+    const url = `https://statsapi.mlb.com/api/v1/people/${playerId}/stats?stats=statSplits&group=${group}&season=${season}&sitCodes=vl,vr&sportId=1`
     const r = await fetch(url, { signal: AbortSignal.timeout(5000) })
     if (!r.ok) return { vl: null, vr: null }
     const d = await r.json()
