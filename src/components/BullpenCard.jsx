@@ -69,7 +69,7 @@ function TeamSection({ data, abbr }) {
           <thead>
             <tr>
               <th className="bc-th bc-th-name bc-th-section">STARTERS</th>
-              <th className="bc-th bc-th-arm">Throws</th>
+              <th className="bc-th bc-th-arm">THR</th>
               {upcomingDates.map(d => (
                 <th key={d.dateStr} className="bc-th bc-th-day">{d.dayAbbr}</th>
               ))}
@@ -111,7 +111,7 @@ function TeamSection({ data, abbr }) {
           <thead>
             <tr>
               <th className="bc-th bc-th-name bc-th-section">BULLPEN</th>
-              <th className="bc-th bc-th-arm">Throws</th>
+              <th className="bc-th bc-th-arm">THR</th>
               {recentDates.map(d => (
                 <th key={d.dateStr} className="bc-th bc-th-day bc-th-ago" title={d.dateStr}>
                   {d.dayAbbr}
