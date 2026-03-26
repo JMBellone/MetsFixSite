@@ -92,7 +92,7 @@ function TeamSection({ data, abbr }) {
                     <td key={d.dateStr} className="bc-td bc-td-day bc-cell-empty">
                       {start && (
                         <span className="bc-opp-chip" style={{ background: OPP_COLORS[start.opp] || '#444' }}>
-                          {start.opp}
+                          {start.away ? '@' : ''}{start.opp}
                         </span>
                       )}
                     </td>

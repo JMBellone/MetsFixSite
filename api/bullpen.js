@@ -157,7 +157,7 @@ async function fetchTeamData(teamId) {
       const pp = game.teams?.[side]?.probablePitcher
       if (pp?.id) {
         upcomingSchedule[pp.id] ??= []
-        upcomingSchedule[pp.id].push({ dateStr: ds, opp: oppAbbr })
+        upcomingSchedule[pp.id].push({ dateStr: ds, opp: oppAbbr, away: side === 'away' })
         if (pp.fullName) nameToId[norm(pp.fullName)] = pp.id
       }
     }
