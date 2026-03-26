@@ -383,6 +383,12 @@
   text-overflow: ellipsis;
 }
 
+@media (max-width: 420px) {
+  .schedule-starters {
+    font-size: 0.62rem;
+  }
+}
+
 .schedule-tv {
   display: inline-flex;
   align-items: center;

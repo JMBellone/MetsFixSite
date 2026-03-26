@@ -144,14 +144,11 @@ async function fetchTeamData(teamId) {
     }
   }
 
-  // Upcoming probable pitchers → schedule map { id: [{dateStr, dayAbbr, opp}] }
+  // Upcoming probable pitchers → schedule map { id: [{dateStr, opp}] }
   const upcomingSchedule = {}
-  const upcomingDates = []
 
   for (const dateEntry of (futureSched.dates || [])) {
     const ds = dateEntry.date
-    upcomingDates.push({ dateStr: ds, dayAbbr: dayLabel(ds, todayStr) })
-
     for (const game of (dateEntry.games || [])) {
       const side = game.teams?.home?.team?.id === teamId ? 'home' : 'away'
       const oppSide = side === 'home' ? 'away' : 'home'
@@ -160,11 +157,17 @@ async function fetchTeamData(teamId) {
       const pp = game.teams?.[side]?.probablePitcher
       if (pp?.id) {
         upcomingSchedule[pp.id] ??= []
-        upcomingSchedule[pp.id].push({ dateStr: ds, dayAbbr: dayLabel(ds, todayStr), opp: oppAbbr })
+        upcomingSchedule[pp.id].push({ dateStr: ds, opp: oppAbbr })
         if (pp.fullName) nameToId[norm(pp.fullName)] = pp.id
       }
     }
   }
+
+  // Always show 5 consecutive calendar days starting today (includes off days)
+  const upcomingDates = Array.from({ length: 5 }, (_, i) => {
+    const ds = fmt(addDays(today, i))
+    return { dateStr: ds, dayAbbr: dayLabel(ds, todayStr) }
+  })
 
   // Build starters from fixed list + schedule from API
   const starters = (FIXED_STARTERS[teamId] || []).map(p => {
@@ -176,6 +179,34 @@ async function fetchTeamData(teamId) {
       schedule: id ? (upcomingSchedule[id] || []) : [],
     }
   })
+
+  // Fetch 2026 season stats for starters with known IDs
+  const starterIdsForStats = starters.filter(s => s.id).map(s => s.id)
+  if (starterIdsForStats.length > 0) {
+    try {
+      const statsRes = await fetch(
+        `https://statsapi.mlb.com/api/v1/people?personIds=${starterIdsForStats.join(',')}&hydrate=stats(type=season,group=pitching,season=2026)`
+      )
+      if (statsRes.ok) {
+        const statsData = await statsRes.json()
+        const statsById = {}
+        for (const person of (statsData.people || [])) {
+          const s = (person.stats || []).find(st => st.type?.displayName === 'season')
+          const stat = s?.splits?.[0]?.stat
+          if (stat) {
+            statsById[person.id] = {
+              wins: stat.wins ?? 0,
+              losses: stat.losses ?? 0,
+              era: stat.era ?? '-',
+            }
+          }
+        }
+        starters.forEach(p => {
+          Object.assign(p, p.id ? (statsById[p.id] || { wins: 0, losses: 0, era: '-' }) : { wins: 0, losses: 0, era: '-' })
+        })
+      }
+    } catch { /* stats fetch failure is non-fatal */ }
+  }
 
   // Build bullpen from fixed list + pitch counts from boxscores
   const bullpen = (FIXED_BULLPENS[teamId] || []).map(p => {
@@ -199,7 +230,7 @@ async function fetchTeamData(teamId) {
   return {
     starters,
     bullpen,
-    upcomingDates: upcomingDates.slice(0, 5),
+    upcomingDates,
     recentDates,
     todayStarter: todayStarter
       ? { id: todayStarter.id, name: todayStarter.name, throws: todayStarter.throws }
