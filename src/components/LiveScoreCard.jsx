@@ -133,18 +133,8 @@ export default function LiveScoreCard({ onLiveChange }) {
   const isTop = inningHalf === 'Top'
   const metsSide = metsIsHome ? 'home' : 'away'
   const oppSide = metsIsHome ? 'away' : 'home'
-  const metsTeam = metsIsHome ? home : away
   const oppTeam = metsIsHome ? away : home
   const oppName = oppTeam.teamName || oppTeam.abbr || 'OPP'
-
-  // Scoreboard: winner on left; Mets on left if tied
-  const metsScore = metsIsHome ? home.score : away.score
-  const oppScore = metsIsHome ? away.score : home.score
-  const leftIsOpp = oppScore > metsScore
-  const leftTeam = leftIsOpp ? oppTeam : metsTeam
-  const rightTeam = leftIsOpp ? metsTeam : oppTeam
-  const leftScore = leftIsOpp ? oppScore : metsScore
-  const rightScore = leftIsOpp ? metsScore : oppScore
 
   const activeBatters = (activeTeam === 'mets' ? boxscore?.[metsSide] : boxscore?.[oppSide])?.batters || []
   const activePitchers = (activeTeam === 'mets' ? boxscore?.[metsSide] : boxscore?.[oppSide])?.pitchers || []
@@ -200,28 +190,28 @@ export default function LiveScoreCard({ onLiveChange }) {
       <div className="live-scoreboard">
         <div className="live-team">
           <img
-            src={logoUrl(leftTeam.abbr)}
-            alt={leftTeam.teamName || leftTeam.abbr}
+            src={logoUrl(away.abbr)}
+            alt={away.teamName || away.abbr}
             className="live-team-logo"
             onError={e => { e.currentTarget.style.display = 'none' }}
           />
-          <span className="live-team-name">{leftTeam.teamName || leftTeam.abbr}</span>
+          <span className="live-team-name">{away.teamName || away.abbr}</span>
         </div>
 
         <div className="live-scores">
-          <span className={`live-score${leftScore > rightScore ? ' live-score--lead' : ''}`}>{leftScore}</span>
+          <span className={`live-score${away.score > home.score ? ' live-score--lead' : ''}`}>{away.score}</span>
           <span className="live-scores-sep">–</span>
-          <span className={`live-score${rightScore > leftScore ? ' live-score--lead' : ''}`}>{rightScore}</span>
+          <span className={`live-score${home.score > away.score ? ' live-score--lead' : ''}`}>{home.score}</span>
         </div>
 
         <div className="live-team live-team--home">
           <img
-            src={logoUrl(rightTeam.abbr)}
-            alt={rightTeam.teamName || rightTeam.abbr}
+            src={logoUrl(home.abbr)}
+            alt={home.teamName || home.abbr}
             className="live-team-logo"
             onError={e => { e.currentTarget.style.display = 'none' }}
           />
-          <span className="live-team-name">{rightTeam.teamName || rightTeam.abbr}</span>
+          <span className="live-team-name">{home.teamName || home.abbr}</span>
         </div>
       </div>
 
