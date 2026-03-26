@@ -14,21 +14,23 @@ function VsCell({ vs }) {
 function TeamColumn({ team, vsStarter }) {
   return (
     <div className="lc-team">
+      <div className="lc-team-hdr">
+        <img src={team.logo} alt={team.abbr} className="lc-team-logo"
+          onError={e => { e.currentTarget.style.display = 'none' }} />
+        <div className="lc-team-info">
+          <span className="lc-team-name">{team.name}</span>
+          {vsStarter && (
+            <span className="lc-vs-label">vs {vsStarter.name}</span>
+          )}
+        </div>
+      </div>
+
       <div className="lc-scroll">
         <table className="lc-table">
           <thead>
             <tr>
               <th className="lc-th lc-th-order">#</th>
-              <th className="lc-th lc-th-name lc-th-section">
-                <span className="lc-th-team-row">
-                  <img src={team.logo} alt={team.abbr} className="lc-th-logo"
-                    onError={e => { e.currentTarget.style.display = 'none' }} />
-                  {team.name}
-                </span>
-                {vsStarter && (
-                  <span className="lc-th-vs-pitcher">vs {vsStarter.name}</span>
-                )}
-              </th>
+              <th className="lc-th lc-th-name">BATTER</th>
               <th className="lc-th lc-th-bats">B</th>
               <th className="lc-th lc-th-pos">POS</th>
               <th className="lc-th lc-th-vs">OPS vs SP</th>
