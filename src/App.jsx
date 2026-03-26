@@ -516,6 +516,9 @@ export default function App() {
         {/* ── Dive Preview: next 2 articles ────────────────── */}
         {!loading && !error && diveSmall.length > 0 && (
           <div className="team-news-card">
+            <div className="latest-updates-header">
+              <span className="latest-updates-title">What to read next</span>
+            </div>
             {diveSmall.map((a, i) => (
               <Fragment key={a.id}>
                 {i > 0 && <div className="team-news-divider" />}
