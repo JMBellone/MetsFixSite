@@ -2208,6 +2208,13 @@
     min-width: 0;
   }
 
+  /* Tighter columns on desktop so full team name fits */
+  .standings-col-header,
+  .standings-row {
+    grid-template-columns: 20px minmax(0, 1fr) 22px 22px 28px 22px 28px 26px 26px;
+    column-gap: 4px;
+  }
+
   .standings-panel--nl {
     border-right: 1px solid var(--border);
   }
