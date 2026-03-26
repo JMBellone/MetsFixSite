@@ -263,7 +263,8 @@ export default function App() {
   ]
   const diveSmall       = divePool.slice(0, 2)      // What to Read Next
   const featured        = divePool[2]               // Dive Into the News: large featured
-  const diveThreeSmall  = divePool.slice(3, 6)      // Dive Into the News: 3 small
+  const diveTwoSmall    = divePool.slice(3, 5)      // Dive Into the News: 2 small
+  const diveHeadline    = divePool[5]               // Dive Into the News: 1 headline-only
   const diveSideBySide  = divePool.slice(6, 8)      // Dive Into the News: 2 side-by-side
   const moreNews        = divePool.slice(8, 15)
 
@@ -631,8 +632,8 @@ export default function App() {
                 </a>
               </div>
 
-              {/* 3 small featured */}
-              {diveThreeSmall.map(a => (
+              {/* 2 small featured */}
+              {diveTwoSmall.map(a => (
                 <Fragment key={a.id}>
                   <div className="team-news-divider" />
                   <div className="team-news-item-wrap">
@@ -656,6 +657,27 @@ export default function App() {
                   </div>
                 </Fragment>
               ))}
+
+              {/* 1 headline-only */}
+              {diveHeadline && (
+                <>
+                  <div className="team-news-divider" />
+                  <div className="team-news-headlines">
+                    <a href={diveHeadline.link} target="_blank" rel="noopener noreferrer"
+                      className={`team-news-headline${readIds.has(diveHeadline.id) ? ' team-news--read' : ''}`}
+                      onClick={() => markRead(diveHeadline.id)}>
+                      <span className="team-news-headline-body">
+                        <span className="team-news-headline-title">{diveHeadline.title}</span>
+                        <span className="team-news-headline-source">
+                          <img src={faviconUrl(diveHeadline.link)} alt="" className="team-news-source-favicon"
+                            onError={e => { e.currentTarget.style.display = 'none' }} />
+                          {diveHeadline.source}{diveHeadline.paywalled && <SubscriberIcon />} · {timeAgo(diveHeadline.pubDate)}
+                        </span>
+                      </span>
+                    </a>
+                  </div>
+                </>
+              )}
 
               {/* 2 side-by-side */}
               {diveSideBySide.length > 0 && (
