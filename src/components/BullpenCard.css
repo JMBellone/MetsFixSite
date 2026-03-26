@@ -101,6 +101,7 @@
   border-collapse: collapse;
   width: 100%;
   min-width: 220px;
+  table-layout: fixed;
 }
 
 .bc-th {
