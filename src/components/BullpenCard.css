@@ -27,6 +27,7 @@
 .bc-logo-row {
   display: flex;
   align-items: center;
+  justify-content: center;
   gap: 8px;
   margin-bottom: 10px;
 }
@@ -131,16 +132,6 @@
   width: 36px;
 }
 
-.bc-th-record {
-  width: 60px;
-}
-
-.bc-td-record {
-  font-size: 9px;
-  color: var(--text-muted);
-  white-space: nowrap;
-  padding-right: 4px;
-}
 
 .bc-th-day {
   text-align: center;

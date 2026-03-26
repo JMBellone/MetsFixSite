@@ -69,7 +69,6 @@ function TeamSection({ data, abbr }) {
           <thead>
             <tr>
               <th className="bc-th bc-th-name bc-th-section">STARTERS</th>
-              <th className="bc-th bc-th-record" />
               <th className="bc-th bc-th-arm">Throws</th>
               {upcomingDates.map(d => (
                 <th key={d.dateStr} className="bc-th bc-th-day">{d.dayAbbr}</th>
@@ -81,9 +80,11 @@ function TeamSection({ data, abbr }) {
               <tr key={p.id ?? i}>
                 <td className="bc-td bc-td-name">
                   <div className="bc-name-main">{p.name}</div>
-                </td>
-                <td className="bc-td bc-td-record">
-                  {p.wins ?? 0}-{p.losses ?? 0} · {p.era && p.era !== '-' ? p.era : '--'}
+                  <div className="bc-name-stats">
+                    {p.wins ?? 0}-{p.losses ?? 0}
+                    {' · '}
+                    {p.era && p.era !== '-' ? p.era : '--'} ERA
+                  </div>
                 </td>
                 <td className={`bc-td bc-td-arm${p.throws === 'LHP' ? ' bc-lhp' : ''}`}>{p.throws}</td>
                 {upcomingDates.map(d => {
