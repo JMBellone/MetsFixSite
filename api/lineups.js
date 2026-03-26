@@ -74,13 +74,13 @@ module.exports = async function handler(req, res) {
     const probableAway = game.teams?.away?.probablePitcher
     const probableHome = game.teams?.home?.probablePitcher
 
-    // Boxscore → batting orders + confirmed starters
-    const boxR = await fetch(`https://statsapi.mlb.com/api/v1.1/game/${gamePk}/boxscore`)
-    if (!boxR.ok) throw new Error('boxscore fetch failed')
-    const box = await boxR.json()
+    // Live feed → batting orders + confirmed starters (works pre-game and in-game)
+    const feedR = await fetch(`https://statsapi.mlb.com/api/v1.1/game/${gamePk}/feed/live`)
+    if (!feedR.ok) throw new Error('live feed fetch failed')
+    const feed = await feedR.json()
 
-    const awayData = box.teams?.away
-    const homeData = box.teams?.home
+    const awayData = feed.liveData?.boxscore?.teams?.away
+    const homeData = feed.liveData?.boxscore?.teams?.home
 
     const awayOrder = awayData?.battingOrder || []
     const homeOrder = homeData?.battingOrder || []
