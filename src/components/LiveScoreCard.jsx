@@ -84,7 +84,7 @@ export default function LiveScoreCard({ onLiveChange }) {
       const data = await res.json()
       const live = data.isLive ? data : null
       setGame(live)
-      onLiveChange?.(!!live)
+      onLiveChange?.(!!live, data.gameFinishedToday ?? false)
       setLastUpdated(new Date())
       scheduleInterval(!!live)
     } catch {

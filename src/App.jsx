@@ -102,9 +102,9 @@ export default function App() {
   const [gameEnded, setGameEnded] = useState(false)
   const wasLiveRef = useRef(false)
 
-  const handleLiveChange = useCallback((live) => {
+  const handleLiveChange = useCallback((live, gameFinishedToday = false) => {
     if (live) wasLiveRef.current = true
-    if (!live && wasLiveRef.current) setGameEnded(true)
+    if (!live && (wasLiveRef.current || gameFinishedToday)) setGameEnded(true)
     setIsLive(live)
   }, [])
 

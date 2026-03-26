@@ -303,11 +303,12 @@ module.exports = async function handler(req, res) {
     }
   }
 
-  const today = new Date().toISOString().split('T')[0]
+  // Use ET date so "today" matches the game calendar day, not UTC midnight
+  const todayET = new Date().toLocaleDateString('en-CA', { timeZone: 'America/New_York' })
 
   try {
     const schedRes = await fetch(
-      `https://statsapi.mlb.com/api/v1/schedule?teamId=${METS_ID}&sportId=1&gameType=S,R,E&date=${today}&hydrate=broadcasts(all)`
+      `https://statsapi.mlb.com/api/v1/schedule?teamId=${METS_ID}&sportId=1&gameType=S,R,E&date=${todayET}&hydrate=broadcasts(all)`
     )
     if (!schedRes.ok) {
       res.setHeader('Cache-Control', 's-maxage=300, stale-while-revalidate=86400')
@@ -319,8 +320,9 @@ module.exports = async function handler(req, res) {
     const liveGame = games.find(g => g.status.abstractGameState === 'Live')
 
     if (!liveGame) {
+      const gameFinishedToday = games.some(g => g.status.abstractGameState === 'Final')
       res.setHeader('Cache-Control', 's-maxage=300, stale-while-revalidate=86400')
-      return res.status(200).json({ isLive: false })
+      return res.status(200).json({ isLive: false, gameFinishedToday })
     }
 
     res.setHeader('Cache-Control', 's-maxage=20, stale-while-revalidate=10')
