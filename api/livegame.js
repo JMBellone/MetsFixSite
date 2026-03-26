@@ -56,6 +56,7 @@ function buildBatters(bsData, side) {
       rbi: s.rbi ?? 0,
       hr: s.homeRuns ?? 0,
       bb: s.baseOnBalls ?? 0,
+      hbp: s.hitByPitch ?? 0,
       so: s.strikeOuts ?? 0,
     }
   }).filter(Boolean)
@@ -109,6 +110,7 @@ function buildPitchers(bsData, side) {
       r: s.runs ?? 0,
       er: s.earnedRuns ?? 0,
       bb: s.baseOnBalls ?? 0,
+      hbp: s.hitBatsmen ?? 0,
       so: s.strikeOuts ?? 0,
       pc: s.numberOfPitches ?? 0,
       era: p.seasonStats?.pitching?.era ?? '-',

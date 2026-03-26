@@ -433,7 +433,7 @@ export default function LiveScoreCard({ onLiveChange }) {
                   <thead>
                     <tr>
                       <th className="live-bs-name-col">Batter</th>
-                      <th>AB</th><th>R</th><th>H</th><th>RBI</th><th>HR</th><th>BB</th><th>SO</th>
+                      <th>AB</th><th>R</th><th>H</th><th>RBI</th><th>HR</th><th>BB</th><th>HBP</th><th>SO</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -441,7 +441,7 @@ export default function LiveScoreCard({ onLiveChange }) {
                       <tr key={i}>
                         <td className="live-bs-name-col">{b.name}</td>
                         <td>{b.ab}</td><td>{b.r}</td><td>{b.h}</td>
-                        <td>{b.rbi}</td><td>{b.hr}</td><td>{b.bb}</td><td>{b.so}</td>
+                        <td>{b.rbi}</td><td>{b.hr}</td><td>{b.bb}</td><td>{b.hbp}</td><td>{b.so}</td>
                       </tr>
                     ))}
                   </tbody>
@@ -459,7 +459,7 @@ export default function LiveScoreCard({ onLiveChange }) {
                   <thead>
                     <tr>
                       <th className="live-bs-name-col">Pitcher</th>
-                      <th>IP</th><th>H</th><th>R</th><th>ER</th><th>BB</th><th>SO</th><th>PC</th><th>ERA</th>
+                      <th>IP</th><th>H</th><th>R</th><th>ER</th><th>BB</th><th>HBP</th><th>SO</th><th>PC</th><th>ERA</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -467,7 +467,7 @@ export default function LiveScoreCard({ onLiveChange }) {
                       <tr key={i}>
                         <td className="live-bs-name-col">{p.name}</td>
                         <td>{p.ip}</td><td>{p.h}</td><td>{p.r}</td>
-                        <td>{p.er}</td><td>{p.bb}</td><td>{p.so}</td><td>{p.pc}</td><td>{p.era}</td>
+                        <td>{p.er}</td><td>{p.bb}</td><td>{p.hbp}</td><td>{p.so}</td><td>{p.pc}</td><td>{p.era}</td>
                       </tr>
                     ))}
                   </tbody>
