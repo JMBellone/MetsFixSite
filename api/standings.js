@@ -84,6 +84,10 @@ module.exports = async function handler(req, res) {
           gamesBehind: formatGB(tr.gamesBack),
           wildCardGB: formatGB(tr.wildCardGamesBack),
           streak: tr.streak?.streakCode || '',
+          lastTen: (() => {
+            const l10 = (tr.records?.splitRecords || []).find(s => s.type === 'lastTen')
+            return l10 ? `${l10.wins}-${l10.losses}` : ''
+          })(),
         };
       });
     }

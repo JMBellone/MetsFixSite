@@ -25,6 +25,8 @@ function Division({ division, highlightAbbr, showDivHeader }) {
             <span className="standings-pct">{team.pct}</span>
             <span className="standings-gb">{team.gamesBehind}</span>
             <span className="standings-gb standings-wcgb">{team.wildCardGB}</span>
+            <span className="standings-l10">{team.lastTen}</span>
+            <span className={`standings-strk${team.streak?.startsWith('W') ? ' standings-streak--w' : team.streak ? ' standings-streak--l' : ''}`}>{team.streak}</span>
           </div>
         )
       })}
@@ -44,6 +46,8 @@ function LeaguePanel({ label, divisions, highlightAbbr, className }) {
         <span className="standings-col-label">PCT</span>
         <span className="standings-col-label">GB</span>
         <span className="standings-col-label">WCGB</span>
+        <span className="standings-col-label">L10</span>
+        <span className="standings-col-label">STRK</span>
       </div>
       <div className="standings-list">
         {divisions.map(div => (

@@ -474,7 +474,7 @@
 .standings-col-header,
 .standings-row {
   display: grid;
-  grid-template-columns: 22px minmax(0, 1fr) 26px 26px 32px 28px 36px;
+  grid-template-columns: 22px minmax(0, 1fr) 26px 26px 32px 28px 36px 30px 30px;
   column-gap: 5px;
   align-items: center;
   padding: 5px 12px;
@@ -589,6 +589,18 @@
 
 .standings-streak--w { color: #32dc78; }
 .standings-streak--l { color: var(--text-muted); }
+
+.standings-l10 {
+  font-size: 0.68rem;
+  color: var(--text-muted);
+  text-align: right;
+}
+
+.standings-strk {
+  font-size: 0.65rem;
+  font-weight: 700;
+  text-align: right;
+}
 
 /* ── Briefing card (compact) ────────────────────────────── */
 .briefing-skeleton {
