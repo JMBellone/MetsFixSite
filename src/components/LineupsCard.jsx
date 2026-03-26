@@ -40,7 +40,7 @@ function TeamColumn({ team, vsStarter }) {
             {team.lineup.map(p => (
               <tr key={p.id}>
                 <td className="lc-td lc-td-order">{p.batOrder}</td>
-                <td className="lc-td lc-td-name">{p.lastName}</td>
+                <td className="lc-td lc-td-name">{p.name}</td>
                 <td className={`lc-td lc-td-bats${p.bats === 'L' ? ' lc-bats-l' : p.bats === 'S' ? ' lc-bats-s' : ''}`}>{p.bats}</td>
                 <td className="lc-td lc-td-pos">{p.pos}</td>
                 <td className="lc-td lc-td-vs"><VsCell vs={p.vs} /></td>
