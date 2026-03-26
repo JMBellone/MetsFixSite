@@ -45,6 +45,8 @@ function buildBatters(bsData, side) {
     const p = team.players?.[`ID${id}`]
     if (!p) return null
     const s = p.stats?.batting || {}
+    // Skip pitchers who never came to bat (no AB and no walks)
+    if (p.position?.abbreviation === 'P' && !s.atBats && !s.baseOnBalls) return null
     return {
       name: p.person?.fullName || '',
       pos: p.position?.abbreviation || '',
