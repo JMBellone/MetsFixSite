@@ -24,37 +24,6 @@ function headshotUrl(id) {
   return `https://img.mlbstatic.com/mlb-photos/image/upload/d_people:generic:headshot:67:current.png/h_100,q_auto:best/v1/people/${id}/headshot/67/current`
 }
 
-const PITCH_COLORS = {
-  FF: '#ef4444', SI: '#f97316', FC: '#f59e0b',
-  SL: '#3b82f6', ST: '#6366f1', SV: '#8b5cf6',
-  CU: '#a855f7', KC: '#7c3aed', CS: '#9333ea',
-  CH: '#10b981', FS: '#14b8a6', FO: '#06b6d4',
-  default: '#6b7280',
-}
-
-function pitchColor(code) {
-  return PITCH_COLORS[code] || PITCH_COLORS.default
-}
-
-function PitchMixChart({ pitchMix }) {
-  if (!pitchMix?.length) return null
-  return (
-    <div className="bc-pitch-mix">
-      {pitchMix.map(p => (
-        <div key={p.code} className="bc-pitch-row">
-          <span className="bc-pitch-code">{p.code}</span>
-          <div className="bc-pitch-bar-track">
-            <div
-              className="bc-pitch-bar-fill"
-              style={{ width: `${Math.round(p.pct * 100)}%`, background: pitchColor(p.code) }}
-            />
-          </div>
-          <span className="bc-pitch-pct">{Math.round(p.pct * 100)}%</span>
-        </div>
-      ))}
-    </div>
-  )
-}
 
 function pcClass(n) {
   if (n >= 35) return 'bc-pc-high'
@@ -64,33 +33,32 @@ function pcClass(n) {
 
 function TeamSection({ data, abbr }) {
   if (!data) return null
-  const { starters, bullpen, upcomingDates, recentDates, todayStarter } = data
-  const hs = todayStarter?.id ? headshotUrl(todayStarter.id) : null
+  const { starters, bullpen, upcomingDates, recentDates, displayStarter } = data
+  const hs = displayStarter?.id ? headshotUrl(displayStarter.id) : null
 
   return (
     <div className="bc-team">
       <div className="bc-logo-row">
         <img src={TEAM_LOGOS[abbr]} alt={abbr} className="bc-logo" />
-        {todayStarter && (
+        {displayStarter && (
           <div className="bc-today">
             {hs && (
               <img
                 src={hs}
-                alt={todayStarter.name}
+                alt={displayStarter.name}
                 className="bc-today-headshot"
                 onError={e => { e.currentTarget.style.display = 'none' }}
               />
             )}
             <div className="bc-today-text">
-              <span className="bc-today-label">Today's Starter</span>
-              <span className="bc-today-name">{todayStarter.name}</span>
+              <span className="bc-today-label">{displayStarter.label}</span>
+              <span className="bc-today-name">{displayStarter.name}</span>
               <span className="bc-today-stats">
-                {todayStarter.wins ?? 0}-{todayStarter.losses ?? 0}
+                {displayStarter.wins ?? 0}-{displayStarter.losses ?? 0}
                 {' · '}
-                {todayStarter.era && todayStarter.era !== '-' ? todayStarter.era : '--'} ERA
+                {displayStarter.era && displayStarter.era !== '-' ? displayStarter.era : '--'} ERA
               </span>
             </div>
-            <PitchMixChart pitchMix={todayStarter.pitchMix} />
           </div>
         )}
       </div>
@@ -101,6 +69,7 @@ function TeamSection({ data, abbr }) {
           <thead>
             <tr>
               <th className="bc-th bc-th-name bc-th-section">STARTERS</th>
+              <th className="bc-th bc-th-record" />
               <th className="bc-th bc-th-arm">Throws</th>
               {upcomingDates.map(d => (
                 <th key={d.dateStr} className="bc-th bc-th-day">{d.dayAbbr}</th>
@@ -112,11 +81,9 @@ function TeamSection({ data, abbr }) {
               <tr key={p.id ?? i}>
                 <td className="bc-td bc-td-name">
                   <div className="bc-name-main">{p.name}</div>
-                  <div className="bc-name-stats">
-                    {p.wins ?? 0}-{p.losses ?? 0}
-                    {' · '}
-                    {p.era && p.era !== '-' ? p.era : '--'} ERA
-                  </div>
+                </td>
+                <td className="bc-td bc-td-record">
+                  {p.wins ?? 0}-{p.losses ?? 0} · {p.era && p.era !== '-' ? p.era : '--'}
                 </td>
                 <td className={`bc-td bc-td-arm${p.throws === 'LHP' ? ' bc-lhp' : ''}`}>{p.throws}</td>
                 {upcomingDates.map(d => {

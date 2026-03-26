@@ -227,32 +227,24 @@ async function fetchTeamData(teamId) {
   // Who starts today?
   const todayStarter = starters.find(s => s.schedule?.some(sc => sc.dateStr === todayStr)) || null
 
-  // Fetch pitch arsenal for today's starter (2026 first, fall back to 2025)
-  let pitchMix = null
-  if (todayStarter?.id) {
-    try {
-      const fetchArsenal = async (season) => {
-        const r = await fetch(
-          `https://statsapi.mlb.com/api/v1/people/${todayStarter.id}/stats?stats=pitchArsenal&group=pitching&season=${season}`
-        )
-        if (!r.ok) return null
-        const d = await r.json()
-        const entry = (d.stats || []).find(s => s.type?.displayName === 'pitchArsenal')
-        return entry?.splits?.length ? entry.splits : null
-      }
-      const splits = (await fetchArsenal(2026)) || (await fetchArsenal(2025))
-      if (splits) {
-        pitchMix = splits
-          .map(s => ({
-            code: s.stat?.type?.code,
-            name: s.stat?.type?.description,
-            pct: s.stat?.percentage,
-            mph: s.stat?.averageSpeed,
-          }))
-          .filter(p => p.code && p.pct > 0)
-          .sort((a, b) => b.pct - a.pct)
-      }
-    } catch { /* non-fatal */ }
+  // Did today's game already finish?
+  const todayGameFinal = pastGames.some(g => g.date === todayStr)
+
+  // Determine displayed starter + label
+  // Show "Next Starter" when: no game today, or today's game is final
+  let displayStarter = null
+  let displayStarterLabel = 'Today\'s Starter'
+
+  if (todayStarter && !todayGameFinal) {
+    displayStarter = todayStarter
+  } else {
+    displayStarterLabel = 'Next Starter'
+    // Find the soonest future probable pitcher
+    const futureDates = upcomingDates.filter(d => d.dateStr > todayStr)
+    for (const d of futureDates) {
+      const s = starters.find(p => p.schedule?.some(sc => sc.dateStr === d.dateStr))
+      if (s) { displayStarter = s; break }
+    }
   }
 
   return {
@@ -260,8 +252,8 @@ async function fetchTeamData(teamId) {
     bullpen,
     upcomingDates,
     recentDates,
-    todayStarter: todayStarter
-      ? { id: todayStarter.id, name: todayStarter.name, throws: todayStarter.throws, wins: todayStarter.wins, losses: todayStarter.losses, era: todayStarter.era, pitchMix }
+    displayStarter: displayStarter
+      ? { id: displayStarter.id, name: displayStarter.name, throws: displayStarter.throws, wins: displayStarter.wins, losses: displayStarter.losses, era: displayStarter.era, label: displayStarterLabel }
       : null,
   }
 }

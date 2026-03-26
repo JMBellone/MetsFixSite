@@ -57,7 +57,7 @@ function RefreshIcon() {
   )
 }
 
-export default function LiveScoreCard() {
+export default function LiveScoreCard({ onLiveChange }) {
   const [game, setGame] = useState(null)
   const [refreshing, setRefreshing] = useState(false)
   const [lastUpdated, setLastUpdated] = useState(null)
@@ -80,6 +80,7 @@ export default function LiveScoreCard() {
       const data = await res.json()
       const live = data.isLive ? data : null
       setGame(live)
+      onLiveChange?.(!!live)
       setLastUpdated(new Date())
       scheduleInterval(!!live)
     } catch {

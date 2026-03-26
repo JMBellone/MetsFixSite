@@ -98,6 +98,7 @@ export default function App() {
   const [opponent, setOpponent] = useState({ articles: [], opponent: null })
   const [pullY, setPullY] = useState(0)
   const [refreshing, setRefreshing] = useState(false)
+  const [isLive, setIsLive] = useState(false)
   const touchStartY = useRef(0)
 
   const [lastVisitTime] = useState(() => {
@@ -322,7 +323,8 @@ export default function App() {
       <main className="main">
 
         {/* ── Live Score ───────────────────────────────────── */}
-        <LiveScoreCard />
+        <LiveScoreCard onLiveChange={setIsLive} />
+        {isLive && <BullpenCard />}
 
         {/* ── The Latest Briefing ─────────────────────────── */}
         {loading && <div className="briefing-skeleton"><div className="skeleton briefing-skeleton-bar" /><div className="skeleton briefing-skeleton-bar briefing-skeleton-bar--short" /></div>}
@@ -494,7 +496,7 @@ export default function App() {
         <LastGameCard />
 
         {/* ── Bullpen Chart ────────────────────────────────── */}
-        <BullpenCard />
+        {!isLive && <BullpenCard />}
 
         {/* ── SNY Featured Video ───────────────────────────── */}
         <SNYFeaturedCard />
