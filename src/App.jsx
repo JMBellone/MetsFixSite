@@ -13,6 +13,7 @@ import SNYFeaturedCard from './components/SNYFeaturedCard'
 import RewatchCard from './components/RewatchCard'
 import LiveScoreCard from './components/LiveScoreCard'
 import BullpenCard from './components/BullpenCard'
+import LineupsCard from './components/LineupsCard'
 import MLBSnapshotCard from './components/MLBSnapshotCard'
 import MetsVideoCard from './components/MetsVideoCard'
 import MetsStatsCard from './components/MetsStatsCard'
@@ -334,7 +335,7 @@ export default function App() {
 
         {/* ── Live Score ───────────────────────────────────── */}
         <LiveScoreCard onLiveChange={setIsLive} />
-        {isLive && <BullpenCard />}
+        {isLive && <><LineupsCard /><BullpenCard /></>}
 
         {/* ── The Latest Briefing ─────────────────────────── */}
         {loading && <div className="briefing-skeleton"><div className="skeleton briefing-skeleton-bar" /><div className="skeleton briefing-skeleton-bar briefing-skeleton-bar--short" /></div>}
@@ -505,8 +506,8 @@ export default function App() {
         {/* ── Last Game ────────────────────────────────────── */}
         <LastGameCard />
 
-        {/* ── Bullpen Chart ────────────────────────────────── */}
-        {!isLive && <BullpenCard />}
+        {/* ── Today's Lineups + Bullpen Chart ──────────────── */}
+        {!isLive && <><LineupsCard /><BullpenCard /></>}
 
         {/* ── SNY Featured Video ───────────────────────────── */}
         <SNYFeaturedCard />

@@ -1,0 +1,225 @@
+/* ── Today's Lineups Card ─────────────────────────────── */
+
+.lc-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  overflow: hidden;
+  display: grid;
+  grid-template-columns: 1fr 1px 1fr;
+}
+
+.lc-card-header {
+  grid-column: 1 / -1;
+  padding: 10px 10px 8px;
+  border-bottom: 1px solid var(--border);
+}
+
+.lc-card-title {
+  font-size: 0.72rem;
+  font-weight: 900;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  color: var(--text);
+}
+
+/* Mobile tabs — hidden on desktop */
+.lc-mobile-tabs {
+  display: none;
+}
+
+.lc-divider {
+  background: var(--border);
+}
+
+/* Team column */
+.lc-team {
+  padding: 8px 8px 12px;
+  min-width: 0;
+}
+
+.lc-team-hdr {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 8px;
+}
+
+.lc-team-logo {
+  height: 28px;
+  width: auto;
+  flex-shrink: 0;
+}
+
+.lc-team-info {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.lc-team-name {
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--text);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.lc-vs-label {
+  font-size: 9px;
+  color: var(--text-muted);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  line-height: 1.4;
+}
+
+/* Scroll wrapper */
+.lc-scroll {
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: thin;
+  scrollbar-color: var(--border) transparent;
+}
+
+/* Table */
+.lc-table {
+  border-collapse: collapse;
+  width: 100%;
+  table-layout: fixed;
+}
+
+.lc-th {
+  padding: 3px 2px 4px;
+  font-size: 9px;
+  font-weight: 600;
+  color: var(--text-muted);
+  letter-spacing: 0.2px;
+  white-space: nowrap;
+  border-bottom: 1.5px solid var(--text-muted);
+  text-align: center;
+}
+
+.lc-th-order {
+  width: 18px;
+}
+
+.lc-th-name {
+  text-align: left;
+  width: auto;
+}
+
+.lc-th-pos {
+  width: 28px;
+}
+
+.lc-th-vs {
+  width: 62px;
+}
+
+.lc-td {
+  padding: 4px 2px;
+  border-bottom: 1px solid rgba(42, 42, 58, 0.6);
+  font-size: 11px;
+  vertical-align: middle;
+}
+
+.lc-td-order {
+  text-align: center;
+  font-size: 10px;
+  font-weight: 600;
+  color: var(--text-muted);
+}
+
+.lc-td-name {
+  color: var(--text);
+  font-weight: 500;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.lc-td-pos {
+  text-align: center;
+  font-size: 10px;
+  color: var(--text-muted);
+  font-weight: 500;
+}
+
+.lc-td-vs {
+  text-align: center;
+}
+
+/* VS stats cell */
+.lc-vs {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  line-height: 1.2;
+}
+
+.lc-vs-avg {
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--text);
+  font-variant-numeric: tabular-nums;
+}
+
+.lc-vs-ab {
+  font-size: 8px;
+  color: var(--text-muted);
+}
+
+.lc-vs-none {
+  color: var(--text-muted);
+  font-size: 11px;
+}
+
+/* Mobile: single column with tabs */
+@media (max-width: 500px) {
+  .lc-card {
+    grid-template-columns: 1fr;
+  }
+
+  .lc-mobile-tabs {
+    display: flex;
+    grid-column: 1;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .lc-mobile-tab {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    padding: 8px 4px;
+    background: none;
+    border: none;
+    color: var(--text-muted);
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    border-bottom: 2px solid transparent;
+    transition: color 0.15s, border-color 0.15s;
+  }
+
+  .lc-mobile-tab--active {
+    color: var(--text);
+    border-bottom-color: var(--mets-orange);
+  }
+
+  .lc-tab-logo {
+    height: 18px;
+    width: auto;
+  }
+
+  .lc-team-hidden-mobile {
+    display: none;
+  }
+
+  .lc-divider--desktop {
+    display: none;
+  }
+}
