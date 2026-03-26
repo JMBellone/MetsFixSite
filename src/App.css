@@ -2763,6 +2763,31 @@
   min-width: 58px;
 }
 
+/* Toggle buttons row (Box Score + Manager's Card) */
+.live-toggle-row {
+  display: flex;
+  gap: 8px;
+}
+
+.live-toggle-row .live-boxscore-toggle {
+  flex: 1;
+}
+
+/* Manager's Card */
+.live-mc-used td {
+  text-decoration: line-through;
+  opacity: 0.45;
+}
+
+.live-mc-empty {
+  text-align: center;
+  color: rgba(255, 255, 255, 0.3);
+  padding: 6px 0 !important;
+}
+
+.live-mc-l { color: #60a5fa; }
+.live-mc-s { color: #a78bfa; }
+
 /* ── Mets Stats card ─────────────────────────────────────── */
 .stats-card {
   background: var(--surface);

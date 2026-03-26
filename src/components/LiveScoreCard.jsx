@@ -62,6 +62,7 @@ export default function LiveScoreCard({ onLiveChange }) {
   const [refreshing, setRefreshing] = useState(false)
   const [lastUpdated, setLastUpdated] = useState(null)
   const [showBoxScore, setShowBoxScore] = useState(false)
+  const [showManagerCard, setShowManagerCard] = useState(false)
   const [activeTeam, setActiveTeam] = useState('mets')
   const intervalRef = useRef(null)
 
@@ -113,7 +114,7 @@ export default function LiveScoreCard({ onLiveChange }) {
   const {
     home, away, inningHalf, inningOrdinal, outs, balls, strikes,
     runners, batter, pitcher, batterStats, pitcherStats,
-    status, broadcast, venue, metsIsHome, linescore, boxscore,
+    status, broadcast, venue, metsIsHome, linescore, boxscore, managers,
   } = game
 
   const isTop = inningHalf === 'Top'
@@ -240,12 +241,91 @@ export default function LiveScoreCard({ onLiveChange }) {
         </div>
       </div>
 
-      {/* Box score toggle */}
-      <div className="live-boxscore-bar">
+      {/* Toggles row */}
+      <div className="live-boxscore-bar live-toggle-row">
         <button className="live-boxscore-toggle" onClick={() => setShowBoxScore(s => !s)}>
           {showBoxScore ? 'Hide Box Score ▲' : 'Box Score ▼'}
         </button>
+        <button className="live-boxscore-toggle" onClick={() => setShowManagerCard(s => !s)}>
+          {showManagerCard ? "Hide Manager's Card ▲" : "Manager's Card ▼"}
+        </button>
       </div>
+
+      {/* Manager's Card */}
+      {showManagerCard && (() => {
+        const mgr = activeTeam === 'mets' ? managers?.[metsSide] : managers?.[oppSide]
+        const bench = mgr?.bench || []
+        const bullpen = mgr?.pitchers || []
+        return (
+          <div className="live-boxscore">
+            {/* Team tabs */}
+            <div className="live-bs-tabs">
+              <button
+                className={`live-bs-tab${activeTeam === 'mets' ? ' live-bs-tab--active' : ''}`}
+                onClick={() => setActiveTeam('mets')}
+              >
+                Mets
+              </button>
+              <button
+                className={`live-bs-tab${activeTeam === 'opp' ? ' live-bs-tab--active' : ''}`}
+                onClick={() => setActiveTeam('opp')}
+              >
+                {oppName}
+              </button>
+            </div>
+
+            {/* Bench */}
+            <div className="live-bs-section-label">Bench</div>
+            <div className="live-bs-table-wrap">
+              <table className="live-bs-table">
+                <thead>
+                  <tr>
+                    <th className="live-bs-name-col">Player</th>
+                    <th>POS</th>
+                    <th>B</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {bench.length === 0
+                    ? <tr><td colSpan={3} className="live-mc-empty">—</td></tr>
+                    : bench.map((p, i) => (
+                      <tr key={i} className={p.used ? 'live-mc-used' : ''}>
+                        <td className="live-bs-name-col">{p.name}</td>
+                        <td>{p.pos}</td>
+                        <td className={p.bats === 'L' ? 'live-mc-l' : p.bats === 'S' ? 'live-mc-s' : ''}>{p.bats}</td>
+                      </tr>
+                    ))
+                  }
+                </tbody>
+              </table>
+            </div>
+
+            {/* Bullpen */}
+            <div className="live-bs-section-label">Bullpen</div>
+            <div className="live-bs-table-wrap">
+              <table className="live-bs-table">
+                <thead>
+                  <tr>
+                    <th className="live-bs-name-col">Pitcher</th>
+                    <th>THR</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {bullpen.length === 0
+                    ? <tr><td colSpan={2} className="live-mc-empty">—</td></tr>
+                    : bullpen.map((p, i) => (
+                      <tr key={i} className={p.used ? 'live-mc-used' : ''}>
+                        <td className="live-bs-name-col">{p.name}</td>
+                        <td className={p.throws === 'L' ? 'live-mc-l' : ''}>{p.throws}</td>
+                      </tr>
+                    ))
+                  }
+                </tbody>
+              </table>
+            </div>
+          </div>
+        )
+      })()}
 
       {/* Box score */}
       {showBoxScore && (

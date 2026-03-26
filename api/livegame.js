@@ -59,6 +59,44 @@ function buildBatters(bsData, side) {
   }).filter(Boolean)
 }
 
+function buildBench(bsData, side) {
+  const team = bsData?.teams?.[side]
+  if (!team) return []
+  const battingOrderSet = new Set(team.battingOrder || [])
+  // Used: position players who batted but are no longer in the active batting order
+  const usedSubIds = new Set(
+    (team.batters || []).filter(id => !battingOrderSet.has(id))
+  )
+  const used = Array.from(usedSubIds).map(id => {
+    const p = team.players?.[`ID${id}`]
+    if (!p || p.position?.abbreviation === 'P') return null
+    return { name: p.person?.fullName || '', pos: p.position?.abbreviation || '', bats: p.person?.batSide?.code || '', used: true }
+  }).filter(Boolean)
+  // Available: players on the bench who haven't entered
+  const available = (team.bench || []).map(id => {
+    const p = team.players?.[`ID${id}`]
+    if (!p) return null
+    return { name: p.person?.fullName || '', pos: p.position?.abbreviation || '', bats: p.person?.batSide?.code || '', used: false }
+  }).filter(Boolean)
+  return [...used, ...available]
+}
+
+function buildManagerPitchers(bsData, side) {
+  const team = bsData?.teams?.[side]
+  if (!team) return []
+  const used = (team.pitchers || []).map(id => {
+    const p = team.players?.[`ID${id}`]
+    if (!p) return null
+    return { name: p.person?.fullName || '', throws: p.person?.pitchHand?.code || '', used: true }
+  }).filter(Boolean)
+  const available = (team.bullpen || []).map(id => {
+    const p = team.players?.[`ID${id}`]
+    if (!p) return null
+    return { name: p.person?.fullName || '', throws: p.person?.pitchHand?.code || '', used: false }
+  }).filter(Boolean)
+  return [...used, ...available]
+}
+
 function buildPitchers(bsData, side) {
   const team = bsData?.teams?.[side]
   if (!team) return []
@@ -184,6 +222,10 @@ async function buildGameData(gamePk, metsIsHome, liveGame, broadcast) {
     boxscore: {
       home: { batters: buildBatters(bsData, 'home'), pitchers: buildPitchers(bsData, 'home') },
       away: { batters: buildBatters(bsData, 'away'), pitchers: buildPitchers(bsData, 'away') },
+    },
+    managers: {
+      home: { bench: buildBench(bsData, 'home'), pitchers: buildManagerPitchers(bsData, 'home') },
+      away: { bench: buildBench(bsData, 'away'), pitchers: buildManagerPitchers(bsData, 'away') },
     },
   }
 }
