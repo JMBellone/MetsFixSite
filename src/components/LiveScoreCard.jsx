@@ -6,17 +6,17 @@ function logoUrl(abbr) {
   return `https://a.espncdn.com/i/teamlogos/mlb/500/${abbr.toLowerCase()}.png`
 }
 
+const SUFFIXES = new Set(['jr.', 'sr.', 'ii', 'iii', 'iv', 'v'])
+
 function initLast(full) {
   if (!full) return ''
   const parts = full.trim().split(/\s+/)
   if (parts.length < 2) return full
-  return `${parts[0][0]}. ${parts[parts.length - 1]}`
-}
-
-function lastOnly(full) {
-  if (!full) return ''
-  const parts = full.trim().split(/\s+/)
-  return parts[parts.length - 1]
+  const last = parts[parts.length - 1]
+  if (SUFFIXES.has(last.toLowerCase()) && parts.length >= 3) {
+    return `${parts[0][0]}. ${parts[parts.length - 2]} ${last}`
+  }
+  return `${parts[0][0]}. ${last}`
 }
 
 function BasesDiamond({ first, second, third }) {
@@ -93,6 +93,19 @@ export default function LiveScoreCard({ onLiveChange }) {
   useEffect(() => {
     fetchGame()
     return () => clearInterval(intervalRef.current)
+  }, [fetchGame])
+
+  // Pause polling when app is backgrounded / screen locked; resume on return
+  useEffect(() => {
+    const handleVisibility = () => {
+      if (document.hidden) {
+        clearInterval(intervalRef.current)
+      } else {
+        fetchGame()
+      }
+    }
+    document.addEventListener('visibilitychange', handleVisibility)
+    return () => document.removeEventListener('visibilitychange', handleVisibility)
   }, [fetchGame])
 
   if (!game) return null
@@ -303,7 +316,7 @@ export default function LiveScoreCard({ onLiveChange }) {
                   <tbody>
                     {activeBatters.map((b, i) => (
                       <tr key={i}>
-                        <td className="live-bs-name-col">{lastOnly(b.name)}</td>
+                        <td className="live-bs-name-col">{b.name}</td>
                         <td>{b.ab}</td><td>{b.r}</td><td>{b.h}</td>
                         <td>{b.rbi}</td><td>{b.hr}</td><td>{b.bb}</td><td>{b.so}</td>
                       </tr>
@@ -329,7 +342,7 @@ export default function LiveScoreCard({ onLiveChange }) {
                   <tbody>
                     {activePitchers.map((p, i) => (
                       <tr key={i}>
-                        <td className="live-bs-name-col">{lastOnly(p.name)}</td>
+                        <td className="live-bs-name-col">{p.name}</td>
                         <td>{p.ip}</td><td>{p.h}</td><td>{p.r}</td>
                         <td>{p.er}</td><td>{p.bb}</td><td>{p.so}</td><td>{p.pc}</td><td>{p.era}</td>
                       </tr>
