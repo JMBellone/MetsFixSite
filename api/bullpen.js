@@ -3,7 +3,35 @@
 const METS_ID = 121
 const PIRATES_ID = 134
 
-// Opening Day 2026 bullpen rosters (order = depth chart order)
+// Static team ID → abbreviation map (avoids hydration issues)
+const TEAM_ABBR = {
+  108: 'LAA', 109: 'ARI', 110: 'BAL', 111: 'BOS', 112: 'CHC',
+  113: 'CIN', 114: 'CLE', 115: 'COL', 116: 'DET', 117: 'HOU',
+  118: 'KC',  119: 'LAD', 120: 'WSH', 121: 'NYM', 133: 'OAK',
+  134: 'PIT', 135: 'SD',  136: 'SEA', 137: 'SF',  138: 'STL',
+  139: 'TB',  140: 'TEX', 141: 'TOR', 142: 'MIN', 143: 'PHI',
+  144: 'ATL', 145: 'CWS', 146: 'MIA', 147: 'NYY', 158: 'MIL',
+}
+
+// Opening Day 2026 starting rotations
+const FIXED_STARTERS = {
+  [METS_ID]: [
+    { name: 'Kodai Senga',    throws: 'RHP' },
+    { name: 'David Peterson', throws: 'LHP' },
+    { name: 'Tylor Megill',   throws: 'RHP' },
+    { name: 'José Quintana',  throws: 'LHP' },
+    { name: 'José Butto',     throws: 'RHP' },
+  ],
+  [PIRATES_ID]: [
+    { name: 'Paul Skenes',      throws: 'RHP' },
+    { name: 'Mitch Keller',     throws: 'RHP' },
+    { name: 'Jared Jones',      throws: 'RHP' },
+    { name: 'Bailey Falter',    throws: 'LHP' },
+    { name: 'Marco Gonzales',   throws: 'LHP' },
+  ],
+}
+
+// Opening Day 2026 bullpen rosters (depth-chart order)
 const FIXED_BULLPENS = {
   [METS_ID]: [
     { name: 'Devin Williams',   throws: 'RHP' },
@@ -49,7 +77,6 @@ function dayLabel(dateStr, todayStr) {
     .toUpperCase()
 }
 
-// Normalize for name matching (strip accents, lowercase)
 function norm(s) {
   return (s || '').normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase().trim()
 }
@@ -70,27 +97,20 @@ async function fetchTeamData(teamId) {
   const pastSched   = pastRes.ok    ? await pastRes.json()    : {}
   const futureSched = futureRes.ok  ? await futureRes.json()  : {}
 
-  // Build name→id map and id→pitcher map from roster
+  // Build name→id map from active roster
   const nameToId = {}
-  const pitcherMap = {}
   for (const p of (roster.roster || [])) {
     if (p.position?.type !== 'Pitcher' && p.position?.abbreviation !== 'P') continue
-    pitcherMap[p.person.id] = {
-      id: p.person.id,
-      name: p.person.fullName,
-      throws: p.person?.pitchHand?.code === 'L' ? 'LHP' : 'RHP',
-    }
     nameToId[norm(p.person.fullName)] = p.person.id
   }
 
-  // Find recent completed games
+  // Recent completed games
   const pastGames = (pastSched.dates || []).flatMap(d =>
     (d.games || [])
       .filter(g => g.status?.abstractGameState === 'Final')
       .map(g => ({ gamePk: g.gamePk, date: d.date, homeId: g.teams?.home?.team?.id }))
   )
 
-  // Fetch boxscores in parallel
   const boxscores = await Promise.all(
     pastGames.map(async g => {
       try {
@@ -102,9 +122,8 @@ async function fetchTeamData(teamId) {
     })
   )
 
-  // Extract pitch usage; first pitcher in array = starter
+  // Pitch counts from boxscores; update nameToId with any missing players
   const pitcherUsage = {}
-  const recentStarterIds = new Set()
 
   for (const { date, homeId, bs } of boxscores) {
     if (!bs) continue
@@ -112,29 +131,20 @@ async function fetchTeamData(teamId) {
     const team = bs.teams?.[side]
     if (!team) continue
 
-    const ids = team.pitchers || []
-    if (ids[0]) recentStarterIds.add(ids[0])
-
-    for (const pid of ids) {
+    for (const pid of (team.pitchers || [])) {
       const player = team.players?.[`ID${pid}`]
       if (!player) continue
       const pc = player.stats?.pitching?.numberOfPitches ?? 0
       if (pc > 0) {
         pitcherUsage[pid] ??= {}
         pitcherUsage[pid][date] = pc
-        if (!pitcherMap[pid]) {
-          pitcherMap[pid] = {
-            id: pid,
-            name: player.person?.fullName ?? `Player ${pid}`,
-            throws: player.person?.pitchHand?.code === 'L' ? 'LHP' : 'RHP',
-          }
-          nameToId[norm(player.person?.fullName)] = pid
-        }
+        const fn = player.person?.fullName
+        if (fn && !nameToId[norm(fn)]) nameToId[norm(fn)] = pid
       }
     }
   }
 
-  // Upcoming probable pitchers (starters)
+  // Upcoming probable pitchers → schedule map { id: [{dateStr, dayAbbr, opp}] }
   const upcomingSchedule = {}
   const upcomingDates = []
 
@@ -145,33 +155,29 @@ async function fetchTeamData(teamId) {
     for (const game of (dateEntry.games || [])) {
       const side = game.teams?.home?.team?.id === teamId ? 'home' : 'away'
       const oppSide = side === 'home' ? 'away' : 'home'
-      const oppAbbr = game.teams?.[oppSide]?.team?.abbreviation || '?'
+      const oppTeamId = game.teams?.[oppSide]?.team?.id
+      const oppAbbr = TEAM_ABBR[oppTeamId] || game.teams?.[oppSide]?.team?.abbreviation || '?'
       const pp = game.teams?.[side]?.probablePitcher
       if (pp?.id) {
         upcomingSchedule[pp.id] ??= []
         upcomingSchedule[pp.id].push({ dateStr: ds, dayAbbr: dayLabel(ds, todayStr), opp: oppAbbr })
-        if (!pitcherMap[pp.id]) {
-          pitcherMap[pp.id] = { id: pp.id, name: pp.fullName, throws: 'RHP' }
-        }
+        if (pp.fullName) nameToId[norm(pp.fullName)] = pp.id
       }
     }
   }
 
-  const starterIds = new Set([
-    ...Object.keys(upcomingSchedule).map(Number),
-    ...recentStarterIds,
-  ])
+  // Build starters from fixed list + schedule from API
+  const starters = (FIXED_STARTERS[teamId] || []).map(p => {
+    const id = nameToId[norm(p.name)]
+    return {
+      id: id ?? null,
+      name: p.name,
+      throws: p.throws,
+      schedule: id ? (upcomingSchedule[id] || []) : [],
+    }
+  })
 
-  const starters = Object.values(pitcherMap)
-    .filter(p => starterIds.has(p.id))
-    .map(p => ({ ...p, schedule: upcomingSchedule[p.id] || [] }))
-    .sort((a, b) => {
-      const ad = a.schedule[0]?.dateStr || 'Z'
-      const bd = b.schedule[0]?.dateStr || 'Z'
-      return ad < bd ? -1 : ad > bd ? 1 : a.name.localeCompare(b.name)
-    })
-
-  // Bullpen: use fixed Opening Day roster, match to IDs for pitch counts
+  // Build bullpen from fixed list + pitch counts from boxscores
   const bullpen = (FIXED_BULLPENS[teamId] || []).map(p => {
     const id = nameToId[norm(p.name)]
     return {

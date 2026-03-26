@@ -128,6 +128,8 @@ export default function LastGameCard() {
     </div>
   )
   if (!data?.game) return null
+  // Hide until Opening Day game completes (don't show spring training results)
+  if (data.game.date < '2026-03-26') return null
 
   const { game, linescore, boxscore } = data
   const metsWon = game.metsIsHome

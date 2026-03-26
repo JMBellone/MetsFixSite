@@ -146,10 +146,13 @@ export default function BullpenCard() {
   if (!data || data.error) return null
 
   return (
-    <div className="bc-card">
-      <TeamSection data={data.mets}    abbr="NYM" />
-      <div className="bc-divider" />
-      <TeamSection data={data.pirates} abbr="PIT" />
-    </div>
+    <>
+      <div className="bc-title">⚾️ BULLPEN CHART</div>
+      <div className="bc-card">
+        <TeamSection data={data.mets}    abbr="NYM" />
+        <div className="bc-divider" />
+        <TeamSection data={data.pirates} abbr="PIT" />
+      </div>
+    </>
   )
 }
