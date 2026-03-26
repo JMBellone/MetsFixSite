@@ -211,22 +211,7 @@ export default function App() {
     })
   }, [])
 
-  const metropolitanArticles = articles
-    .filter(a => a.team === 'metropolitan')
-    .sort((a, b) => new Date(b.pubDate) - new Date(a.pubDate))
-
-  const briefingArticle = (() => {
-    if (!metropolitanArticles.length) return null
-    // Between 5:00 AM and 9:00 AM ET, prefer an article with "Mets" in the title
-    const et = new Date().toLocaleString('en-US', {
-      timeZone: 'America/New_York', hour: '2-digit', minute: '2-digit', hour12: false,
-    })
-    const [h] = et.split(':').map(Number)
-    if (h >= 5 && h < 9) {
-      return metropolitanArticles.find(a => /mets/i.test(a.title)) || metropolitanArticles[0]
-    }
-    return metropolitanArticles[0]
-  })()
+  const briefingArticle = articles.find(a => a.team === 'metropolitan') || null
 
   const newsPool = articles
     .filter(a => a.team === 'mets' && !a.authorFeed)
@@ -240,7 +225,17 @@ export default function App() {
     ...newsPool.filter(a => ['MLB.com', 'SNY', 'NY Post', 'Newsday'].includes(a.source) && !topAthleticIds.has(a.id)).slice(0, 6),
   ].sort((a, b) => new Date(b.pubDate) - new Date(a.pubDate)).slice(0, 6)
 
-  const topFeatured  = topPool[0]
+  const topFeatured = (() => {
+    const base = topPool[0]
+    const h = parseInt(
+      new Date().toLocaleString('en-US', { timeZone: 'America/New_York', hour: '2-digit', hour12: false }),
+      10
+    )
+    if (h >= 5 && h < 9 && base && !/mets/i.test(base.title)) {
+      return newsPool.find(a => /mets/i.test(a.title)) || base
+    }
+    return base
+  })()
   const topRest      = topPool.slice(1)
   const topSmall     = topRest.slice(0, 3)
   const topHeadlines = topRest.slice(3, 5)
@@ -517,6 +512,36 @@ export default function App() {
 
         {/* ── MLB Snapshot (Standings + Scores + FastCast) ──── */}
         <MLBSnapshotCard />
+
+        {/* ── Dive Preview: next 2 articles ────────────────── */}
+        {!loading && !error && diveSmall.length > 0 && (
+          <div className="team-news-card">
+            {diveSmall.map((a, i) => (
+              <Fragment key={a.id}>
+                {i > 0 && <div className="team-news-divider" />}
+                <div className="team-news-item-wrap">
+                  <a href={a.link} target="_blank" rel="noopener noreferrer"
+                    className="team-news-secondary" onClick={() => markRead(a.id)}>
+                    {a.image && (
+                      <img src={a.image} alt="" className="team-news-secondary-img" loading="lazy"
+                        onError={e => { e.currentTarget.style.display = 'none' }} />
+                    )}
+                    <div className="team-news-secondary-body">
+                      <span className={`team-news-secondary-title${readIds.has(a.id) ? ' team-news--read' : ''}`}>
+                        {a.title}
+                      </span>
+                      <span className="team-news-meta">
+                        {timeAgo(a.pubDate)} ·{' '}
+                        <img src={faviconUrl(a.link)} alt="" className="news-meta-favicon" onError={e => { e.currentTarget.style.display = 'none' }} />
+                        {a.source}{a.paywalled && <SubscriberIcon />}
+                      </span>
+                    </div>
+                  </a>
+                </div>
+              </Fragment>
+            ))}
+          </div>
+        )}
 
         {/* ── Upcoming Schedule + Know Your Opponent ───────── */}
         <div className="game-preview-group">
