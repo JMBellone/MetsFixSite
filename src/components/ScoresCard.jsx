@@ -85,6 +85,7 @@ export default function ScoresCard() {
     : [...nlEastGames, ...otherGames.slice(0, 5 - nlEastGames.length)]
 
   const displayGames = showAll ? data.games : defaultGames
+  const hasMore = data.games.length > defaultGames.length
 
   return (
     <div className="sc-card">
@@ -92,20 +93,18 @@ export default function ScoresCard() {
         <img src={MLB_LOGO} alt="MLB" className="sc-header-logo" onError={e => { e.currentTarget.style.display = 'none' }} />
         <span className="sc-header-title">MLB Scores</span>
         <span className="sc-header-date">{data.displayLabel}</span>
-        <div className="sc-tabs">
-          <button
-            className={`sc-tab${!showAll ? ' sc-tab--active' : ''}`}
-            onClick={() => setShowAll(false)}
-          >NL East</button>
-          <button
-            className={`sc-tab${showAll ? ' sc-tab--active' : ''}`}
-            onClick={() => setShowAll(true)}
-          >All</button>
-        </div>
       </div>
       <div className="sc-grid">
         {displayGames.map(g => <GameTile key={g.gamePk} game={g} />)}
       </div>
+      {(hasMore || showAll) && (
+        <button className="sc-toggle" onClick={() => setShowAll(s => !s)}>
+          {showAll ? 'Show Less' : 'Show All Scores'}
+          <svg viewBox="0 0 24 24" fill="none" className={`lg-toggle-chevron${showAll ? ' lg-toggle-chevron--open' : ''}`}>
+            <polyline points="6,9 12,15 18,9" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"/>
+          </svg>
+        </button>
+      )}
     </div>
   )
 }
