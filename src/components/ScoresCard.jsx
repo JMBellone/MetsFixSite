@@ -3,46 +3,53 @@ import './ScoresCard.css'
 
 const MLB_LOGO = 'https://a.espncdn.com/i/teamlogos/leagues/500/mlb.png'
 
-function GameTile({ game }) {
+function GameRow({ game }) {
   const { away, home, status, inning, inningHalf, startTime } = game
 
-  const inningLabel = status === 'live' && inning
-    ? `${inningHalf === 'Top' ? 'T' : inningHalf === 'Bottom' ? 'B' : 'M'}${inning}`
-    : null
+  let statusEl
+  if (status === 'live') {
+    const half = inningHalf === 'Top' ? 'T' : inningHalf === 'Bottom' ? 'B' : 'M'
+    statusEl = (
+      <span className="sc-status sc-status--live">
+        <span className="sc-live-dot" />
+        {half}{inning}
+      </span>
+    )
+  } else if (status === 'final') {
+    const label = inning && inning > 9 ? `F/${inning}` : 'Final'
+    statusEl = <span className="sc-status sc-status--final">{label}</span>
+  } else if (status === 'postponed') {
+    statusEl = <span className="sc-status sc-status--ppd">PPD</span>
+  } else if (status === 'suspended') {
+    statusEl = <span className="sc-status sc-status--ppd">SUSP</span>
+  } else {
+    statusEl = <span className="sc-status sc-status--time">{startTime}</span>
+  }
 
-  const finalLabel = status === 'final'
-    ? (inning && inning > 9 ? `F/${inning}` : 'FINAL')
-    : null
+  const awayDim = status === 'final' && !away.win
+  const homeDim = status === 'final' && !home.win
 
   return (
-    <div className={`sc-tile${status === 'live' ? ' sc-tile--live' : ''}`}>
-      <div className="sc-teams">
-        <div className="sc-team-row">
-          <img className="sc-logo" src={away.logo} alt={away.abbr} onError={e => { e.currentTarget.style.display = 'none' }} />
-          <span className={`sc-abbr${away.win ? ' sc-abbr--win' : ''}`}>{away.abbr}</span>
-          <span className={`sc-score${away.win ? ' sc-score--win' : status === 'preview' ? ' sc-score--hidden' : ''}`}>
-            {away.score ?? ''}
-          </span>
-        </div>
-        <div className="sc-team-row">
-          <img className="sc-logo" src={home.logo} alt={home.abbr} onError={e => { e.currentTarget.style.display = 'none' }} />
-          <span className={`sc-abbr${home.win ? ' sc-abbr--win' : ''}`}>{home.abbr}</span>
-          <span className={`sc-score${home.win ? ' sc-score--win' : status === 'preview' ? ' sc-score--hidden' : ''}`}>
-            {home.score ?? ''}
-          </span>
-        </div>
+    <div className="sc-row">
+      {/* Away (left) */}
+      <div className="sc-side">
+        <img className="sc-logo" src={away.logo} alt={away.abbr} onError={e => { e.currentTarget.style.display = 'none' }} />
+        <span className={`sc-abbr${awayDim ? ' sc-dim' : ''}`}>{away.abbr}</span>
+        <span className={`sc-score${awayDim ? ' sc-dim' : away.win ? ' sc-score--win' : ''}`}>
+          {status !== 'preview' ? (away.score ?? '') : ''}
+        </span>
       </div>
-      <div className="sc-status-row">
-        {status === 'live' && (
-          <span className="sc-status sc-status--live">
-            <span className="sc-live-dot" />
-            {inningLabel}
-          </span>
-        )}
-        {status === 'final' && <span className="sc-status sc-status--final">{finalLabel}</span>}
-        {status === 'preview' && <span className="sc-status sc-status--time">{startTime}</span>}
-        {status === 'postponed' && <span className="sc-status sc-status--ppd">PPD</span>}
-        {status === 'suspended' && <span className="sc-status sc-status--ppd">SUSP</span>}
+
+      {/* Center status */}
+      <div className="sc-mid">{statusEl}</div>
+
+      {/* Home (right) */}
+      <div className="sc-side sc-side--home">
+        <span className={`sc-score${homeDim ? ' sc-dim' : home.win ? ' sc-score--win' : ''}`}>
+          {status !== 'preview' ? (home.score ?? '') : ''}
+        </span>
+        <span className={`sc-abbr${homeDim ? ' sc-dim' : ''}`}>{home.abbr}</span>
+        <img className="sc-logo" src={home.logo} alt={home.abbr} onError={e => { e.currentTarget.style.display = 'none' }} />
       </div>
     </div>
   )
@@ -78,8 +85,6 @@ export default function ScoresCard() {
 
   const nlEastGames = data.games.filter(g => g.isNLEast)
   const otherGames = data.games.filter(g => !g.isNLEast)
-
-  // Minimum 5 games: fill from other games (already sorted live → final → preview)
   const defaultGames = nlEastGames.length >= 5
     ? nlEastGames
     : [...nlEastGames, ...otherGames.slice(0, 5 - nlEastGames.length)]
@@ -94,9 +99,11 @@ export default function ScoresCard() {
         <span className="sc-header-title">MLB Scores</span>
         <span className="sc-header-date">{data.displayLabel}</span>
       </div>
-      <div className="sc-grid">
-        {displayGames.map(g => <GameTile key={g.gamePk} game={g} />)}
+
+      <div className="sc-list">
+        {displayGames.map(g => <GameRow key={g.gamePk} game={g} />)}
       </div>
+
       {(hasMore || showAll) && (
         <button className="sc-toggle" onClick={() => setShowAll(s => !s)}>
           {showAll ? 'Show Less' : 'Show All Scores'}

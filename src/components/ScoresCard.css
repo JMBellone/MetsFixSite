@@ -38,109 +38,93 @@
   letter-spacing: 0.4px;
 }
 
-.sc-toggle {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 5px;
-  width: 100%;
-  background: none;
-  border: none;
-  border-top: 1px solid var(--border);
-  color: var(--text-muted);
-  font-size: 0.68rem;
-  font-weight: 600;
-  padding: 9px 14px;
-  cursor: pointer;
-  transition: color 0.15s, background 0.15s;
-  letter-spacing: 0.2px;
-}
-
-.sc-toggle:hover {
-  color: var(--text);
-  background: var(--surface-2);
-}
-
-/* Game grid */
-.sc-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(110px, 1fr));
-  gap: 1px;
-  background: var(--border);
-}
-
-/* Game tile */
-.sc-tile {
-  background: var(--surface);
-  padding: 8px 10px 7px;
+/* Game list */
+.sc-list {
   display: flex;
   flex-direction: column;
-  gap: 5px;
 }
 
-.sc-tile--live {
-  background: rgba(0, 45, 114, 0.18);
-}
-
-.sc-teams {
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
-}
-
-.sc-team-row {
+/* Game row */
+.sc-row {
   display: flex;
   align-items: center;
-  gap: 5px;
+  padding: 11px 14px;
+  gap: 6px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.sc-row:last-child {
+  border-bottom: none;
+}
+
+/* Each team half */
+.sc-side {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  min-width: 0;
+}
+
+/* Home side: reversed — score near center, logo at far right */
+.sc-side--home {
+  justify-content: flex-end;
 }
 
 .sc-logo {
-  width: 18px;
-  height: 18px;
+  width: 26px;
+  height: 26px;
   object-fit: contain;
   flex-shrink: 0;
 }
 
 .sc-abbr {
   font-size: 0.72rem;
-  font-weight: 600;
-  color: var(--text-muted);
-  flex: 1;
-  min-width: 0;
+  font-weight: 700;
+  color: var(--text);
+  white-space: nowrap;
+  letter-spacing: 0.2px;
 }
 
-.sc-abbr--win {
-  color: var(--text);
-  font-weight: 700;
+/* Away score pushed right (toward center) */
+.sc-side:not(.sc-side--home) .sc-score {
+  margin-left: auto;
 }
 
 .sc-score {
-  font-size: 0.78rem;
-  font-weight: 600;
-  color: var(--text-muted);
-  min-width: 16px;
-  text-align: right;
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--text);
+  min-width: 28px;
+  text-align: center;
+  line-height: 1;
+  font-variant-numeric: tabular-nums;
 }
 
 .sc-score--win {
-  color: var(--text);
-  font-weight: 800;
+  color: #ffffff;
 }
 
-.sc-score--hidden {
-  visibility: hidden;
+/* Loser dimming */
+.sc-dim {
+  color: var(--text-muted);
+  opacity: 0.6;
 }
 
-/* Status row */
-.sc-status-row {
-  margin-top: 1px;
+/* Center status column */
+.sc-mid {
+  width: 68px;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .sc-status {
-  font-size: 0.6rem;
-  font-weight: 700;
-  letter-spacing: 0.4px;
-  text-transform: uppercase;
+  font-size: 0.72rem;
+  font-weight: 500;
+  text-align: center;
+  white-space: nowrap;
 }
 
 .sc-status--final {
@@ -152,30 +136,54 @@
   display: flex;
   align-items: center;
   gap: 4px;
+  font-weight: 700;
 }
 
 .sc-live-dot {
-  width: 5px;
-  height: 5px;
+  width: 6px;
+  height: 6px;
   border-radius: 50%;
   background: #4ade80;
-  animation: sc-pulse 1.4s ease-in-out infinite;
   flex-shrink: 0;
+  animation: sc-pulse 1.4s ease-in-out infinite;
 }
 
 @keyframes sc-pulse {
   0%, 100% { opacity: 1; }
-  50% { opacity: 0.3; }
+  50% { opacity: 0.25; }
 }
 
 .sc-status--time {
   color: var(--text-muted);
-  font-weight: 600;
-  font-size: 0.62rem;
-  letter-spacing: 0;
+  font-size: 0.68rem;
+  font-weight: 500;
 }
 
 .sc-status--ppd {
   color: var(--text-muted);
-  opacity: 0.7;
+  opacity: 0.6;
+}
+
+/* Show All toggle */
+.sc-toggle {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  width: 100%;
+  background: none;
+  border: none;
+  border-top: 1px solid var(--border);
+  color: var(--text-muted);
+  font-size: 0.72rem;
+  font-weight: 500;
+  padding: 10px 14px;
+  cursor: pointer;
+  transition: color 0.15s, background 0.15s;
+  letter-spacing: 0.1px;
+}
+
+.sc-toggle:hover {
+  color: var(--text);
+  background: var(--surface-2);
 }
