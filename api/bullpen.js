@@ -3,6 +3,30 @@
 const METS_ID = 121
 const PIRATES_ID = 134
 
+// Opening Day 2026 bullpen rosters (order = depth chart order)
+const FIXED_BULLPENS = {
+  [METS_ID]: [
+    { name: 'Devin Williams',   throws: 'RHP' },
+    { name: 'Luke Weaver',      throws: 'RHP' },
+    { name: 'Brooks Raley',     throws: 'LHP' },
+    { name: 'Luis García',      throws: 'RHP' },
+    { name: 'Huascar Brazobán', throws: 'RHP' },
+    { name: 'Tobias Myers',     throws: 'RHP' },
+    { name: 'Richard Lovelady', throws: 'LHP' },
+    { name: 'Sean Manaea',      throws: 'LHP' },
+  ],
+  [PIRATES_ID]: [
+    { name: 'Dennis Santana',   throws: 'RHP' },
+    { name: 'Gregory Soto',     throws: 'LHP' },
+    { name: 'Isaac Mattson',    throws: 'RHP' },
+    { name: 'Justin Lawrence',  throws: 'RHP' },
+    { name: 'Mason Montgomery', throws: 'LHP' },
+    { name: 'Yohan Ramírez',    throws: 'RHP' },
+    { name: 'Hunter Barco',     throws: 'LHP' },
+    { name: 'José Urquidy',     throws: 'RHP' },
+  ],
+}
+
 function todayET() {
   const s = new Date().toLocaleDateString('en-CA', { timeZone: 'America/New_York' })
   return new Date(s + 'T00:00:00')
@@ -25,6 +49,11 @@ function dayLabel(dateStr, todayStr) {
     .toUpperCase()
 }
 
+// Normalize for name matching (strip accents, lowercase)
+function norm(s) {
+  return (s || '').normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase().trim()
+}
+
 async function fetchTeamData(teamId) {
   const today = todayET()
   const todayStr = fmt(today)
@@ -37,11 +66,12 @@ async function fetchTeamData(teamId) {
     fetch(`https://statsapi.mlb.com/api/v1/schedule?teamId=${teamId}&sportId=1&startDate=${todayStr}&endDate=${futureStr}&gameType=S,R,E&hydrate=probablePitcher`),
   ])
 
-  const roster     = rosterRes.ok  ? await rosterRes.json()  : {}
-  const pastSched  = pastRes.ok    ? await pastRes.json()    : {}
-  const futureSched = futureRes.ok ? await futureRes.json()  : {}
+  const roster      = rosterRes.ok  ? await rosterRes.json()  : {}
+  const pastSched   = pastRes.ok    ? await pastRes.json()    : {}
+  const futureSched = futureRes.ok  ? await futureRes.json()  : {}
 
-  // Build pitcher map from active roster
+  // Build name→id map and id→pitcher map from roster
+  const nameToId = {}
   const pitcherMap = {}
   for (const p of (roster.roster || [])) {
     if (p.position?.type !== 'Pitcher' && p.position?.abbreviation !== 'P') continue
@@ -50,6 +80,7 @@ async function fetchTeamData(teamId) {
       name: p.person.fullName,
       throws: p.person?.pitchHand?.code === 'L' ? 'LHP' : 'RHP',
     }
+    nameToId[norm(p.person.fullName)] = p.person.id
   }
 
   // Find recent completed games
@@ -91,19 +122,19 @@ async function fetchTeamData(teamId) {
       if (pc > 0) {
         pitcherUsage[pid] ??= {}
         pitcherUsage[pid][date] = pc
-        // Add pitcher if not already in roster map (e.g. call-ups)
         if (!pitcherMap[pid]) {
           pitcherMap[pid] = {
             id: pid,
             name: player.person?.fullName ?? `Player ${pid}`,
             throws: player.person?.pitchHand?.code === 'L' ? 'LHP' : 'RHP',
           }
+          nameToId[norm(player.person?.fullName)] = pid
         }
       }
     }
   }
 
-  // Upcoming probable pitchers
+  // Upcoming probable pitchers (starters)
   const upcomingSchedule = {}
   const upcomingDates = []
 
@@ -126,7 +157,6 @@ async function fetchTeamData(teamId) {
     }
   }
 
-  // Starters = upcoming probable pitchers + recent game starters
   const starterIds = new Set([
     ...Object.keys(upcomingSchedule).map(Number),
     ...recentStarterIds,
@@ -141,17 +171,17 @@ async function fetchTeamData(teamId) {
       return ad < bd ? -1 : ad > bd ? 1 : a.name.localeCompare(b.name)
     })
 
-  const bullpen = Object.values(pitcherMap)
-    .filter(p => !starterIds.has(p.id))
-    .map(p => ({ ...p, usage: pitcherUsage[p.id] || {} }))
-    .sort((a, b) => {
-      // Sort: pitchers who appeared recently first, then alphabetical
-      const aRecent = Math.max(0, ...Object.keys(a.usage).map(d => new Date(d).getTime()))
-      const bRecent = Math.max(0, ...Object.keys(b.usage).map(d => new Date(d).getTime()))
-      return bRecent - aRecent || a.name.localeCompare(b.name)
-    })
+  // Bullpen: use fixed Opening Day roster, match to IDs for pitch counts
+  const bullpen = (FIXED_BULLPENS[teamId] || []).map(p => {
+    const id = nameToId[norm(p.name)]
+    return {
+      id: id ?? null,
+      name: p.name,
+      throws: p.throws,
+      usage: id ? (pitcherUsage[id] || {}) : {},
+    }
+  })
 
-  // Recent dates with labels (past 5 days, most recent first)
   const recentDates = Array.from({ length: 5 }, (_, i) => {
     const ds = fmt(addDays(today, -(i + 1)))
     return { dateStr: ds, dayAbbr: dayLabel(ds, todayStr) }
