@@ -468,7 +468,7 @@ export default function App() {
                 onClick={() => markRead(topFeatured.id)}
               >
                 {topFeatured.image && (
-                  <img src={topFeatured.image} alt="" className="team-news-featured-img"
+                  <img src={topFeatured.image} alt="" className={`team-news-featured-img${topFeatured.source === 'NY Post' ? ' img-top' : ''}`}
                     onError={e => { e.currentTarget.style.display = 'none' }} />
                 )}
                 <div className="team-news-featured-body">
@@ -685,7 +685,7 @@ export default function App() {
                   onClick={() => markRead(featured.id)}
                 >
                   {featured.image && (
-                    <img src={featured.image} alt="" className="team-news-featured-img" loading="lazy"
+                    <img src={featured.image} alt="" className={`team-news-featured-img${featured.source === 'NY Post' ? ' img-top' : ''}`} loading="lazy"
                       onError={e => { e.currentTarget.style.display = 'none' }} />
                   )}
                   <div className="team-news-featured-body">
@@ -956,7 +956,7 @@ export default function App() {
               <a href={athFeatured.link} target="_blank" rel="noopener noreferrer"
                 className="team-news-featured" onClick={() => markRead(athFeatured.id)}>
                 {athFeatured.image && (
-                  <img src={athFeatured.image} alt="" className="team-news-featured-img" loading="lazy"
+                  <img src={athFeatured.image} alt="" className={`team-news-featured-img${athFeatured.source === 'NY Post' ? ' img-top' : ''}`} loading="lazy"
                     onError={e => { e.currentTarget.style.display = 'none' }} />
                 )}
                 <div className="team-news-featured-body">
@@ -1061,7 +1061,7 @@ export default function App() {
                           <a href={a.link} target="_blank" rel="noopener noreferrer"
                             className="team-news-featured" onClick={() => markRead(a.id)}>
                             {a.image && (
-                              <img src={a.image} alt="" className="team-news-featured-img" loading="lazy"
+                              <img src={a.image} alt="" className={`team-news-featured-img${a.source === 'NY Post' ? ' img-top' : ''}`} loading="lazy"
                                 onError={e => { e.currentTarget.style.display = 'none' }} />
                             )}
                             <div className="team-news-featured-body">
