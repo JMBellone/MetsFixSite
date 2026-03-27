@@ -566,6 +566,39 @@ export default function App() {
           </div>
         </div>
 
+        {/* ── Mets Fix Podcast Promo ───────────────────────── */}
+        <div className="team-news-card clubhouse-pass-card">
+          <div className="latest-updates-header">
+            <span className="latest-updates-title">🎙️ METS FIX PODCAST</span>
+          </div>
+          <div className="clubhouse-pass-body">
+            <p className="clubhouse-pass-desc">Subscribe to our show on your favorite podcast app.</p>
+            <div className="clubhouse-pass-row">
+              <img src="/metsfix-podcast.jpg" alt="Mets Fix Podcast" className="clubhouse-pass-art" />
+              <div className="clubhouse-pass-links">
+                <a
+                  href="https://podcasts.apple.com/us/podcast/mets-fix/id1677996090"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="clubhouse-pass-link"
+                >
+                  <img src="https://www.google.com/s2/favicons?domain=podcasts.apple.com&sz=32" alt="" className="clubhouse-pass-icon" onError={e => { e.currentTarget.style.display = 'none' }} />
+                  Listen on Apple Podcasts
+                </a>
+                <a
+                  href="https://open.spotify.com/show/1qXfHbE2tpUebZIhoTLb0l"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="clubhouse-pass-link"
+                >
+                  <img src="https://www.google.com/s2/favicons?domain=open.spotify.com&sz=32" alt="" className="clubhouse-pass-icon" onError={e => { e.currentTarget.style.display = 'none' }} />
+                  Listen on Spotify
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
+
         {/* ── Last Game ────────────────────────────────────── */}
         <LastGameCard />
 
