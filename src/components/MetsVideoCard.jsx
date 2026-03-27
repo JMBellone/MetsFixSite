@@ -77,7 +77,7 @@ export default function MetsVideoCard() {
           className="sny-card-header-logo"
           onError={e => { e.currentTarget.style.display = 'none' }}
         />
-        <span className="sny-card-header-label">Mets on YouTube</span>
+        <span className="sny-card-header-label">METS WATCH</span>
       </div>
 
       {playingIndex === currentIndex ? (

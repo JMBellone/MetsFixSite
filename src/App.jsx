@@ -861,6 +861,37 @@ export default function App() {
           </>
         )}
 
+        {/* ── See It on SNY ────────────────────────────────── */}
+        <SNYCard />
+
+        {/* ── Roster Activity ──────────────────────────────── */}
+        <div className="section-header section-header--mets">
+          <span className="section-header-label">📝 Roster Activity</span>
+          <span className="section-header-line" />
+        </div>
+
+        {/* ── Option Dates ─────────────────────────────────── */}
+        <OptionDatesCard />
+
+        {/* ── Injured List ─────────────────────────────────── */}
+        <InjuredListCard />
+
+        {/* ── Prospect Watch ───────────────────────────────── */}
+        <div className="section-header section-header--mets">
+          <span className="section-header-label">🌱 Prospect Watch</span>
+          <span className="section-header-line" />
+        </div>
+        <p className="prospect-watch-subtext">More prospect coverage to come!</p>
+        <SyracuseScheduleCard />
+        <ProspectArticlesCard />
+        <DoveReportCard />
+
+        {/* ── Ya Gotta Keep Reading ────────────────────────── */}
+        <div className="section-header section-header--mets">
+          <span className="section-header-label">📚 Ya Gotta Keep Reading</span>
+          <span className="section-header-line" />
+        </div>
+
         {/* ── Get Your Mets Fix newsletters ────────────────── */}
         {metropolitanWeekArticles.length > 0 && (
           <div className="team-news-card">
@@ -910,34 +941,6 @@ export default function App() {
             </a>
           </div>
         )}
-
-        {/* ── Roster Activity ──────────────────────────────── */}
-        <div className="section-header section-header--mets">
-          <span className="section-header-label">📝 Roster Activity</span>
-          <span className="section-header-line" />
-        </div>
-
-        {/* ── Option Dates ─────────────────────────────────── */}
-        <OptionDatesCard />
-
-        {/* ── Injured List ─────────────────────────────────── */}
-        <InjuredListCard />
-
-        {/* ── Prospect Watch ───────────────────────────────── */}
-        <div className="section-header section-header--mets">
-          <span className="section-header-label">🌱 Prospect Watch</span>
-          <span className="section-header-line" />
-        </div>
-        <p className="prospect-watch-subtext">More prospect coverage to come!</p>
-        <SyracuseScheduleCard />
-        <ProspectArticlesCard />
-        <DoveReportCard />
-
-        {/* ── Ya Gotta Keep Reading ────────────────────────── */}
-        <div className="section-header section-header--mets">
-          <span className="section-header-label">📚 Ya Gotta Keep Reading</span>
-          <span className="section-header-line" />
-        </div>
 
         {/* ── The Athletic ─────────────────────────────────── */}
         {athFeatured && (
@@ -1023,9 +1026,6 @@ export default function App() {
             )}
           </div>
         )}
-
-        {/* ── See It on SNY ────────────────────────────────── */}
-        <SNYCard />
 
         {/* ── Blog Roll ────────────────────────────────────── */}
         <BlogRollCard />
