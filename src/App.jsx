@@ -540,7 +540,7 @@ export default function App() {
             <span className="latest-updates-title">🎙️ METS FIX PODCAST</span>
           </div>
           <div className="clubhouse-pass-body">
-            <p className="clubhouse-pass-desc">Subscribe to our show on your favorite podcast app.</p>
+            <p className="clubhouse-pass-desc">Get your Mets Fix on the go with our podcast.</p>
             <div className="clubhouse-pass-row">
               <img src="/metsfix-podcast.png" alt="Mets Fix Podcast" className="clubhouse-pass-art" />
               <div className="clubhouse-pass-links">
