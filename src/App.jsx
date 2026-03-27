@@ -231,6 +231,22 @@ export default function App() {
 
   const briefingArticle = articles.find(a => a.team === 'metropolitan') || null
 
+  // After 4 PM ET, hide the briefing article unless a new one was published after 4 PM today
+  const showBriefingArticle = (() => {
+    if (!briefingArticle) return false
+    const hourET = parseInt(
+      new Date().toLocaleString('en-US', { timeZone: 'America/New_York', hour: '2-digit', hour12: false }), 10
+    )
+    if (hourET < 16) return true
+    const pub = new Date(briefingArticle.pubDate)
+    const pubDay = pub.toLocaleDateString('en-CA', { timeZone: 'America/New_York' })
+    const today = new Date().toLocaleDateString('en-CA', { timeZone: 'America/New_York' })
+    const pubHour = parseInt(
+      pub.toLocaleString('en-US', { timeZone: 'America/New_York', hour: '2-digit', hour12: false }), 10
+    )
+    return pubDay === today && pubHour >= 16
+  })()
+
   const metropolitanWeekArticles = (() => {
     const etToday = new Date().toLocaleDateString('en-CA', { timeZone: 'America/New_York' })
     const todayMidnight = new Date(etToday + 'T00:00:00')
@@ -373,7 +389,7 @@ export default function App() {
 
         {/* ── The Latest Briefing ─────────────────────────── */}
         {loading && <div className="briefing-skeleton"><div className="skeleton briefing-skeleton-bar" /><div className="skeleton briefing-skeleton-bar briefing-skeleton-bar--short" /></div>}
-        {!loading && briefingArticle && (
+        {!loading && showBriefingArticle && (
           <>
             <div className={`section-header section-header--mets section-header--briefing section-header--briefing-${getBriefingTime()}`}>
               <span className="section-header-label">{getBriefingLabel()}</span>
