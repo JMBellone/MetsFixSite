@@ -423,7 +423,7 @@ export default function App() {
         )}
 
         {/* ── Signup CTA ───────────────────────────────────── */}
-        {!loading && briefingArticle && (
+        {!loading && showBriefingArticle && (
           <>
             <a
               href="https://themetropolitan.substack.com/subscribe"
@@ -432,6 +432,20 @@ export default function App() {
               className="briefing-signup"
             >
               👉 Sign up to receive Mets Fix in your inbox
+            </a>
+            <div className="news-section-divider" />
+          </>
+        )}
+        {!loading && !showBriefingArticle && (
+          <>
+            <a
+              href="https://themetropolitan.substack.com/subscribe"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="newsletter-signup-banner"
+            >
+              <span className="newsletter-signup-title">👉 Sign up to receive Mets Fix in your inbox</span>
+              <span className="newsletter-signup-sub">A Mets newsletter packed with unique insight and analysis.</span>
             </a>
             <div className="news-section-divider" />
           </>
