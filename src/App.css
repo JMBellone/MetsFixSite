@@ -1825,6 +1825,11 @@
   .briefing-signup:hover { opacity: 1; }
 }
 
+.briefing-signup--card {
+  margin-top: 0;
+  padding: 10px 14px 12px;
+}
+
 /* ── News section divider ───────────────────────────────── */
 .news-section-divider {
   height: 1px;

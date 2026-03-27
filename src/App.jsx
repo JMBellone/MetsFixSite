@@ -884,11 +884,12 @@ export default function App() {
                 </div>
               </div>
             ))}
+            <div className="team-news-divider" />
             <a
               href="https://themetropolitan.substack.com"
               target="_blank"
               rel="noopener noreferrer"
-              className="briefing-signup"
+              className="briefing-signup briefing-signup--card"
             >
               👉 Sign up to receive Mets Fix in your Inbox
             </a>
