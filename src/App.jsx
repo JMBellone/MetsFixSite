@@ -389,38 +389,38 @@ export default function App() {
 
         {/* ── The Latest Briefing ─────────────────────────── */}
         {loading && <div className="briefing-skeleton"><div className="skeleton briefing-skeleton-bar" /><div className="skeleton briefing-skeleton-bar briefing-skeleton-bar--short" /></div>}
+        {!loading && briefingArticle && (
+          <div className={`section-header section-header--mets section-header--briefing section-header--briefing-${getBriefingTime()}`}>
+            <span className="section-header-label">{getBriefingLabel()}</span>
+            <span className="section-header-line" />
+          </div>
+        )}
         {!loading && showBriefingArticle && (
-          <>
-            <div className={`section-header section-header--mets section-header--briefing section-header--briefing-${getBriefingTime()}`}>
-              <span className="section-header-label">{getBriefingLabel()}</span>
-              <span className="section-header-line" />
-            </div>
-            <div className="briefing-card">
-              <a
-                href={briefingArticle.link}
-                target="_blank"
-                rel="noopener noreferrer"
-                className={`briefing-link${readIds.has(briefingArticle.id) ? ' briefing-link--read' : ''}`}
-                onClick={() => markRead(briefingArticle.id)}
-              >
-                <img src="/metsfix-banner.png" alt="Get Your Mets Fix" className="briefing-banner" />
-                <div className="briefing-body">
-                  <span className="briefing-source">Mets Fix</span>
-                  <span className="briefing-title">{briefingArticle.title}</span>
-                  <span className="briefing-meta">{timeAgo(briefingArticle.pubDate)}</span>
-                </div>
-                {briefingArticle.image && (
-                  <img
-                    src={briefingArticle.image}
-                    alt=""
-                    className="briefing-thumb"
-                    loading="lazy"
-                    onError={e => { e.currentTarget.style.display = 'none' }}
-                  />
-                )}
-              </a>
-            </div>
-          </>
+          <div className="briefing-card">
+            <a
+              href={briefingArticle.link}
+              target="_blank"
+              rel="noopener noreferrer"
+              className={`briefing-link${readIds.has(briefingArticle.id) ? ' briefing-link--read' : ''}`}
+              onClick={() => markRead(briefingArticle.id)}
+            >
+              <img src="/metsfix-banner.png" alt="Get Your Mets Fix" className="briefing-banner" />
+              <div className="briefing-body">
+                <span className="briefing-source">Mets Fix</span>
+                <span className="briefing-title">{briefingArticle.title}</span>
+                <span className="briefing-meta">{timeAgo(briefingArticle.pubDate)}</span>
+              </div>
+              {briefingArticle.image && (
+                <img
+                  src={briefingArticle.image}
+                  alt=""
+                  className="briefing-thumb"
+                  loading="lazy"
+                  onError={e => { e.currentTarget.style.display = 'none' }}
+                />
+              )}
+            </a>
+          </div>
         )}
 
         {/* ── Signup CTA ───────────────────────────────────── */}
