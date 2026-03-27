@@ -717,7 +717,8 @@
   display: block;
 }
 
-.team-news-featured-img.img-top {
+.team-news-featured-img.img-top,
+.team-news-secondary-img.img-top {
   object-position: top;
 }
 

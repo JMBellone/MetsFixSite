@@ -492,7 +492,7 @@ export default function App() {
                   <a href={a.link} target="_blank" rel="noopener noreferrer"
                     className="team-news-secondary" onClick={() => markRead(a.id)}>
                     {a.image && (
-                      <img src={a.image} alt="" className="team-news-secondary-img" loading="lazy" loading="lazy"
+                      <img src={a.image} alt="" className={`team-news-secondary-img${a.source === 'NY Post' ? ' img-top' : ''}`} loading="lazy"
                         onError={e => { e.currentTarget.style.display = 'none' }} />
                     )}
                     <div className="team-news-secondary-body">
@@ -597,7 +597,7 @@ export default function App() {
                   <a href={a.link} target="_blank" rel="noopener noreferrer"
                     className="team-news-secondary" onClick={() => markRead(a.id)}>
                     {a.image && (
-                      <img src={a.image} alt="" className="team-news-secondary-img" loading="lazy"
+                      <img src={a.image} alt="" className={`team-news-secondary-img${a.source === 'NY Post' ? ' img-top' : ''}`} loading="lazy"
                         onError={e => { e.currentTarget.style.display = 'none' }} />
                     )}
                     <div className="team-news-secondary-body">
@@ -710,7 +710,7 @@ export default function App() {
                     <a href={a.link} target="_blank" rel="noopener noreferrer"
                       className="team-news-secondary" onClick={() => markRead(a.id)}>
                       {a.image && (
-                        <img src={a.image} alt="" className="team-news-secondary-img" loading="lazy"
+                        <img src={a.image} alt="" className={`team-news-secondary-img${a.source === 'NY Post' ? ' img-top' : ''}`} loading="lazy"
                           onError={e => { e.currentTarget.style.display = 'none' }} />
                       )}
                       <div className="team-news-secondary-body">
@@ -795,7 +795,7 @@ export default function App() {
                         <a href={a.link} target="_blank" rel="noopener noreferrer"
                           className="team-news-secondary" onClick={() => markRead(a.id)}>
                           {a.image && (
-                            <img src={a.image} alt="" className="team-news-secondary-img" loading="lazy"
+                            <img src={a.image} alt="" className={`team-news-secondary-img${a.source === 'NY Post' ? ' img-top' : ''}`} loading="lazy"
                               onError={e => { e.currentTarget.style.display = 'none' }} />
                           )}
                           <div className="team-news-secondary-body">
@@ -981,7 +981,7 @@ export default function App() {
                   <a href={a.link} target="_blank" rel="noopener noreferrer"
                     className="team-news-secondary" onClick={() => markRead(a.id)}>
                     {a.image && (
-                      <img src={a.image} alt="" className="team-news-secondary-img" loading="lazy"
+                      <img src={a.image} alt="" className={`team-news-secondary-img${a.source === 'NY Post' ? ' img-top' : ''}`} loading="lazy"
                         onError={e => { e.currentTarget.style.display = 'none' }} />
                     )}
                     <div className="team-news-secondary-body">
@@ -1121,7 +1121,7 @@ export default function App() {
                             <a href={a.link} target="_blank" rel="noopener noreferrer"
                               className="team-news-secondary" onClick={() => markRead(a.id)}>
                               {a.image && (
-                                <img src={a.image} alt="" className="team-news-secondary-img" loading="lazy"
+                                <img src={a.image} alt="" className={`team-news-secondary-img${a.source === 'NY Post' ? ' img-top' : ''}`} loading="lazy"
                                   onError={e => { e.currentTarget.style.display = 'none' }} />
                               )}
                               <div className="team-news-secondary-body">
