@@ -389,7 +389,7 @@ export default function App() {
 
         {/* ── The Latest Briefing ─────────────────────────── */}
         {loading && <div className="briefing-skeleton"><div className="skeleton briefing-skeleton-bar" /><div className="skeleton briefing-skeleton-bar briefing-skeleton-bar--short" /></div>}
-        {!loading && briefingArticle && (
+        {!loading && (
           <div className={`section-header section-header--mets section-header--briefing section-header--briefing-${getBriefingTime()}`}>
             <span className="section-header-label">{getBriefingLabel()}</span>
             <span className="section-header-line" />
