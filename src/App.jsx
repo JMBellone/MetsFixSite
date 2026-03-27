@@ -100,7 +100,6 @@ export default function App() {
   const [refreshing, setRefreshing] = useState(false)
   const [isLive, setIsLive] = useState(false)
   const [gameEnded, setGameEnded] = useState(false)
-  const [latestPodcastEp, setLatestPodcastEp] = useState(null)
   const wasLiveRef = useRef(false)
 
   const handleLiveChange = useCallback((live, gameFinishedToday = false) => {
@@ -201,12 +200,6 @@ export default function App() {
       .catch(() => {})
   }, [])
 
-  useEffect(() => {
-    fetch('/api/metsfixpodcast')
-      .then(r => r.ok ? r.json() : null)
-      .then(data => { if (data?.latest) setLatestPodcastEp(data.latest) })
-      .catch(() => {})
-  }, [])
 
   const onTouchStart = useCallback((e) => {
     if (window.scrollY === 0) touchStartY.current = e.touches[0].clientY
@@ -582,7 +575,7 @@ export default function App() {
           <div className="clubhouse-pass-body">
             <p className="clubhouse-pass-desc">Subscribe to our show on your favorite podcast app.</p>
             <div className="clubhouse-pass-row">
-              <img src="/metsfix-podcast.jpg" alt="Mets Fix Podcast" className="clubhouse-pass-art" />
+              <img src="/metsfix-podcast.png" alt="Mets Fix Podcast" className="clubhouse-pass-art" />
               <div className="clubhouse-pass-links">
                 <a
                   href="https://podcasts.apple.com/us/podcast/mets-fix/id1677996090"
@@ -605,22 +598,6 @@ export default function App() {
               </div>
             </div>
           </div>
-          {latestPodcastEp && (
-            <>
-              <div className="team-news-divider" />
-              <div className="clubhouse-pass-body">
-                <p className="clubhouse-pass-desc podcast-latest-label">Latest Episode</p>
-                <a
-                  href={latestPodcastEp.link}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="clubhouse-pass-link rewatch-link podcast-latest-link"
-                >
-                  {latestPodcastEp.title}
-                </a>
-              </div>
-            </>
-          )}
         </div>
 
         {/* ── Last Game ────────────────────────────────────── */}
