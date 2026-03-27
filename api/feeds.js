@@ -211,7 +211,9 @@ function parseRSS(xml) {
     else if (cdataImg && isImageUrl(cdataImg[1])) image = cdataImg[1];
 
     const creator = get('dc:creator') || get('author') || ''
-    items.push({ title, link, pubDate, description, image, creator });
+    const isPodcast = /<enclosure[^>]+type=["']audio[^"']*["'][^>]*>/i.test(block)
+      || /<enclosure[^>]+url=["'][^"']*\.mp3[^"']*["'][^>]*>/i.test(block)
+    items.push({ title, link, pubDate, description, image, creator, isPodcast });
   }
 
   return items;
@@ -260,7 +262,7 @@ async function fetchFeed(feedConfig) {
     }
     if (feedConfig.filterFn && !feedConfig.filterFn(item)) continue;
 
-    results.push({
+    const article = {
       id: `${source}-${Buffer.from(item.link).toString('base64').replace(/=/g, '')}`,
       team: feedConfig.team || 'mets',
       source,
@@ -274,7 +276,9 @@ async function fetchFeed(feedConfig) {
       link: item.link,
       pubDate: item.pubDate.toISOString(),
       creator: item.creator || '',
-    });
+    }
+    if (feedConfig.team === 'metropolitan') article.isPodcast = item.isPodcast
+    results.push(article);
   }
 
   return { articles: results, error: null, source, total: items.length, kept: results.length, filtered };

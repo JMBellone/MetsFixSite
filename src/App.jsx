@@ -229,7 +229,7 @@ export default function App() {
     })
   }, [])
 
-  const briefingArticle = articles.find(a => a.team === 'metropolitan') || null
+  const briefingArticle = articles.find(a => a.team === 'metropolitan' && !a.isPodcast) || null
 
   // After 4 PM ET, hide the briefing article unless a new one was published after 4 PM today
   const showBriefingArticle = (() => {
@@ -258,8 +258,7 @@ export default function App() {
       .filter(a =>
         a.team === 'metropolitan' &&
         new Date(a.pubDate) >= monday &&
-        !a.title.toLowerCase().includes('podcast') &&
-        !a.link.includes('/podcast')
+        !a.isPodcast
       )
       .sort((a, b) => new Date(b.pubDate) - new Date(a.pubDate))
   })()
