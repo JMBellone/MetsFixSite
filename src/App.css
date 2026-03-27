@@ -3092,7 +3092,11 @@
   gap: 3px;
 }
 
+.newsletter-header .latest-updates-title {
+  font-size: 0.88rem;
+}
+
 .newsletter-header-sub {
-  font-size: 0.75rem;
+  font-size: 0.82rem;
   color: var(--text-muted);
 }
