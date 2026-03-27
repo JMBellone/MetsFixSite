@@ -239,7 +239,12 @@ export default function App() {
     const monday = new Date(todayMidnight)
     monday.setDate(monday.getDate() - daysFromMon)
     return articles
-      .filter(a => a.team === 'metropolitan' && new Date(a.pubDate) >= monday)
+      .filter(a =>
+        a.team === 'metropolitan' &&
+        new Date(a.pubDate) >= monday &&
+        !a.title.toLowerCase().includes('podcast') &&
+        !a.link.includes('/podcast')
+      )
       .sort((a, b) => new Date(b.pubDate) - new Date(a.pubDate))
   })()
 
@@ -828,10 +833,12 @@ export default function App() {
 
         {/* ── Get Your Mets Fix newsletters ────────────────── */}
         {metropolitanWeekArticles.length > 0 && (
-          <div className="team-news-card newsletter-card">
-            <div className="newsletter-header">
-              <span className="newsletter-header-title">📬 GET YOUR METS FIX</span>
-              <span className="newsletter-header-sub">Catch up on recent newsletters</span>
+          <div className="team-news-card">
+            <div className="latest-updates-header newsletter-header">
+              <div className="newsletter-header-text">
+                <span className="latest-updates-title">📬 GET YOUR METS FIX</span>
+                <span className="newsletter-header-sub">Catch up on recent newsletters</span>
+              </div>
             </div>
             {metropolitanWeekArticles.map((a, idx) => (
               <div key={a.link}>
