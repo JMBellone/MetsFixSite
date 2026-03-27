@@ -906,7 +906,7 @@ export default function App() {
               rel="noopener noreferrer"
               className="briefing-signup briefing-signup--card"
             >
-              👉 Sign up to receive Mets Fix in your Inbox
+              👉 Get Mets Fix in your inbox
             </a>
           </div>
         )}
