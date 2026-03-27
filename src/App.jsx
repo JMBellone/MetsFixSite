@@ -294,11 +294,11 @@ export default function App() {
     }
     return base
   })()
-  const topRest      = topPool.slice(1)
+  const topRest      = topPool.filter(a => a.id !== topFeatured?.id)
   const topSmall     = topRest.slice(0, 3)
   const topHeadlines = topRest.slice(3, 5)
 
-  const topIds = new Set(topPool.slice(0, 6).map(a => a.id))
+  const topIds = new Set([...topPool.map(a => a.id), topFeatured?.id].filter(Boolean))
 
   // Dive Into the News: force 3 most recent Athletic + 7 others, guarantee Athletic in first 15
   const athleticForDive = articles
