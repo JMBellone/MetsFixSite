@@ -884,6 +884,14 @@ export default function App() {
                 </div>
               </div>
             ))}
+            <a
+              href="https://themetropolitan.substack.com"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="briefing-signup"
+            >
+              👉 Sign up to receive Mets Fix in your Inbox
+            </a>
           </div>
         )}
 
