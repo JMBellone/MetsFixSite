@@ -100,6 +100,7 @@ export default function App() {
   const [refreshing, setRefreshing] = useState(false)
   const [isLive, setIsLive] = useState(false)
   const [gameEnded, setGameEnded] = useState(false)
+  const [latestPodcastEp, setLatestPodcastEp] = useState(null)
   const wasLiveRef = useRef(false)
 
   const handleLiveChange = useCallback((live, gameFinishedToday = false) => {
@@ -197,6 +198,13 @@ export default function App() {
     fetch('/api/opponent')
       .then(r => r.ok ? r.json() : null)
       .then(data => { if (data) setOpponent(data) })
+      .catch(() => {})
+  }, [])
+
+  useEffect(() => {
+    fetch('/api/metsfixpodcast')
+      .then(r => r.ok ? r.json() : null)
+      .then(data => { if (data?.latest) setLatestPodcastEp(data.latest) })
       .catch(() => {})
   }, [])
 
@@ -431,7 +439,7 @@ export default function App() {
               rel="noopener noreferrer"
               className="briefing-signup"
             >
-              👉 Sign up to receive Mets Fix in your inbox
+              👉 GET METS FIX IN YOUR INBOX
             </a>
             <div className="news-section-divider" />
           </>
@@ -597,6 +605,22 @@ export default function App() {
               </div>
             </div>
           </div>
+          {latestPodcastEp && (
+            <>
+              <div className="team-news-divider" />
+              <div className="clubhouse-pass-body">
+                <p className="clubhouse-pass-desc podcast-latest-label">Latest Episode</p>
+                <a
+                  href={latestPodcastEp.link}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="clubhouse-pass-link rewatch-link podcast-latest-link"
+                >
+                  {latestPodcastEp.title}
+                </a>
+              </div>
+            </>
+          )}
         </div>
 
         {/* ── Last Game ────────────────────────────────────── */}

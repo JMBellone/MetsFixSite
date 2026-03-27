@@ -1951,6 +1951,20 @@
   font-size: 0.82rem;
 }
 
+.podcast-latest-label {
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--mets-blue-light);
+  margin-bottom: -4px;
+}
+
+.podcast-latest-link {
+  white-space: normal;
+  line-height: 1.35;
+}
+
 .clubhouse-pass-art {
   width: 80px;
   height: 80px;
