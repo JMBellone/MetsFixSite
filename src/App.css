@@ -3080,3 +3080,30 @@
 @media (hover: hover) {
   .stats-show-more:hover { background: var(--surface-2); }
 }
+
+/* ── Newsletter card (Get Your Mets Fix) ──────────────── */
+.newsletter-card {
+  border-left: 3px solid var(--mets-orange);
+}
+
+.newsletter-header {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: 9px 14px 8px;
+  background: var(--surface-2);
+  border-bottom: 1px solid var(--border);
+}
+
+.newsletter-header-title {
+  font-size: 0.72rem;
+  font-weight: 900;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  color: var(--mets-orange);
+}
+
+.newsletter-header-sub {
+  font-size: 0.68rem;
+  color: var(--text-muted);
+}

@@ -231,6 +231,18 @@ export default function App() {
 
   const briefingArticle = articles.find(a => a.team === 'metropolitan') || null
 
+  const metropolitanWeekArticles = (() => {
+    const etToday = new Date().toLocaleDateString('en-CA', { timeZone: 'America/New_York' })
+    const todayMidnight = new Date(etToday + 'T00:00:00')
+    const dow = todayMidnight.getDay() // 0=Sun, 1=Mon…6=Sat
+    const daysFromMon = dow === 0 ? 6 : dow - 1
+    const monday = new Date(todayMidnight)
+    monday.setDate(monday.getDate() - daysFromMon)
+    return articles
+      .filter(a => a.team === 'metropolitan' && new Date(a.pubDate) >= monday)
+      .sort((a, b) => new Date(b.pubDate) - new Date(a.pubDate))
+  })()
+
   const newsPool = articles
     .filter(a => a.team === 'mets' && !a.authorFeed)
     .sort((a, b) => new Date(b.pubDate) - new Date(a.pubDate))
@@ -812,6 +824,45 @@ export default function App() {
               </>
             )}
           </>
+        )}
+
+        {/* ── Get Your Mets Fix newsletters ────────────────── */}
+        {metropolitanWeekArticles.length > 0 && (
+          <div className="team-news-card newsletter-card">
+            <div className="newsletter-header">
+              <span className="newsletter-header-title">📬 GET YOUR METS FIX</span>
+              <span className="newsletter-header-sub">Catch up on recent newsletters</span>
+            </div>
+            {metropolitanWeekArticles.map((a, idx) => (
+              <div key={a.link}>
+                {idx > 0 && <div className="team-news-divider" />}
+                <div className="team-news-item-wrap">
+                  <a
+                    href={a.link}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className={`briefing-link${readIds.has(a.id) ? ' briefing-link--read' : ''}`}
+                    onClick={() => markRead(a.id)}
+                  >
+                    <div className="briefing-body">
+                      <span className="briefing-source">
+                        {new Date(a.pubDate).toLocaleDateString('en-US', { weekday: 'long', timeZone: 'America/New_York' })}
+                      </span>
+                      <span className="briefing-title">{a.title}</span>
+                    </div>
+                    {a.image && (
+                      <img
+                        src={a.image}
+                        alt=""
+                        className="briefing-thumb"
+                        onError={e => { e.currentTarget.style.display = 'none' }}
+                      />
+                    )}
+                  </a>
+                </div>
+              </div>
+            ))}
+          </div>
         )}
 
         {/* ── Roster Activity ──────────────────────────────── */}
