@@ -259,7 +259,8 @@ export default function App() {
       .filter(a =>
         a.team === 'metropolitan' &&
         new Date(a.pubDate) >= monday &&
-        !a.isPodcast
+        !a.isPodcast &&
+        !(showBriefingArticle && briefingArticle && a.id === briefingArticle.id)
       )
       .sort((a, b) => new Date(b.pubDate) - new Date(a.pubDate))
   })()
