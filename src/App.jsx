@@ -232,20 +232,26 @@ export default function App() {
 
   const briefingArticle = articles.find(a => a.team === 'metropolitan' && !a.isPodcast) || null
 
-  // After 4 PM ET, hide the briefing article unless a new one was published after 4 PM today
+  // Show briefing article only if published after the most recent 4 PM ET cutoff.
+  // Before 4 PM: cutoff = yesterday 4 PM ET. After 4 PM: cutoff = today 4 PM ET.
   const showBriefingArticle = (() => {
     if (!briefingArticle) return false
-    const hourET = parseInt(
-      new Date().toLocaleString('en-US', { timeZone: 'America/New_York', hour: '2-digit', hour12: false }), 10
-    )
-    if (hourET < 16) return true
+    const now = new Date()
     const pub = new Date(briefingArticle.pubDate)
-    const pubDay = pub.toLocaleDateString('en-CA', { timeZone: 'America/New_York' })
-    const today = new Date().toLocaleDateString('en-CA', { timeZone: 'America/New_York' })
-    const pubHour = parseInt(
-      pub.toLocaleString('en-US', { timeZone: 'America/New_York', hour: '2-digit', hour12: false }), 10
-    )
-    return pubDay === today && pubHour >= 16
+    const nowHourET = parseInt(now.toLocaleString('en-US', { timeZone: 'America/New_York', hour: '2-digit', hour12: false }), 10)
+    const pubDayET = pub.toLocaleDateString('en-CA', { timeZone: 'America/New_York' })
+    const pubHourET = parseInt(pub.toLocaleString('en-US', { timeZone: 'America/New_York', hour: '2-digit', hour12: false }), 10)
+    const todayET = now.toLocaleDateString('en-CA', { timeZone: 'America/New_York' })
+    if (nowHourET >= 16) {
+      // Past 4 PM: only show if published today at or after 4 PM
+      return pubDayET === todayET && pubHourET >= 16
+    }
+    // Before 4 PM: only show if published today, or yesterday at or after 4 PM
+    if (pubDayET === todayET) return true
+    const yesterday = new Date(now)
+    yesterday.setDate(yesterday.getDate() - 1)
+    const yesterdayET = yesterday.toLocaleDateString('en-CA', { timeZone: 'America/New_York' })
+    return pubDayET === yesterdayET && pubHourET >= 16
   })()
 
   const metropolitanWeekArticles = (() => {
