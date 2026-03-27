@@ -1866,6 +1866,14 @@
   text-align: center;
 }
 
+.newsletter-signup-br {
+  display: none;
+}
+
+@media (max-width: 600px) {
+  .newsletter-signup-br { display: inline; }
+}
+
 /* ── News section divider ───────────────────────────────── */
 .news-section-divider {
   height: 1px;

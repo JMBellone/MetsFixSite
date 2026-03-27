@@ -445,7 +445,7 @@ export default function App() {
               className="newsletter-signup-banner"
             >
               <span className="newsletter-signup-title">👉 GET METS FIX IN YOUR INBOX</span>
-              <span className="newsletter-signup-sub">A Mets newsletter packed with unique insight and analysis.</span>
+              <span className="newsletter-signup-sub">A Mets newsletter with<br className="newsletter-signup-br" />unique insight and analysis.</span>
             </a>
             <div className="news-section-divider" />
           </>
