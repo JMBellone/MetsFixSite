@@ -261,6 +261,7 @@ async function fetchFeed(feedConfig) {
       if (!inTitle && !inLink) continue;
     }
     if (feedConfig.filterFn && !feedConfig.filterFn(item)) continue;
+    if (feedConfig.team === 'metropolitan' && item.isPodcast) continue;
 
     const article = {
       id: `${source}-${Buffer.from(item.link).toString('base64').replace(/=/g, '')}`,
