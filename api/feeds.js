@@ -347,7 +347,7 @@ module.exports = async function handler(req, res) {
 
   const settled = await Promise.allSettled(FEEDS.map(fetchFeed));
   const feedResults = settled.map((r) => (r.status === 'fulfilled' ? r.value : { articles: [], error: 'Promise rejected', source: '?' }));
-  const NY_POST_SPAM = /bet365|promo\s*code|sportsbook/i
+  const NY_POST_SPAM = /bet365|betmgm|promo\s*code|sportsbook/i
   const allArticles = feedResults
     .flatMap((r) => r.articles)
     .filter(a => !(a.source === 'NY Post' && NY_POST_SPAM.test(a.title)))

@@ -100,6 +100,7 @@ export default function App() {
   const [refreshing, setRefreshing] = useState(false)
   const [isLive, setIsLive] = useState(false)
   const [gameEnded, setGameEnded] = useState(false)
+  const [lineupsPosted, setLineupsPosted] = useState(false)
   const wasLiveRef = useRef(false)
 
   const handleLiveChange = useCallback((live, gameFinishedToday = false) => {
@@ -574,16 +575,24 @@ export default function App() {
           </div>
         </div>
 
+        {/* ── Today's Lineups + Bullpen Chart (above Last Game when posted) ── */}
+        {!isLive && !gameEnded && lineupsPosted && (
+          <>
+            <LineupsCard onPosted={setLineupsPosted} />
+            {bullpenVisible && <BullpenCard />}
+          </>
+        )}
+
         {/* ── Last Game ────────────────────────────────────── */}
         <LastGameCard />
 
         {/* ── Mets YouTube Video ───────────────────────────── */}
         <MetsVideoCard />
 
-        {/* ── Today's Lineups + Bullpen Chart ──────────────── */}
-        {!isLive && !gameEnded && (
+        {/* ── Today's Lineups + Bullpen Chart (below Last Game when not yet posted) ── */}
+        {!isLive && !gameEnded && !lineupsPosted && (
           <>
-            <LineupsCard />
+            <LineupsCard onPosted={setLineupsPosted} />
             {bullpenVisible && <BullpenCard />}
           </>
         )}

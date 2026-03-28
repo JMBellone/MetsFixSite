@@ -53,7 +53,7 @@ function TeamColumn({ team, vsStarter }) {
   )
 }
 
-export default function LineupsCard() {
+export default function LineupsCard({ onPosted }) {
   const [data, setData] = useState(null)
   const [loading, setLoading] = useState(true)
   const [activeTeam, setActiveTeam] = useState('mets')
@@ -61,7 +61,7 @@ export default function LineupsCard() {
   useEffect(() => {
     fetch('/api/lineups')
       .then(r => r.ok ? r.json() : Promise.reject())
-      .then(d => { setData(d); setLoading(false) })
+      .then(d => { setData(d); setLoading(false); if (d.posted) onPosted?.(true) })
       .catch(() => setLoading(false))
   }, [])
 
