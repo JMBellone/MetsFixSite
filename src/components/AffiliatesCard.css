@@ -1,0 +1,187 @@
+/* ── Affiliates Card ───────────────────────────────────── */
+
+.af-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  overflow: hidden;
+}
+
+.af-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 9px 14px;
+  background: var(--surface-2);
+  border-bottom: 1px solid var(--border);
+}
+
+.af-header-title {
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: var(--text);
+  letter-spacing: 0.3px;
+}
+
+.af-header-date {
+  font-size: 0.65rem;
+  color: var(--text-muted);
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.4px;
+}
+
+/* Game list */
+.af-list {
+  display: flex;
+  flex-direction: column;
+}
+
+/* Game row */
+.af-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 32px 68px 32px minmax(0, 1fr);
+  align-items: center;
+  column-gap: 6px;
+  padding: 9px 14px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.af-row:last-child {
+  border-bottom: none;
+}
+
+/* Affiliate side (left) */
+.af-affiliate {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  min-width: 0;
+}
+
+.af-badge {
+  font-size: 0.6rem;
+  font-weight: 700;
+  color: #4a7fd4;
+  background: rgba(74, 127, 212, 0.15);
+  border: 1px solid rgba(74, 127, 212, 0.3);
+  border-radius: 3px;
+  padding: 1px 4px;
+  letter-spacing: 0.3px;
+  flex-shrink: 0;
+  line-height: 1.4;
+}
+
+.af-name {
+  font-size: 0.74rem;
+  font-weight: 600;
+  color: var(--text);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* Opponent side (right) */
+.af-opp {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 5px;
+  min-width: 0;
+}
+
+.af-opp-name {
+  font-size: 0.74rem;
+  font-weight: 600;
+  color: var(--text);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  text-align: right;
+}
+
+.af-ha {
+  font-size: 0.62rem;
+  color: var(--text-muted);
+  font-weight: 500;
+  flex-shrink: 0;
+}
+
+/* Scores */
+.af-score {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--text);
+  line-height: 1;
+  font-variant-numeric: tabular-nums;
+  text-align: right;
+}
+
+.af-score--opp {
+  text-align: left;
+}
+
+/* Loser dimming */
+.af-dim {
+  color: var(--text-muted);
+  opacity: 0.55;
+}
+
+/* Center status column */
+.af-mid {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.af-status {
+  font-size: 0.72rem;
+  font-weight: 500;
+  text-align: center;
+  white-space: nowrap;
+}
+
+.af-status--final {
+  color: var(--text-muted);
+}
+
+.af-status--live {
+  color: #4ade80;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-weight: 700;
+}
+
+.af-live-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #4ade80;
+  flex-shrink: 0;
+  animation: af-pulse 1.4s ease-in-out infinite;
+}
+
+@keyframes af-pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.25; }
+}
+
+.af-status--time {
+  color: var(--text-muted);
+  font-size: 0.66rem;
+}
+
+.af-status--ppd {
+  color: var(--text-muted);
+  opacity: 0.6;
+}
+
+/* No games row */
+.af-off {
+  padding: 10px 14px;
+  font-size: 0.72rem;
+  color: var(--text-muted);
+  text-align: center;
+  font-style: italic;
+}

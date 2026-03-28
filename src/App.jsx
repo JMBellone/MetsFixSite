@@ -20,6 +20,7 @@ import MetsStatsCard from './components/MetsStatsCard'
 import SyracuseScheduleCard from './components/SyracuseScheduleCard'
 import ProspectArticlesCard from './components/ProspectArticlesCard'
 import DoveReportCard from './components/DoveReportCard'
+import AffiliatesCard from './components/AffiliatesCard'
 import './App.css'
 
 function faviconUrl(link) {
@@ -636,7 +637,8 @@ export default function App() {
         {/* ── Upcoming Schedule + Know Your Opponent ───────── */}
         <div className="game-preview-group">
           <ScheduleCard />
-          <a
+          <AffiliatesCard />
+          <
             href="https://metsfix-streaming-guide.netlify.app"
             target="_blank"
             rel="noopener noreferrer"
