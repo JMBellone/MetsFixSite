@@ -638,7 +638,7 @@ export default function App() {
         <div className="game-preview-group">
           <ScheduleCard />
           <AffiliatesCard />
-          <
+          <a
             href="https://metsfix-streaming-guide.netlify.app"
             target="_blank"
             rel="noopener noreferrer"
